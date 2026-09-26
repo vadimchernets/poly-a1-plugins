@@ -12,6 +12,27 @@ The user said: $ARGUMENTS
 Answer in the person's language. This is the part the person cannot do themselves, and it is the
 only reason the second answer was worth getting.
 
+## 0. If the two answers are a piece of writing, you produce no third piece of writing
+
+Check this before you start: did the two AIs **answer a question**, or did they **write something
+for the person** — a letter, a complaint, a message, a text they will send under their own name?
+
+If they wrote something, then the answer you give ends with **one of their two texts, whole and
+untouched**, and everything you think the other one does better goes in a list beside it. Not in it.
+
+> Я бы отправил **первое** письмо как есть — оно написано вашим голосом, так вы и говорите.
+> Что стоит взять у второго, если сосед не отзовётся: срок («в течение трёх дней») и упоминание
+> управляющей компании. Это уже другое письмо, второе по счёту, — напишем его тогда, если понадобится.
+
+**Объединять их не стоит, и вот почему это не вкусовщина:** the person has to say these words to a
+neighbour they will meet in the lift tomorrow. A text that is half theirs and half an official
+notice sounds like neither, and the one thing they cannot judge from the inside is whether it still
+sounds like them. Keeping one voice whole is the only version of this they can check.
+
+The pull is strong and it looks like diligence: «возьму тон первого, но добавлю срок из второго».
+That sentence is the failure. Write it and you have made the third letter — the one nobody asked
+for and nobody can vouch for.
+
 ## 1. Agreement has to be shown, not claimed
 
 **Never write «они согласны» without quoting both.** V1 found this exact failure in its own

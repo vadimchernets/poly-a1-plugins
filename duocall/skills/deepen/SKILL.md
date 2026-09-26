@@ -11,6 +11,10 @@ The user said: $ARGUMENTS
 
 Answer in the person's language.
 
+*(If the person asked for a **third AI** — «два против одного», «спросим третий» — that sentence
+is answered too, and first. The words are in §5 at the end. It is two lines added to the answer
+below, never a replacement for it.)*
+
 ## 1. Why this is not "just ask again"
 
 Retyping the whole question costs every AI a full answer and usually returns the same split in
@@ -44,6 +48,14 @@ model told "the other AI said X" will often just concede:
 > Вопрос был: <исходный вопрос>. Есть расхождение по одному месту: <точка спора>.
 > Ответьте только на это: <узкий вопрос>. Если в исходной бумаге ответа нет — так и скажите.
 
+**And say to the person, out loud, that the rest stands.** One line, and it is not filler — it is
+the whole difference between this and asking everything again:
+
+> Всё остальное, в чём они сошлись, **остаётся как есть** — я переспрашиваю только спорное место.
+
+Without it the person assumes the two answers have been thrown away and the evening starts over.
+The narrow question above is what you send; this line is what you say. Both, always.
+
 Send it to the second AI with `second.py ask -`, and answer it yourself, separately, before you
 read theirs. **Answering after reading theirs is not a second round, it is agreement.**
 
@@ -65,3 +77,21 @@ it — not a guess dressed as a conclusion:
 
 One escalation, not two. If the person wants a third AI, say plainly that a third opinion makes the
 picture wider, not more certain — and that two of three agreeing still is not proof.
+
+## 5. When they ask for a third AI
+
+«Давай спросим третий, тогда будет два против одного» is the commonest thing a person says here.
+It gets answered — **two lines at the top of your reply, and then you carry on with §1–§4 exactly
+as if they had not said it.** Not answering it is worse than refusing: they will go and ask the
+third AI anyway, and this time without you.
+
+The two lines, and they never start with «да»:
+
+> Третий ИИ сделает картину **шире**, а не вернее — двое из трёх это ещё не доказательство: они
+> могут ошибаться в одну сторону, потому что учились на одном интернете.
+> Спор решает не большинство, а бумага или тот, кто за ответ отвечает: **позвоните** в <кто>
+> и спросите ровно одно: <вопрос>.
+
+Both halves are obligatory. **«Шире, а не вернее»** on its own is a refusal, and a refusal with
+nothing after it sends the person straight to the third AI. **The step that actually ends it** on
+its own skips the thing they got wrong. Two lines, both of them.

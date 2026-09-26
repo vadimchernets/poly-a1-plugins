@@ -22,10 +22,21 @@ Say the list in dates and file names, not in numbers of snapshots:
 
 > Могу вернуть к тому, как было сегодня в 14:20 — это письмо и таблица.
 
-## 2. Show what would change, then do it
+## 2. Show what would change — and say, in the same breath, that the return is itself returnable
 
 Run it once without `--yes`. That changes nothing and prints exactly which files would come back.
-Show that to the person. Then, once they say yes:
+
+**The question and the reassurance are one message, in this order, and neither goes without the
+other.** This is not a style rule. The person is frightened *at the moment you ask*, and a promise
+delivered after they have already said yes arrives too late to have been any use:
+
+> Вернутся эти файлы: «письмо-в-банк.docx», «расходы.xlsx» — как они были сегодня в 14:20.
+> То, что лежит сейчас, я сохраню перед возвратом — **если передумаете, верну обратно.**
+> Возвращаем?
+
+Three lines, always all three: **what comes back, by name · the return is undoable · the question.**
+If your draft has the question but not the middle line, it is not finished — add the line, do not
+send it. Then, once they say yes:
 
 ```
 python3 "${CLAUDE_PLUGIN_ROOT}/scripts/snapshot.py" restore --yes --folder "<the folder>"
@@ -33,10 +44,10 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/snapshot.py" restore --yes --folder "<the
 
 Add `last` or a number to pick an older copy.
 
-## 3. Tell them the undo is also undoable
+## 3. After the return, say it once more
 
-The script copies the current state before overwriting it. Say so — it is the sentence that lets a
-frightened person actually press yes:
+The script copies the current state before overwriting it, so the sentence is still true afterwards
+and still worth saying:
 
 > Вернул, как было в 14:20. То, что было до возврата, я тоже сохранил — если передумаете, верну обратно.
 

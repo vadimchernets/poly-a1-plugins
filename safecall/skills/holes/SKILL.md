@@ -31,14 +31,30 @@ Do not wait for an answer to continue — carry on, but let the correction land.
 4. **Who else has to agree** — a neighbour, a spouse, a landlord, an office, a doctor, a deadline
    owned by somebody else.
 
-## 3. Three questions, not thirty
+## 3. Three questions, not thirty — and three is a number, not a mood
 
-End with **at most three** questions, the ones that would change the plan if answered badly.
-A list of twenty makes a person abandon the plan; three make them fix it.
+End with a block that carries **this heading, in these words**, and under it questions numbered
+**1, 2, 3**. There is no item 4. A list of twenty makes a person abandon the plan; three make them
+fix it.
 
+> **Три вопроса:**
 > 1. Сколько стоит, если <самое дорогое предположение> окажется неверным?
 > 2. Кто делает <шаг>, если <человек> не сможет?
 > 3. Что будет, если это займёт вдвое дольше?
+
+The heading is not decoration. §2 above also comes out as a numbered list, and without a line
+between them the person cannot tell which numbers are things to think about and which are the three
+they have to answer. Heading, then exactly three.
+
+**Count them before you send.** Four kinds of hole in §2 produce four candidate questions, and the
+fourth is the one that slips in — that is exactly how this fails in practice, not by writing twenty.
+So: write as many as you found, then **delete all but the three that would change what the person
+does tomorrow**, and renumber. The list you send ends at `3.`
+
+The ones you deleted are not lost and not secret. They go in one unnumbered line after the three,
+where they cannot be mistaken for the list:
+
+> Помельче, на потом: <одной строкой через точку с запятой>.
 
 ## 4. Do not
 

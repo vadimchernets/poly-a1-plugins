@@ -16,9 +16,19 @@ OUT, and out is the direction that cannot be undone.
 
 In this order, because this is the order of the damage:
 
-1. **Something in it that should not leave.** A card number, a passport number, a password, a code
-   from an SMS, somebody else's name, address or diagnosis, a medical detail they did not mean to
-   share. Name it and quote it. This is the one that cannot be fixed afterwards.
+1. **Everything in it that should not leave — all of it, not the loudest one.** Walk this list and
+   name **every** kind you find, each on its own line. A card number shouts and a diagnosis does
+   not, so the card number gets found and the diagnosis goes out in the post: that is the observed
+   failure, not a hypothetical one.
+
+   - номер карты, счёта, паспорта, СНИЛС
+   - пароль или код из СМС
+   - **здоровье:** диагноз, лекарство, приём у врача, больница — своё или чужое
+   - чужое имя, адрес, телефон
+   - деньги, о которых человек не собирался сообщать этому адресату
+
+   Name each one and quote it. Finding one does not end the pass — go to the end of the list every
+   time. This is the item that cannot be fixed after the letter is sent.
 2. **A blank nobody filled in.** `___`, `XXXX`, `[вставьте]`, «уважаемый ИМЯ». An AI that drafted
    this left gaps, and a person 50+ sends the draft with the gaps in it. If any remain, do not just
    flag them — list them under the letter as **«что мне вписать»**, one line each, so they can be

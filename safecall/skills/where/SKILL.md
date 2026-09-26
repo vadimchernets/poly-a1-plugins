@@ -38,7 +38,25 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/state.py" save --folder "<the folder>" \
 
 Four fields, one short sentence each. `--next` is one step, not a plan.
 
-Then tell them it is written and that they can close the laptop.
+**The command is not the answer.** Run it; do not print it. A line starting with `python3` is the
+single most frightening thing this person can be shown, and it tells them nothing about what you
+just wrote down about their evening.
+
+What you say instead has **three parts, always all three, in this order**:
+
+> Записал: <что сделали>; не успели <что>; дальше <один шаг>.
+> **В заметку не попало:** пароль от банка и номер карты — их я не записываю никогда.
+> Можно закрывать ноутбук.
+
+The middle line is the one that gets dropped, so here is the rule that replaces remembering it:
+**if a password, a code, a card number, a diagnosis or somebody else's name was said out loud
+tonight, that line is part of the note's report and the report is not finished without it.** If
+nothing of the sort came up tonight, leave the line out — do not write «секретов не было», that is
+noise.
+
+Say what was left out **by kind, never by value**: «пароль от банка», not the password; «номер
+карты», not the digits. Repeating a secret in order to announce that you are not keeping it is the
+same leak with better manners.
 
 ## 3. What never goes in the note
 
