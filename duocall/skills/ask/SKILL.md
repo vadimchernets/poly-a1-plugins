@@ -70,3 +70,9 @@ The script says why, and the commonest reason is the allowance running out. Say 
 
 Never hide a failed second opinion and never quietly answer twice yourself and call it a pair.
 **A pair that did not happen is said out loud.**
+
+## If `python3` is not on this machine
+
+On Windows it often is not. Try `py -3`, then `python`. If none runs, do not stop and do not show a
+Python error: fall back to the browser path — hand the person the block to paste into a free chat
+of another company, which needs no program at all.

@@ -83,7 +83,18 @@ pass that on in plain words.
 
 - Do not copy the whole folder "just in case" — copy the files you are actually going to touch.
 - Do not put copies inside the person's own folder. The script already puts them outside, in
-  `~/.safecall/снимки/`. A copy sitting next to the documents gets read as clutter and deleted by
+  `~/.safecall/copies/`. A copy sitting next to the documents gets read as clutter and deleted by
   the very person it protects.
 - Do not say "backed up". Say "сделал копию" / "made a copy".
 - Do not promise that nothing can go wrong. Say what you copied and how to get it back.
+
+## If `python3` is not on this machine
+
+On Windows it often is not, or the name opens the Microsoft Store instead of running anything.
+**This is not the person's fault and it is not a broken plugin.** Try `py -3` and then `python` in
+place of `python3`; if none of them runs, say so in one plain line and carry on doing the job by
+hand — you can still read the folder, still say what you are about to change, still be careful.
+What you must never do is show them a Python error and stop.
+
+> На этом компьютере нет Питона, поэтому автоматическую страховку я включить не могу. Работаю
+> дальше и буду предупреждать вас перед каждым изменением словами.

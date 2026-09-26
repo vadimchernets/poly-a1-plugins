@@ -46,3 +46,9 @@ If the person treats "два ИИ проверили" as a verdict, correct it o
 
 > Два ИИ посмотрели — это не то же самое, что «проверено». Проверить можно только по бумаге или у
 > того, кто отвечает за ответ.
+
+## If `python3` is not on this machine
+
+On Windows it often is not. Try `py -3`, then `python`. If none runs, do not stop and do not show a
+Python error: fall back to the browser path — hand the person the block to paste into a free chat
+of another company, which needs no program at all.

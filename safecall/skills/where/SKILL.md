@@ -62,3 +62,14 @@ Two things, in this order, and nothing else:
 
 Do not start a new piece of work after that warning. Do not say the quota running out is their
 fault or that they must pay more — it is neither.
+
+## If `python3` is not on this machine
+
+On Windows it often is not, or the name opens the Microsoft Store instead of running anything.
+**This is not the person's fault and it is not a broken plugin.** Try `py -3` and then `python` in
+place of `python3`; if none of them runs, say so in one plain line and carry on doing the job by
+hand — you can still read the folder, still say what you are about to change, still be careful.
+What you must never do is show them a Python error and stop.
+
+> На этом компьютере нет Питона, поэтому автоматическую страховку я включить не могу. Работаю
+> дальше и буду предупреждать вас перед каждым изменением словами.
