@@ -8,7 +8,7 @@ V1 met the same wall and stopped requiring git for its own undo; this is the sam
 enough to live in a plugin and to be explained in one line to somebody who is sixty.
 
 Where copies live. NOT in the person's folder. A copy dropped beside the documents gets read as
-clutter and deleted by the very person it protects - so copies go to ~/.safecall/снимки/, outside
+clutter and deleted by the very person it protects - so copies go to ~/.safecall/copies/, outside
 the work folder, with a README that says in their own words not to delete it.
 
 No dependencies. Python 3.8+. Nothing here reaches the network.
