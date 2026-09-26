@@ -43,8 +43,8 @@ never presents one opinion as two.
 ## Install
 
 ```
-/plugin marketplace add vadimchernets/duocall
-/plugin install duocall@duocall
+/plugin marketplace add <the Poly A1 folder>
+/plugin install duocall@poly-a1
 ```
 
 Then, in `/plugin` → Marketplaces, **turn on auto-update** — for marketplaces that are not

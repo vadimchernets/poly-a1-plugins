@@ -31,4 +31,4 @@ choice, and the skill says that too.
 
 ## Reporting a problem
 
-Open an issue at https://github.com/vadimchernets/duocall/issues.
+Write to polyhelper.ai@gmail.com with `duocall` in the subject.

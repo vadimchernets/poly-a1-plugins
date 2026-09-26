@@ -30,5 +30,5 @@ breaks your session.**
 
 ## Reporting a problem
 
-Open an issue at https://github.com/vadimchernets/safecall/issues. For something you would rather
+Write to polyhelper.ai@gmail.com with `safecall` in the subject. For something you would rather
 not post publicly, say so in the issue without the details and a private channel will be arranged.

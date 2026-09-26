@@ -41,8 +41,8 @@ Two hooks, both quiet:
 ## Install
 
 ```
-/plugin marketplace add vadimchernets/safecall
-/plugin install safecall@safecall
+/plugin marketplace add <the Poly A1 folder>
+/plugin install safecall@poly-a1
 ```
 
 Then, in `/plugin` → Marketplaces, **turn on auto-update** — for marketplaces that are not

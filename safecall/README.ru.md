@@ -42,8 +42,8 @@ Safecall закрывает обе и добавляет три разбора, 
 ## Установка
 
 ```
-/plugin marketplace add vadimchernets/safecall
-/plugin install safecall@safecall
+/plugin marketplace add <the Poly A1 folder>
+/plugin install safecall@poly-a1
 ```
 
 Потом в `/plugin` → Marketplaces **включите автообновление**: для чужих каталогов оно выключено по
