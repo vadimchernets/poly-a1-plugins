@@ -46,6 +46,32 @@ class Base(unittest.TestCase):
 
 
 class TestSnapshot(Base):
+    def test_secret_names_are_refused_in_the_languages_the_person_writes_in(self):
+        """A copy of a secret is a second secret - in every language, not only English.
+
+        This guard was English-only until 26.09.2026. The person this plugin is written
+        for does not know what a file extension is; they call the file «пароли.txt».
+        Found by running it: пароли.txt was copied and nothing was said.
+        """
+        ordinary = self.work / "письмо.txt"
+        ordinary.write_text("обычный файл", encoding="utf-8")
+
+        secrets = ["пароли.txt", "мои-ключи.txt", "паспорт.jpg", "секретное.docx",
+                   "senhas.txt", "claves.docx", "contrasenas.txt", "chaves.txt",
+                   "passwords.txt", "secret-notes.txt"]
+        for name in secrets:
+            (self.work / name).write_text("Qwerty!2026", encoding="utf-8")
+
+        paths = [str(ordinary)] + [str(self.work / n) for n in secrets]
+        out = self.snap("save", *paths, "--folder", str(self.work))
+        self.assertEqual(out.returncode, 0, out.stderr)
+
+        copied = {p.name for p in self.home.rglob("*") if p.is_file()}
+        for name in secrets:
+            self.assertNotIn(name, copied,
+                             "%s скопирован — копия секрета это второй секрет" % name)
+        self.assertIn("письмо.txt", copied, "обычный файл копировать всё равно надо")
+
     def test_save_and_restore_round_trip(self):
         f = self.work / "письмо.txt"
         f.write_text("первая версия", encoding="utf-8")

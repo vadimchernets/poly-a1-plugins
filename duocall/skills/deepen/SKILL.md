@@ -22,6 +22,20 @@ So: **the first answers stay. Only the disputed point goes back.**
 Never delete or overwrite what they already said. If the second round contradicts the first, the
 person sees both and that fact is itself information.
 
+**And the failure that looks most like helpfulness: answering it yourself instead.** Asked «кто
+прав», it is very tempting to settle it out of your own knowledge, announce a winner, and bring in
+numbers that are in neither answer. That is not a second round — it is a third opinion delivered as
+a verdict, and it quietly throws away the only thing the person actually paid two AIs for.
+
+Before you write a word, say which of these you are doing, and say it to the person too:
+
+- **narrowing** — sending the one disputed point back. This is the skill.
+- **adding your own view** — allowed, but only *after* the two are laid out, and marked as yours:
+  «это моё мнение, третье, а не ответ на то, кто из них прав».
+
+If a number appears in your answer that is in neither of theirs, you have left this skill. Either
+quote where it came from, or take it out.
+
 ## 2. Ask a narrow question, and ask it of both
 
 One disputed point, one question, and it names the disagreement without naming who said what — a

@@ -40,9 +40,18 @@ KEEP_SNAPSHOTS = 20
 
 # Files whose NAME says they hold a secret are never copied: a copy of a secret is a second secret,
 # and this folder is not protected the way the original might be. Same rule V1 applies to rollback.
+# The list was English-only until 26.09.2026, and that made it blind exactly where this
+# plugin is used: the person it is written for does not know what an extension is and
+# names the file «пароли.txt», «senhas.txt», «claves.docx». Caught by running it -
+# пароли.txt was copied without a word. The words below are the ones such a person
+# actually types. Over-matching costs a copy that is not made and IS announced;
+# under-matching copies a secret into a second place and says nothing.
 SECRET_NAME = re.compile(
     r"(^\.env|\.env$|\.env\.|secret|password|passwd|credential|\.pem$|\.key$|\.p12$|"
-    r"\.keystore$|id_rsa|id_ed25519|\.netrc|\.htpasswd|token)", re.I)
+    r"\.keystore$|id_rsa|id_ed25519|\.netrc|\.htpasswd|token|"
+    r"парол|секрет|ключ|паспорт|токен|логин|пин-?код|"          # ru / uk
+    r"contrase|clave|secreto|"                                   # es
+    r"senha|segredo|chave)", re.I)                               # pt
 
 README = """Это ваша страховка. Не удаляйте эту папку.
 

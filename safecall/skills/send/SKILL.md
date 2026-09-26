@@ -47,9 +47,25 @@ One short list, marked as optional, not as errors:
 > Необязательно, но помогло бы: назвать номер договора, приложить фото счёта, попросить ответ
 > письменно.
 
-## 4. The last line
+## 4. The last line — and the one case where it must not be said
+
+**Never say «готово к отправке» while a blank is still empty or a secret is still in the text.**
+A person 50+ reads that line as permission and sends what is in front of them. Saying it directly
+under a list of three things they still have to fill in is the failure this skill exists to
+prevent, written in your own hand.
+
+So, only when nothing is left to fill and nothing dangerous is left in:
 
 > Готово к отправке. Перечитайте сами вслух один раз — вы поймаете то, чего не поймаю я.
+
+And when something IS still left — a blank, a card number, somebody else's diagnosis — the last
+line says so instead, and names what is left:
+
+> Пока не отправляйте: в письме ещё три пустых места — имя, адрес и номер счёта. Впишите их, и
+> тогда можно.
+
+This is not politeness, it is the order of the damage: a letter that goes with «ВСТАВЬТЕ АДРЕС»
+in it cannot be taken back any more than one with a card number in it.
 
 Then, if the letter goes to a bank, a court, an insurer, a landlord or an employer, one line:
 

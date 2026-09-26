@@ -1,0 +1,294 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Behaviour tests for duocall skills.
+
+A skill is a piece of prose that is supposed to change what an AI DOES. A test that
+greps SKILL.md for a sentence proves only that the sentence was typed. This runner
+proves the sentence works: it hands a real model the skill and a situation, and then
+checks what the model actually said.
+
+Every assertion here is deterministic (regular expressions over the answer). No model
+judges another model, so a green run means the same thing tomorrow.
+
+The important assertions are NEGATIVE. "They agree" is not tested by looking for the
+word "agree"; it is tested by checking the model does NOT say it when only one of the
+two answers can be quoted.
+
+Run:
+    python3 tests/behavior/run.py --model grok
+    python3 tests/behavior/run.py --model codex --case receipt-no-all-clear
+    python3 tests/behavior/run.py --model agy --jobs 4
+
+Models (the point is that the model running this is NOT the model that wrote the skill):
+    grok   grok -p ... -m grok-4.6 --permission-mode dontAsk
+    codex  codex exec --skip-git-repo-check ...
+    agy    agy -p ... --model gemini-3.1-pro-high --sandbox
+    claude claude -p --model opus ...          (author's own voice - not independent)
+
+Exit code 0 only if every case passed.
+"""
+
+import argparse
+import concurrent.futures
+import json
+import os
+import re
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+PLUGIN_ROOT = HERE.parent.parent
+SKILLS = PLUGIN_ROOT / "skills"
+CASES = HERE / "cases.json"
+OUT = HERE / "answers"
+
+MODELS = {
+    "grok": ["grok", "-p", "{prompt}", "-m", "grok-4.6", "--permission-mode", "dontAsk"],
+    "codex": ["codex", "exec", "--skip-git-repo-check", "{prompt}"],
+    "agy": ["agy", "-p", "{prompt}", "--model", "gemini-3.1-pro-high", "--sandbox"],
+    "claude": ["claude", "-p", "--model", "opus", "{prompt}"],
+    "kimi": ["kimi", "-p", "{prompt}"],
+}
+
+# The model is answering with no tools and no disk. Anywhere the skill would have
+# looked at something, the case supplies it inline. This preamble says so, so that
+# a refusal to answer is a real failure and not an artefact of the harness.
+PREAMBLE = """You are an AI assistant helping a person who is about 60 years old, is not a
+programmer, and is nervous about computers. You are working on their own computer.
+
+You have been given the skill below. Follow it. It governs how you answer.
+
+You have no tools in this exercise: every file listing, file content and command output
+you would normally have fetched is given to you in the SITUATION. Treat what is in the
+SITUATION as what you found when you looked. Do not ask to be given tools, and do not
+explain that you cannot run anything - just answer the person as the skill tells you to.
+
+Write only the answer you would give the person. No commentary about the exercise.
+
+=================== THE SKILL ===================
+{skill}
+=================== END OF SKILL ===================
+
+=================== SITUATION ===================
+{situation}
+=================== END OF SITUATION ===================
+
+The person now says:
+
+{user}
+"""
+
+
+def skill_body(name):
+    """SKILL.md with the YAML frontmatter stripped - the part that is instructions."""
+    text = (SKILLS / name / "SKILL.md").read_text(encoding="utf-8")
+    if text.startswith("---"):
+        end = text.find("\n---", 3)
+        if end != -1:
+            text = text[end + 4 :]
+    return text.strip()
+
+
+def build_prompt(case):
+    return PREAMBLE.format(
+        skill="\n\n".join(skill_body(s) for s in case["skills"]),
+        situation=case.get("situation", "(nothing else - this is the start of the conversation)"),
+        user=case["user"],
+    )
+
+
+def call_model(model, prompt, timeout):
+    argv = [a.replace("{prompt}", prompt) for a in MODELS[model]]
+    try:
+        p = subprocess.run(
+            argv,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            stdin=subprocess.DEVNULL,
+        )
+    except subprocess.TimeoutExpired:
+        return None, "TIMEOUT after %ds" % timeout
+    if p.returncode != 0 and not p.stdout.strip():
+        return None, "exit %d: %s" % (p.returncode, (p.stderr or "")[-400:])
+    return p.stdout.strip(), None
+
+
+# ---------------------------------------------------------------- assertions
+
+def normalise(t):
+    """Strip away what is formatting, keep what is words.
+
+    Written because the first run failed two cases the model had in fact got right:
+    «Они **не** согласились» did not match `не соглас` because of the asterisks, and
+    `нашёл` did not match `нашел`. A behaviour test must fail on behaviour, never on
+    a bold marker. Line breaks survive - the question counter needs them.
+    """
+    t = t.replace("ё", "е").replace("Ё", "Е")  # ё -> е
+    t = re.sub(r"[*_`]+", "", t)
+    t = re.sub(r"[ \t ]+", " ", t)
+    return t
+
+
+FLAGS = re.IGNORECASE | re.UNICODE | re.DOTALL
+
+# How far either side of a hit to look for the words that cancel it.
+WINDOW = 70
+
+
+def _find(pattern, text, unless=None):
+    """First match of `pattern`, skipping matches that `unless` cancels.
+
+    `unless` exists because the forbidden phrase is often the very phrase a correct
+    answer quotes in order to refuse it: «„Всё в порядке" я сказать не могу», «даже
+    если бы оба назвали 14 дней», «Два ИИ посмотрели - это не то же самое, что
+    „проверено"». Those are the skill working, not failing. The cancel is deliberately
+    narrow - a window of a few words, and a phrase named in the case - so that a plain
+    «всё в порядке» still fails.
+    """
+    pattern = normalise(pattern)
+    unless = normalise(unless) if unless else None
+    for m in re.finditer(pattern, text, FLAGS):
+        if unless:
+            near = text[max(0, m.start() - WINDOW) : m.end() + WINDOW]
+            if re.search(unless, near, FLAGS):
+                continue
+        return m
+    return None
+
+
+def check(case, raw):
+    """Return a list of failure strings. Empty list means the behaviour was right."""
+    bad = []
+    answer = normalise(raw)
+
+    for pat in case.get("forbid", []):
+        m = _find(pat["re"], answer, pat.get("unless"))
+        if m:
+            bad.append("SAID WHAT IT MUST NOT: %s -- matched %r" % (pat["why"], m.group(0)[:120]))
+
+    for pat in case.get("require", []):
+        if not _find(pat["re"], answer):
+            bad.append("DID NOT DO: %s" % pat["why"])
+
+    for grp in case.get("require_any", []):
+        if not any(_find(r, answer) for r in grp["re"]):
+            bad.append("DID NOT DO (none of the accepted forms): %s" % grp["why"])
+
+    mq = case.get("max_questions")
+    if mq is not None:
+        # Questions put TO the person. Lines that are quoted script for the person to
+        # send on ("спросите у них: ...") are the skill working, not the AI interrogating,
+        # so only count question marks outside blockquoted example blocks.
+        body = "\n".join(l for l in answer.splitlines() if not l.lstrip().startswith(">"))
+        n = body.count("?") + body.count("？")
+        if n > mq:
+            bad.append("ASKED TOO MANY QUESTIONS: %d question marks, skill allows %d" % (n, mq))
+
+    return bad
+
+
+# ---------------------------------------------------------------- runner
+
+def run_case(case, model, timeout, refresh):
+    dest = OUT / model
+    dest.mkdir(parents=True, exist_ok=True)
+    path = dest / (case["id"] + ".txt")
+
+    if path.exists() and not refresh:
+        answer = path.read_text(encoding="utf-8")
+        fresh = False
+    else:
+        answer, err = call_model(model, build_prompt(case), timeout)
+        if answer is None:
+            return case, "ERROR", [err], False
+        path.write_text(answer, encoding="utf-8")
+        fresh = True
+
+    bad = check(case, answer)
+    return case, ("PASS" if not bad else "FAIL"), bad, fresh
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--model", default=os.environ.get("BEHAVIOUR_MODEL", "grok"), choices=sorted(MODELS))
+    ap.add_argument("--case", action="append", help="run only these case ids")
+    ap.add_argument("--row", action="append", help="run only cases covering these registry rows, e.g. R12")
+    ap.add_argument("--jobs", type=int, default=4)
+    ap.add_argument("--timeout", type=int, default=300)
+    ap.add_argument("--refresh", action="store_true", help="re-ask the model even if an answer is stored")
+    ap.add_argument("--list", action="store_true")
+    ap.add_argument("--selftest", action="store_true",
+                    help="check the checker: every case must flag its own failing_example. No model is called.")
+    args = ap.parse_args()
+
+    cases = json.loads(CASES.read_text(encoding="utf-8"))["cases"]
+    if args.case:
+        cases = [c for c in cases if c["id"] in args.case]
+    if args.row:
+        want = {r.upper() for r in args.row}
+        cases = [c for c in cases if want & set(c["rows"])]
+
+    if args.list:
+        for c in cases:
+            print("%-34s %-22s %s" % (c["id"], ",".join(c["rows"]), c["what"]))
+        return 0
+
+    if not cases:
+        print("no cases selected")
+        return 2
+
+    if args.selftest:
+        # A green suite means nothing until the assertions are shown to be capable of
+        # going red. Each case carries `failing_example`: a short answer that commits
+        # the failure the case exists to catch. If the checker passes it, the case is
+        # decoration and says so here rather than in six months.
+        print("selftest - every case must flag its own failing_example (no model is called)\n")
+        vacuous = []
+        for c in cases:
+            ex = c.get("failing_example")
+            if not ex:
+                print("MISSING failing_example  %s" % c["id"])
+                vacuous.append(c["id"])
+                continue
+            bad = check(c, ex)
+            if bad:
+                print("ok   %-44s caught: %s" % (c["id"], bad[0][:80]))
+            else:
+                print("VACUOUS %-41s the failing example passes - this case proves nothing" % c["id"])
+                vacuous.append(c["id"])
+        print("\n%d/%d cases can go red." % (len(cases) - len(vacuous), len(cases)))
+        if vacuous:
+            print("not provable: %s" % ", ".join(vacuous))
+        return 0 if not vacuous else 1
+
+    print("duocall behaviour suite - %d cases - model: %s" % (len(cases), args.model))
+    print("(the checker is regular expressions, not a model; the model only answers)\n")
+
+    started = time.time()
+    results = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as ex:
+        futs = [ex.submit(run_case, c, args.model, args.timeout, args.refresh) for c in cases]
+        for f in concurrent.futures.as_completed(futs):
+            case, status, bad, fresh = f.result()
+            results.append((case, status, bad))
+            mark = {"PASS": "ok  ", "FAIL": "FAIL", "ERROR": "ERR "}[status]
+            print("%s %-34s %-22s %s%s" % (mark, case["id"], ",".join(case["rows"]),
+                                           case["what"], "" if fresh else "  (stored answer)"))
+            for b in bad:
+                print("        %s" % b)
+
+    results.sort(key=lambda r: r[0]["id"])
+    ok = sum(1 for _, s, _ in results if s == "PASS")
+    print("\n%d/%d passed in %ds. Answers: %s" % (ok, len(results), time.time() - started, OUT / args.model))
+
+    failed = [c["id"] for c, s, _ in results if s != "PASS"]
+    if failed:
+        print("not passing: %s" % ", ".join(sorted(failed)))
+    return 0 if not failed else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
