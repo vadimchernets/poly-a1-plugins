@@ -37,8 +37,10 @@ class Base(unittest.TestCase):
         return subprocess.run([sys.executable, str(SNAP), *args],
                               capture_output=True, text=True, env=self.env, cwd=str(self.work))
 
-    def guard(self, tool, path):
-        payload = json.dumps({"tool_name": tool, "tool_input": {"file_path": str(path)}})
+    def guard(self, tool, path, session="разговор-1"):
+        """One PreToolUse call. `session` is the conversation, as Claude Code passes it."""
+        payload = json.dumps({"tool_name": tool, "session_id": session,
+                              "tool_input": {"file_path": str(path)}})
         return subprocess.run([sys.executable, str(GUARD)], input=payload,
                               capture_output=True, text=True, env=self.env, cwd=str(self.work))
 
@@ -150,12 +152,74 @@ class TestGuard(Base):
         self.assertIn("could not copy", err,
                       "покупателей пять языков — отказ не может быть только по-русски")
 
-    def test_second_attempt_passes_after_the_person_was_asked(self):
+    # ── Пропуск: сколько живёт «да, меняйте без копии» ───────────────────────────────────
+    #
+    # Здесь стоял один тест — `test_second_attempt_passes_after_the_person_was_asked`. Он брал
+    # `server.key` (такое имя не копируется НАРОЧНО и навсегда) и закреплял, что второй заход
+    # проходит. Проверял он правду, но закрывал собой куда более важную ложь: тот же вечный
+    # пропуск получал и обычный документ, у которого копия сорвалась ОДИН раз случайно. Решение
+    # совета ИИ 26.09.2026 — чинить и разделить. Четыре теста ниже написаны так, чтобы каждый
+    # умел покраснеть, и чем именно он краснеет — сказано в нём самом.
+
+    def test_one_failed_copy_does_not_disable_copies(self):
+        """Сорвалась копия один раз — файл обязан защищаться снова, как только сможет.
+
+        Краснеет на коде до 26.09.2026: там путь попадал в `uncopyable.txt` навсегда, и третий
+        заход уходил мимо копии молча — «сделал копию» в ответе не появлялось.
+        """
+        f = self.work / "договор.txt"
+        f.write_bytes(b"x" * (6 * 1024 * 1024))       # больше 5 МБ — скопировать нельзя
+        self.assertEqual(self.guard("Write", f).returncode, 2, "копии нет — надо остановить")
+        self.assertEqual(self.guard("Write", f).returncode, 0, "человека спросили — пропускаем")
+
+        f.write_text("теперь маленький", encoding="utf-8")   # причина сбоя ушла
+        out = self.guard("Write", f)
+        self.assertEqual(out.returncode, 0)
+        self.assertIn("сделал копию", out.stdout,
+                      "причина сбоя ушла — сторож обязан снова делать копию, а не молчать")
+
+    def test_secret_pass_lasts_the_conversation(self):
+        """Секрет не копируется никогда, поэтому его пропуск держится весь разговор.
+
+        Краснеет, если сделать пропуск одноразовым: третий заход вернёт 2.
+        """
         f = self.work / "server.key"
         f.write_text("секрет", encoding="utf-8")
         self.assertEqual(self.guard("Write", f).returncode, 2)
+        self.assertEqual(self.guard("Write", f).returncode, 0)
         self.assertEqual(self.guard("Write", f).returncode, 0,
-                         "человека уже спросили — второй раз правка обязана пройти")
+                         "человека спросили один раз — переспрашивать в том же разговоре нельзя")
+
+    def test_pass_does_not_cross_conversations(self):
+        """Новый разговор спрашивает заново: отвечал, возможно, не тот, кто сидит сейчас.
+
+        Краснеет на коде до 26.09.2026 и на любом, где пропуск хранится по одному лишь пути.
+        """
+        f = self.work / "server.key"
+        f.write_text("секрет", encoding="utf-8")
+        self.assertEqual(self.guard("Write", f, session="разговор-A").returncode, 2)
+        self.assertEqual(self.guard("Write", f, session="разговор-A").returncode, 0)
+        self.assertEqual(self.guard("Write", f, session="разговор-Б").returncode, 2,
+                         "в другом разговоре человека не спрашивали — надо спросить")
+
+    def test_guard_never_blocks_forever_when_its_own_home_is_broken(self):
+        """Своя папка недоступна — сторож пропускает и говорит, а не запирает работу навсегда.
+
+        Без этого один сбой диска останавливал бы КАЖДУЮ правку: копию сделать нельзя, пропуск
+        записать некуда, и повтор правки не помогает. Правило «падать открытым» — в шапке guard.py.
+        Краснеет, если вернуть блокировку при неудачной записи пропуска.
+        """
+        broken = self.tmp / "не-папка"
+        broken.write_text("я файл, а не папка", encoding="utf-8")
+        env = dict(os.environ, SAFECALL_HOME=str(broken))
+        f = self.work / "договор.txt"
+        f.write_text("важное", encoding="utf-8")
+        payload = json.dumps({"tool_name": "Write", "session_id": "разговор-1",
+                              "tool_input": {"file_path": str(f)}})
+        out = subprocess.run([sys.executable, str(GUARD)], input=payload,
+                             capture_output=True, text=True, env=env, cwd=str(self.work))
+        self.assertEqual(out.returncode, 0, "сторож не имеет права запереть работу навсегда")
+        self.assertIn("БЕЗ копии", out.stdout, "прошло без копии — человеку об этом говорят")
 
     def test_never_blocks_reading(self):
         f = self.work / "договор.txt"

@@ -33,6 +33,8 @@ import json
 import os
 import subprocess
 import sys
+import time
+from datetime import datetime
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -73,11 +75,12 @@ def main():
 
     if not target.exists():
         return 0                                   # a new file: nothing to lose
-    if _was_refused(target):
-        return 0                                   # already asked about this one, person decided
 
     folder = str(Path.cwd())
 
+    # THE COPY IS TRIED FIRST, ALWAYS. The pass list is consulted only after it has failed - see
+    # the note above `_has_pass`. Until 26.09.2026 this order was reversed, and one failed copy
+    # took a file out of protection for good.
     try:
         covered = _run(["covered", str(target), "--folder", folder, "--minutes", "120"])
         if covered.returncode == 0:
@@ -94,9 +97,25 @@ def main():
               f"say \"put it back the way it was\" to undo.")
         return 0
 
+    # The copy did not happen. Only NOW does the pass matter: has this person already been asked
+    # about this file in this same conversation and said yes?
+    if _has_pass(target, payload):
+        return 0
+
     # The one case worth stopping for: we could not protect this file, so the change is one-way.
     why = (made.stdout or made.stderr or "").strip().splitlines()
     why = why[0] if why else "причина неизвестна / reason unknown"
+    if not _give_pass(target, payload):
+        # We cannot even remember that we asked. Blocking now would block this file FOREVER, with
+        # no way through - the person repeats the edit and is refused again, every time. That is
+        # the guard breaking the session, which this file forbids at the top. So: let it through
+        # and say so. Our own broken home is never their problem.
+        print(f"Safecall: не смог сделать копию «{target.name}» и не смог запомнить вопрос о нём "
+              f"— скорее всего папка копий недоступна. Правка прошла БЕЗ копии. "
+              f"Скажите это человеку его языком. / Safecall: could not copy \"{target.name}\" and "
+              f"could not remember asking about it - the copies folder is probably unavailable. "
+              f"The edit went through WITH NO COPY. Tell the person in THEIR language.")
+        return 0
     sys.stderr.write(
         f"Safecall: не смог сделать копию «{target.name}», поэтому правка была бы без возврата.\n"
         f"Причина: {why}\n"
@@ -107,26 +126,74 @@ def main():
         f"Reason: {why}\n"
         f"Tell the person in THEIR language and ask whether to change the file with no copy. "
         f"If they say yes, repeat the edit - it will go through the second time.\n")
-    _allow_next(target)
     return 2
 
 
-# One override token per file: after we have blocked once and the person has been asked, the next
-# attempt on that same file goes through. This is not the old "warn once then never again" - the
-# copy is still attempted every time, and this only applies to a file that CANNOT be copied.
-def _allow_next(target: Path):
+# ── The pass: how long "yes, change it without a copy" lasts ────────────────────────────────
+#
+# Until 26.09.2026 this was a file called `uncopyable.txt`, it was consulted BEFORE the copy was
+# tried, and nothing ever removed a line from it. One failed copy - a full disk, a file held open
+# by Word, a path too long - put that file outside the plugin's promise for good, silently, and
+# the person was never told. The council of AIs was asked on 26.09.2026 (Claude Opus, Codex, the
+# Google seat; Kimi was out of quota, Grok did not finish) and all three said: fix it.
+#
+# TWO THINGS CHANGED, AND THE FIRST ONE IS WHAT ACTUALLY FIXES IT:
+#
+#   1. THE ORDER. The copy is now tried every single time, before the pass is even looked at
+#      (`main`). That alone makes a random failure heal itself: next time the disk has room, the
+#      copy succeeds and the file is protected again, with no pass involved. No code has to guess
+#      WHY the copy failed - the retry answers that for free, which is why there is no
+#      "kind of failure" field anywhere here.
+#
+#   2. THE LIFETIME. A pass now belongs to the conversation the person answered in, and to that
+#      file. A secret (`SECRET_NAME` in snapshot.py) can never be copied, so it keeps failing and
+#      keeps using its pass - which is the intended behaviour, and it still ends with the
+#      conversation. A new conversation asks again, because the person who answered may not even
+#      be the one sitting there now.
+#
+# Claude Code hands a PreToolUse hook the `session_id` of the conversation. If it is ever absent,
+# the day is used instead: still an end, just a blunter one. Never "forever" again.
+
+PASSES = "passes.json"
+PASS_HOURS = 24
+
+
+def _pass_key(target: Path, payload) -> str:
+    who = str(payload.get("session_id") or "")
+    if not who:
+        who = "день-" + datetime.now().strftime("%Y-%m-%d")
+    return f"{who}\n{target}"
+
+
+def _pass_root() -> Path:
+    return Path(os.environ.get("SAFECALL_HOME", Path.home() / ".safecall"))
+
+
+def _read_passes():
+    """Live passes only. Stale ones are dropped on the way in, so the file cannot grow forever."""
     try:
-        root = Path(os.environ.get("SAFECALL_HOME", Path.home() / ".safecall"))
+        raw = json.loads((_pass_root() / PASSES).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    if not isinstance(raw, dict):
+        return {}
+    edge = time.time() - PASS_HOURS * 3600
+    return {k: v for k, v in raw.items() if isinstance(v, (int, float)) and v > edge}
+
+
+def _has_pass(target: Path, payload) -> bool:
+    return _pass_key(target, payload) in _read_passes()
+
+
+def _give_pass(target: Path, payload) -> bool:
+    """Remember that we asked. False = we could not, and the caller must NOT block."""
+    try:
+        root = _pass_root()
         root.mkdir(parents=True, exist_ok=True)
-        (root / "uncopyable.txt").open("a", encoding="utf-8").write(str(target) + "\n")
-    except OSError:
-        pass
-
-
-def _was_refused(target: Path) -> bool:
-    try:
-        root = Path(os.environ.get("SAFECALL_HOME", Path.home() / ".safecall"))
-        return str(target) in (root / "uncopyable.txt").read_text(encoding="utf-8").splitlines()
+        live = _read_passes()
+        live[_pass_key(target, payload)] = time.time()
+        (root / PASSES).write_text(json.dumps(live, ensure_ascii=False), encoding="utf-8")
+        return True
     except OSError:
         return False
 
