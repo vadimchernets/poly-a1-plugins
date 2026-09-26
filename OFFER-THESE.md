@@ -55,10 +55,22 @@ part after `@` is always `poly-a1`.
 
 Checked on a real machine on 26.09.2026: all four install this way and come up enabled.
 
-**There is no second path yet, and do not invent one.** Until these are published, a line like
-`/plugin marketplace add vadimchernets/…` fails with a 404 in front of the person, and an
-auto-update switch has nothing to update from. Corrections reach them with the next copy of the
-folder. When that changes, this file changes with it.
+**And there is a second path, for corrections made after the day they bought the folder.** The
+folder they have is a snapshot; this one keeps up:
+
+```
+/plugin marketplace add vadimchernets/poly-a1-plugins
+```
+
+**Then the step that is easy to miss and costs them every future fix.** For any marketplace that is
+not Anthropic's own, **auto-update is off by default**, and no setting inside the plugin can change
+that - only the person can:
+
+> Последний шаг, одна минута: наберите `/plugin`, откройте вкладку Marketplaces, найдите там
+> poly-a1-plugins и включите автообновление. Без этого исправления, которые мы сделаем потом, до
+> вас не дойдут.
+
+Do not skip this because it sounds small. Without it they stay on today's version for ever.
 
 ## What you must not say about them
 

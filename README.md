@@ -3,11 +3,19 @@
 Four small additions to [Claude Code](https://claude.com/claude-code) for a person who is not a
 programmer.
 
-## Installing today: from the folder, not from GitHub
+## Installing
 
-**This repository is not published yet**, so `/plugin marketplace add vadimchernets/poly-a1-plugins`
-returns a 404. Until the owner publishes it, the working path is the local one — clone or copy this
-folder, then point Claude Code at it:
+Published on 26.09.2026. Add it by name, and corrections made after today reach you:
+
+```
+/plugin marketplace add vadimchernets/poly-a1-plugins
+/plugin install safecall@poly-a1
+/plugin install duocall@poly-a1
+/plugin install pocketcall@poly-a1
+/plugin install chasecall@poly-a1
+```
+
+Or point Claude Code at a local copy of this folder — that path needs no network and no account:
 
 ```
 /plugin marketplace add /path/to/poly-a1-plugins
@@ -24,13 +32,13 @@ all four come up enabled.
 `pocketcall` and `chasecall` are listed here from their own published repositories, so from **this**
 folder they resolve over the network; from the Poly A1 folder they resolve locally.
 
-## After the owner publishes: the step everybody misses
+## The step everybody misses
 
 **Auto-update is OFF by default for any marketplace that is not Anthropic's own.** There is no
 field in `marketplace.json` that can turn it on — only the person can, and if they do not, they stay
 on the version they first installed, for ever.
 
-So once this repository is public and added by name, do this once:
+So after adding it by name, do this once:
 
 ```
 /plugin
