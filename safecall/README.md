@@ -23,14 +23,19 @@ Safecall answers both, and adds the three readings such a person actually needs 
 | `/safecall:holes` | What a plan is missing, as three questions, not thirty. |
 | `/safecall:facts` | What here can be checked, what is opinion, what says nothing at all. |
 | `/safecall:where` | Picks up where the last evening stopped; writes down where this one stopped. |
+| `/safecall:clearer` | Turns "ну это, с банком" into a question that can be answered - by guessing two or three versions out loud, not by interrogating. |
+| `/safecall:send` | Reads a letter, complaint or reply the way a cold stranger would, **before** it goes: what should not leave, blanks nobody filled in, a tone that will cost them. |
 | `/safecall:doctor` | Why the AI is silent, in words, with one step at a time. |
 
 Two hooks, both quiet:
 
 - **on session start** — the real date and time of this computer (a model otherwise wishes you good
   night at ten in the morning), and where you stopped last time;
-- **before writing to a file that already exists** — a check that a copy of it exists. A new file is
-  never blocked, reading is never blocked, and each file is only ever mentioned once.
+- **before writing to a file that already exists** — the guard **makes the copy itself** and lets
+  the write through. Nobody is stopped: a copy costs nothing, so there is nothing to refuse. A new
+  file is untouched, reading is untouched. The one refusal is a file that *cannot* be copied (its
+  name mentions a password or a key) — then the change would be one-way, and the person is asked.
+  With no `python3` on the machine the hooks quietly do nothing and the session works.
 
 ## Install
 
@@ -44,7 +49,9 @@ Anthropic's own it is off by default, and without it you stay on the version you
 
 ## Where the copies live
 
-`~/.safecall/снимки/`, outside your own folder, with a note in it saying not to delete it.
+`~/.safecall/copies/`, outside your own folder, with a note in it saying not to delete it.
+The name is ASCII on purpose: a folder called `снимки` cannot be typed by somebody on a Spanish
+keyboard when support tells them to open it.
 A copy sitting next to your documents gets mistaken for clutter and thrown away by the very person
 it protects. Copies older than 14 days remove themselves; at most 20 are kept per folder; nothing
 larger than 5 MB a file or 50 MB a copy.
