@@ -1,0 +1,54 @@
+{
+  "name": "poly-a1",
+  "owner": { "name": "Vadym Chernets" },
+  "metadata": {
+    "description": "The Poly A1 plugins: four small, plain-spoken additions to Claude Code for a person who is not a programmer - a copy before anything is changed, a second opinion from another company, a remote for the computer you left working, and a task that chases itself.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "safecall",
+      "source": "./safecall",
+      "description": "Nothing is written before a copy exists, nothing is read before you have seen the list, and no answer ends without saying what nobody checked. Plus three ready readings of a document: where the catch is, what the plan is missing, what here is fact.",
+      "version": "0.1.0",
+      "author": { "name": "Vadym Chernets" },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/vadimchernets/safecall",
+      "keywords": ["undo", "snapshot", "safety", "receipt", "document-review"],
+      "category": "productivity"
+    },
+    {
+      "name": "duocall",
+      "source": "./duocall",
+      "description": "A second opinion from a DIFFERENT company's AI, and an honest account of where the two disagreed - because two AIs agreeing is not proof. Works through a free browser chat when no second program is installed.",
+      "version": "0.1.0",
+      "author": { "name": "Vadym Chernets" },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/vadimchernets/duocall",
+      "keywords": ["second-opinion", "council", "cross-check", "disagreement"],
+      "category": "productivity"
+    },
+    {
+      "name": "pocketcall",
+      "source": { "source": "github", "repo": "vadimchernets/pocketcall" },
+      "description": "Leave the computer working and take the phone, without finding out in town that it never started: the seven silent reasons an evening away fails, checked before you leave.",
+      "version": "0.2.0",
+      "author": { "name": "Vadym Chernets" },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/vadimchernets/pocketcall",
+      "keywords": ["remote-control", "mobile", "readiness", "handover"],
+      "category": "productivity"
+    },
+    {
+      "name": "chasecall",
+      "source": { "source": "github", "repo": "vadimchernets/chasecall" },
+      "description": "Hand Claude Code something nobody is answering - a refund, a booking, an unanswered request. It keeps the task between sessions, writes the next letter, counts the attempts, and tells you when the call is yours to make.",
+      "version": "0.1.0",
+      "author": { "name": "Vadym Chernets" },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/vadimchernets/chasecall",
+      "keywords": ["follow-up", "tracker", "reminders", "assistant"],
+      "category": "productivity"
+    }
+  ]
+}

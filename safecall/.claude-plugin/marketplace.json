@@ -1,0 +1,21 @@
+{
+  "name": "safecall",
+  "owner": { "name": "Vadym Chernets" },
+  "metadata": {
+    "description": "Safecall: nothing is written before a copy exists, nothing is read before you have seen the list, and no answer ends without saying what was not checked.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "safecall",
+      "source": "./",
+      "description": "A copy before every change and one sentence to undo it; the list of files before they are read; an answer that says what nobody checked; and three ready readings of a document - the catch, the missing piece, fact against opinion.",
+      "version": "0.1.0",
+      "author": { "name": "Vadym Chernets" },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/vadimchernets/safecall",
+      "keywords": ["undo", "snapshot", "safety", "receipt", "document-review"],
+      "category": "productivity"
+    }
+  ]
+}

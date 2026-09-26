@@ -1,0 +1,21 @@
+{
+  "name": "duocall",
+  "owner": { "name": "Vadym Chernets" },
+  "metadata": {
+    "description": "Duocall: a second opinion from a different company's AI, and an honest account of where the two disagreed - because two AIs agreeing is not proof.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "duocall",
+      "source": "./",
+      "description": "Ask the same question of an AI from another company, quote both answers where they agree, name every place they differ, and go back only on the disputed points. Works with a second program if one is installed, and with a free browser chat if none is.",
+      "version": "0.1.0",
+      "author": { "name": "Vadym Chernets" },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/vadimchernets/duocall",
+      "keywords": ["second-opinion", "council", "cross-check", "disagreement"],
+      "category": "productivity"
+    }
+  ]
+}
