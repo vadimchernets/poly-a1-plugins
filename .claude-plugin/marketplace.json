@@ -28,7 +28,7 @@
     },
     {
       "name": "pocketcall",
-      "source": { "source": "github", "repo": "vadimchernets/pocketcall" },
+      "source": { "source": "url", "url": "https://github.com/vadimchernets/pocketcall.git", "sha": "08334f4f8bef8565fbf96716b776a771e4033da0" },
       "description": "Leave the computer working and take the phone, without finding out in town that it never started: the seven silent reasons an evening away fails, checked before you leave.",
       "version": "0.2.0",
       "author": { "name": "Vadym Chernets" },
@@ -39,7 +39,7 @@
     },
     {
       "name": "chasecall",
-      "source": { "source": "github", "repo": "vadimchernets/chasecall" },
+      "source": { "source": "url", "url": "https://github.com/vadimchernets/chasecall.git", "sha": "7d34724cee4767b3254e8de03e2c8ae7616719b2" },
       "description": "Hand Claude Code something nobody is answering - a refund, a booking, an unanswered request. It keeps the task between sessions, writes the next letter, counts the attempts, and tells you when the call is yours to make.",
       "version": "0.1.0",
       "author": { "name": "Vadym Chernets" },
