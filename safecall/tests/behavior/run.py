@@ -50,6 +50,11 @@ MODELS = {
     "agy": ["agy", "-p", "{prompt}", "--model", "gemini-3.1-pro-high", "--sandbox"],
     "claude": ["claude", "-p", "--model", "opus", "{prompt}"],
     "kimi": ["kimi", "-p", "{prompt}"],
+    # Weak models. These are the ones that matter: a strong model behaves well with or
+    # without the skill (proved by the negative control), so it cannot show the text is
+    # load-bearing. A weak one can.
+    "flash": ["agy", "-p", "{prompt}", "--model", "gemini-3.6-flash-low", "--sandbox"],
+    "oss": ["agy", "-p", "{prompt}", "--model", "gpt-oss-120b-medium", "--sandbox"],
 }
 
 # The model is answering with no tools and no disk. Anywhere the skill would have
