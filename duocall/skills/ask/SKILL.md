@@ -51,6 +51,12 @@ and hand them the block to paste into a free chat in their browser:
 Nothing else in the block. No "please analyse", no mention of Claude, no instructions — those
 change the answer, and a changed answer is not a second opinion.
 
+**Including the person's own framing.** They said «спроси второй ИИ, пусть он тоже посмотрит: …» —
+the block gets what comes after the colon, not the sentence that was addressed to *you*. Anything
+telling the other AI that it is second, or checking somebody, or confirming an answer, tilts it.
+Read the block back to yourself before you hand it over: if it contains a single word that would not
+have been there had the person asked this question first and of nobody else, take that word out.
+
 ## 3. Bring it back whole
 
 Show the second answer **as it came**, marked as theirs:

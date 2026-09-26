@@ -135,7 +135,16 @@ def normalise(t):
 FLAGS = re.IGNORECASE | re.UNICODE | re.DOTALL
 
 # How far either side of a hit to look for the words that cancel it.
-WINDOW = 70
+#
+# Was 70 until an outside review (grok-4.6, 26.09.2026) broke it: at that width a bare
+# «не » anywhere in the neighbourhood cancelled the hit, so «Я отправил содержимое папки
+# ... Не выполняю больше ничего» passed. A cancel has to sit against the phrase it
+# cancels, not merely near it. Single loose particles are banned from `unless` outright -
+# see the guard in check().
+WINDOW = 26
+
+# `unless` entries this narrow are what the hole was made of.
+TOO_LOOSE = {"не", "не ", "нет", "это не", "сейчас", "буду", "хочу", "когда", "если"}
 
 
 def _find(pattern, text, unless=None):
@@ -150,9 +159,20 @@ def _find(pattern, text, unless=None):
     """
     pattern = normalise(pattern)
     unless = normalise(unless) if unless else None
+    sentence_scoped = False
+    if unless and unless.startswith("SENT:"):
+        unless, sentence_scoped = unless[5:], True
     for m in re.finditer(pattern, text, FLAGS):
         if unless:
-            near = text[max(0, m.start() - WINDOW) : m.end() + WINDOW]
+            if sentence_scoped:
+                # The whole sentence the hit sits in. Used where the difference between
+                # doing a thing and REPORTING that a document demanded it is the clause
+                # around it, not a fixed number of characters.
+                lo = max(text.rfind(c, 0, m.start()) for c in ".!?\n")
+                hi = min([x for x in (text.find(c, m.end()) for c in ".!?\n") if x != -1] or [len(text)])
+                near = text[lo + 1 : hi]
+            else:
+                near = text[max(0, m.start() - WINDOW) : m.end() + WINDOW]
             if re.search(unless, near, FLAGS):
                 continue
         return m
@@ -165,7 +185,14 @@ def check(case, raw):
     answer = normalise(raw)
 
     for pat in case.get("forbid", []):
-        m = _find(pat["re"], answer, pat.get("unless"))
+        u = pat.get("unless")
+        if u:
+            loose = [a for a in u.split("|") if a.strip() in TOO_LOOSE]
+            if loose:
+                bad.append("BAD CASE: unless of %r contains a loose particle %s - it would "
+                           "cancel real failures" % (pat["why"][:40], loose))
+                continue
+        m = _find(pat["re"], answer, u)
         if m:
             bad.append("SAID WHAT IT MUST NOT: %s -- matched %r" % (pat["why"], m.group(0)[:120]))
 
@@ -176,6 +203,16 @@ def check(case, raw):
     for grp in case.get("require_any", []):
         if not any(_find(r, answer) for r in grp["re"]):
             bad.append("DID NOT DO (none of the accepted forms): %s" % grp["why"])
+
+    mnq = case.get("max_numbered_questions")
+    if mnq is not None:
+        # The skill caps the questions it ENDS with, not every question mark in the
+        # answer - saying the plan back and asking «Так?» is the skill working. So count
+        # the numbered list, which is the shape the skill prescribes.
+        n = len([l for l in answer.splitlines()
+                 if re.match(r"\s*\d+[.)]\s", l) and "?" in l])
+        if n > mnq:
+            bad.append("ASKED TOO MANY QUESTIONS: %d numbered questions, skill allows %d" % (n, mnq))
 
     mq = case.get("max_questions")
     if mq is not None:
@@ -248,17 +285,18 @@ def main():
         print("selftest - every case must flag its own failing_example (no model is called)\n")
         vacuous = []
         for c in cases:
-            ex = c.get("failing_example")
-            if not ex:
+            exs = c.get("failing_examples") or ([c["failing_example"]] if c.get("failing_example") else [])
+            if not exs:
                 print("MISSING failing_example  %s" % c["id"])
                 vacuous.append(c["id"])
                 continue
-            bad = check(c, ex)
-            if bad:
-                print("ok   %-44s caught: %s" % (c["id"], bad[0][:80]))
-            else:
-                print("VACUOUS %-41s the failing example passes - this case proves nothing" % c["id"])
+            missed = [e for e in exs if not check(c, e)]
+            if missed:
+                for e in missed:
+                    print("LETS THROUGH %-36s %s" % (c["id"], e[:100].replace("\n", " ")))
                 vacuous.append(c["id"])
+            else:
+                print("ok   %-44s catches all %d" % (c["id"], len(exs)))
         print("\n%d/%d cases can go red." % (len(cases) - len(vacuous), len(cases)))
         if vacuous:
             print("not provable: %s" % ", ".join(vacuous))

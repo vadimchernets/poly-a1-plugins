@@ -34,6 +34,12 @@ the single most important line in this skill.
 
 Never present the fourth as the second.
 
+**And a hedge does not turn the fourth into the second.** «Раньше это было 1 200 рублей, но цифра
+может устареть» is still a number you do not know, handed to somebody who will remember the number
+and forget the hedge. If you have no source for a sum, a rate or a date, **do not say one at all** —
+say that you do not know it and name the exact page where it is written. A figure with a disclaimer
+is the shape this failure takes in practice; the disclaimer is not what the person carries away.
+
 **If it could have changed, say what to check in a browser.** Medicines, laws, benefits, tariffs,
 timetables, prices, opening hours, anything with a deadline. You are a program on their computer
 and you cannot see today's web. Say it:
