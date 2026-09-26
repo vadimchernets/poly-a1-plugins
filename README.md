@@ -1,23 +1,36 @@
 # Poly A1 plugins
 
 Four small additions to [Claude Code](https://claude.com/claude-code) for a person who is not a
-programmer — and one line to install all of them.
+programmer.
+
+## Installing today: from the folder, not from GitHub
+
+**This repository is not published yet**, so `/plugin marketplace add vadimchernets/poly-a1-plugins`
+returns a 404. Until the owner publishes it, the working path is the local one — clone or copy this
+folder, then point Claude Code at it:
 
 ```
-/plugin marketplace add vadimchernets/poly-a1-plugins
+/plugin marketplace add /path/to/poly-a1-plugins
 /plugin install safecall@poly-a1
 /plugin install duocall@poly-a1
 /plugin install pocketcall@poly-a1
 /plugin install chasecall@poly-a1
 ```
 
-## ⚠ The step everybody misses, and it silently costs you every future fix
+The same works from the Poly A1 folder for the computer: all four ride inside it, with their own
+catalogue at the root, and install with no network at all. Checked on a real machine on 26.09.2026 —
+all four come up enabled.
+
+`pocketcall` and `chasecall` are listed here from their own published repositories, so from **this**
+folder they resolve over the network; from the Poly A1 folder they resolve locally.
+
+## After the owner publishes: the step everybody misses
 
 **Auto-update is OFF by default for any marketplace that is not Anthropic's own.** There is no
 field in `marketplace.json` that can turn it on — only the person can, and if they do not, they stay
 on the version they first installed, for ever.
 
-So after installing, do this once:
+So once this repository is public and added by name, do this once:
 
 ```
 /plugin
@@ -25,7 +38,9 @@ So after installing, do this once:
 
 → **Marketplaces** tab → this marketplace → **Enable auto-update**.
 
-Without it, every correction made here after today never reaches that machine.
+Without it, every correction made here after that day never reaches that machine. It is deliberately
+**not** offered to buyers before publication: an auto-update switch pointing at a 404 updates
+nothing and teaches them the product is broken.
 
 ## What is in it
 

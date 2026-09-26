@@ -39,30 +39,26 @@ nobody has answered.
 
 ## How they are turned on
 
-All four are already in this folder, so the shortest path is the local one — tell them what you are
-doing, in one line, and do it:
+All four are already in this folder. Nothing is downloaded, nothing is published, no account and no
+network are needed — the catalogue is the `.claude-plugin/marketplace.json` beside you, and every
+plugin in it points at a folder you can see. Tell them what you are doing, in one line, and do it:
 
 ```
 /plugin marketplace add <path to this folder>
 /plugin install safecall@poly-a1
 ```
 
-If they would rather get corrections later without a new copy of the folder, there is the
-marketplace:
+`<path to this folder>` is the folder that contains this `plugins/` directory — the one with
+`НАЧНИ-ЗДЕСЬ.md` in it, not `plugins/` itself. Drag the folder into the terminal and it types its
+own path. Swap `safecall` for `duocall`, `pocketcall` or `chasecall` when their moment comes; the
+part after `@` is always `poly-a1`.
 
-```
-/plugin marketplace add vadimchernets/poly-a1-plugins
-```
+Checked on a real machine on 26.09.2026: all four install this way and come up enabled.
 
-**And then the step that is easy to miss and costs them every future fix.** For any marketplace
-that is not Anthropic's own, **auto-update is off by default**, and there is no setting in the
-plugin that can change that — only the person can:
-
-> Последний шаг, одна минута: наберите `/plugin`, откройте вкладку Marketplaces, найдите там
-> poly-a1 и включите автообновление. Без этого исправления, которые мы сделаем потом, до вас
-> не дойдут.
-
-Do not skip this because it sounds small. Without it they stay on today's version for ever.
+**There is no second path yet, and do not invent one.** Until these are published, a line like
+`/plugin marketplace add vadimchernets/…` fails with a 404 in front of the person, and an
+auto-update switch has nothing to update from. Corrections reach them with the next copy of the
+folder. When that changes, this file changes with it.
 
 ## What you must not say about them
 
