@@ -193,5 +193,51 @@ class TestState(Base):
         self.assertIn("первый раз", out.stdout)
 
 
+class TestNamedFiles(Base):
+    """Файл, названный в ответе, обязан существовать. Это проверка утверждения о диске."""
+
+    def paths(self, text, folder=None):
+        return subprocess.run(
+            [sys.executable, str(SCRIPTS / "paths.py"), "--folder", str(folder or self.work),
+             "--text", text],
+            capture_output=True, text=True, env=self.env)
+
+    def test_existing_file_passes(self):
+        (self.work / "договор.pdf").write_text("x", encoding="utf-8")
+        out = self.paths("Я прочитал договор.pdf, там всё в порядке.")
+        self.assertEqual(out.returncode, 0, out.stdout)
+        self.assertIn("есть: договор.pdf", out.stdout)
+
+    def test_invented_file_is_caught(self):
+        (self.work / "договор.pdf").write_text("x", encoding="utf-8")
+        out = self.paths("В вашей папке есть договор-2024.pdf, в нём сказано…")
+        self.assertEqual(out.returncode, 1, "выдуманный файл обязан ловиться")
+        self.assertIn("НЕТ: договор-2024.pdf", out.stdout)
+
+    def test_file_one_folder_down_is_found_not_denied(self):
+        """Файл есть, но глубже. Сказать «такого нет» — тоже неверный ответ."""
+        sub = self.work / "Документы"
+        sub.mkdir()
+        (sub / "счёт.pdf").write_text("x", encoding="utf-8")
+        out = self.paths("Посмотрите счёт.pdf")
+        self.assertEqual(out.returncode, 0)
+        self.assertIn("Документы", out.stdout)
+
+    def test_urls_and_versions_are_not_files(self):
+        out = self.paths("Откройте https://polyhelper.ai/ru.zip, версия 2.1.283, это не файлы.")
+        self.assertNotIn("НЕТ: https", out.stdout)
+        self.assertNotIn("НЕТ: 2.1.283", out.stdout)
+
+    def test_text_with_no_filenames_says_so(self):
+        out = self.paths("Просто ответ без единого имени файла.")
+        self.assertEqual(out.returncode, 0)
+        self.assertIn("не названо ни одного файла", out.stdout)
+
+    def test_quoted_names_are_seen(self):
+        (self.work / "письмо.txt").write_text("x", encoding="utf-8")
+        out = self.paths("Я открыл «письмо.txt» и прочитал.")
+        self.assertIn("есть: письмо.txt", out.stdout)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -25,6 +25,7 @@ Safecall answers both, and adds the three readings such a person actually needs 
 | `/safecall:where` | Picks up where the last evening stopped; writes down where this one stopped. |
 | `/safecall:clearer` | Turns "ну это, с банком" into a question that can be answered - by guessing two or three versions out loud, not by interrogating. |
 | `/safecall:send` | Reads a letter, complaint or reply the way a cold stranger would, **before** it goes: what should not leave, blanks nobody filled in, a tone that will cost them. |
+| `/safecall:named` | Checks that every file an answer names really exists on the disk, before naming it — and finds the one that is real but a folder further down. |
 | `/safecall:doctor` | Why the AI is silent, in words, with one step at a time. |
 
 Two hooks, both quiet:
