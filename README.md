@@ -109,4 +109,4 @@ Apache-2.0 for all four. Each plugin carries its own `LICENSE` and `NOTICE`.
 
 ---
 
-<sub>Free Claude runs Sonnet 5.5, with session limits that reset every 5 hours. Ran out and you like Claude? Claude Pro is $20/month ($17 billed yearly), paid to Anthropic, not us — many more messages. Optional: everything works free. Free ChatGPT, Claude and keys have their own limits.</sub>
+<sub>Free Claude has a daily limit. Ran out and you like Claude? Claude Pro ($20/month, $17 billed yearly; paid to Anthropic, not us) lifts it. While you wait, a free AI on a key does the checking (Trio).</sub>
