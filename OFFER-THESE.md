@@ -41,8 +41,8 @@ nobody has answered.
 for the night («завтра доделаем», «мне пора спать»), or they ask what can run while they sleep.
 It keeps the computer awake for 8 or 12 hours, writes the plan and the night log, checks which
 helpers are alive (programs on their subscriptions → free keys → web chats that passed the roll call
-before the night → your own critics) and builds the morning report. Lesson 14.1 walks it through
-with a ten-minute rehearsal first; if they have not done lesson 14.1, offer the lesson, not the bare
+before the night → your own critics) and builds the morning report. The night-shift lesson walks it through
+with a ten-minute rehearsal first; if they have not done the night-shift lesson, offer the lesson, not the bare
 plugin.
 
 > Это можно оставить на ночь: я поработаю, пока вы спите, а утром вы прочитаете отчёт — что
@@ -51,7 +51,7 @@ plugin.
 **mailcall — offer it when they want news or letters followed for them**: «следи за моей почтой»,
 «присылай мне новости про …», or they already get Google Alerts and drown in them. It reads the
 alerts mailbox read-only, checks the sender, pulls out the links and lets you sort the news by their
-own words. Lesson 22.1 is its evening.
+own words. The «News in your own words» lesson is its evening.
 
 > Хотите, я буду каждое утро разбирать письма Google Alerts по вашим словам — что важно, что
 > шум — и показывать только своё? Почту я только читаю, ничего не отправляю.
