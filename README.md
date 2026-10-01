@@ -1,5 +1,22 @@
 # Poly A1 plugins
 
+**Pay $5 once — that's it: two AIs from different companies work together right on your phone. ChatGPT answers, Claude checks. No paid keys, no servers, no computer, nothing more to pay.**
+
+Have ChatGPT and Claude? Start right away. Have one? It helps you install the other. Have neither? Gemini (Google) or Meta AI (WhatsApp, Facebook) helps you install both, free.
+
+**Купили за $5 — и всё: два ИИ разных компаний работают вместе прямо в вашем телефоне. ChatGPT отвечает, Claude проверяет. Без платных ключей, серверов, компьютера и доплат.**
+
+Есть ChatGPT и Claude — начинаете сразу. Есть один — он поможет поставить второй. Нет ни одного — Gemini (Google) или Meta AI (WhatsApp, Facebook) помогут поставить оба, бесплатно.
+
+<details>
+<summary><b>How it works</b></summary>
+
+The orchestration runs on the phone itself. iPhone: a Shortcut calls Ask ChatGPT, then Ask Claude — actions the apps publish themselves; answers pass between your own apps, with no server of ours and no API keys, on your own accounts — free ones are enough. Android: the phone calls free AIs (Groq, OpenRouter, Google AI Studio) directly with your free key — no card, no server of ours; or by hand with your ChatGPT and Claude. Nothing like it exists anywhere else.
+
+</details>
+
+The phone part is [Duo and Trio](https://github.com/vadimchernets/c1m-duo); this repository is the computer part of Poly A1.
+
 Four small additions to [Claude Code](https://claude.com/claude-code) for a person who is not a
 programmer.
 
@@ -89,3 +106,7 @@ than the paid folder contains.
 ## Licence
 
 Apache-2.0 for all four. Each plugin carries its own `LICENSE` and `NOTICE`.
+
+---
+
+<sub>Free Claude runs Sonnet 5.5, with session limits that reset every 5 hours. Ran out and you like Claude? Claude Pro is $20/month ($17 billed yearly), paid to Anthropic, not us — many more messages. Optional: everything works free. Free ChatGPT, Claude and keys have their own limits.</sub>
