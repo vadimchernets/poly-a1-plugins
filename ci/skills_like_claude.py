@@ -5,8 +5,9 @@ and check what comes back - on Windows through the Bash tool (Git Bash) and the 
 
 A skill never calls `python3` itself. Its command is written for the Bash tool,
     sh "${CLAUDE_PLUGIN_ROOT}/hooks/python.sh" <plugin> say scripts/<name>.py ...
-and the skill tells Claude that with the PowerShell tool only the start changes:
-    & "${CLAUDE_PLUGIN_ROOT}/hooks/python.ps1" <plugin> say scripts/<name>.py ...
+and the skill tells Claude that with the PowerShell tool only the start changes - the bare path,
+    ${CLAUDE_PLUGIN_ROOT}/hooks/python.ps1 <plugin> say scripts/<name>.py ...
+or `& "<path>"` when the path has a space (the probe below lives in such a folder).
 Claude Code puts the plugin's real folder in place of ${CLAUDE_PLUGIN_ROOT} in the skill's text, so the
 command Claude sends carries the path itself (on Windows with backslashes). Here:
   - Bash tool:       bash -c <command>   (Git Bash's bash.exe on Windows)
@@ -45,7 +46,9 @@ def bash_form(root, plugin, rest, stdin=None):
 
 
 def ps_form(root, plugin, rest, stdin=None):
-    cmd = '& "%s/hooks/python.ps1" %s say %s' % (root, plugin, rest)
+    # the bare path, as the skills say (their PowerShell grant matches it); `& "..."` when the path has a space
+    launcher = "%s/hooks/python.ps1" % root
+    cmd = '%s %s say %s' % ('& "%s"' % launcher if " " in launcher else launcher, plugin, rest)
     if stdin is not None:
         cmd = "@'\n%s\n'@ | %s" % (stdin, cmd)
     return cmd

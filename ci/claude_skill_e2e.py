@@ -7,7 +7,7 @@ default permission mode (nothing approved in advance, no --dangerously-skip-perm
   2. copies the script command out of the skill text Claude Code sent it - with the plugin's real
      folder where the skill says ${CLAUDE_PLUGIN_ROOT} - and runs it with the shell tool it has:
      Bash as written, or, with only the PowerShell tool (Windows without Git Bash), with the start
-     changed the way the skill says;
+     changed the way the skill says (E2E_SHELL_TOOL=PowerShell picks it where both tools exist);
   3. says it is done. A second session does the same for /chasecall:scout (`tracker.py stats`).
 Checks: each command ran without a permission prompt (the skill's allowed-tools covered it - in
 `-p` an unapproved command comes back as "This command requires approval"), and its output is the
@@ -72,10 +72,10 @@ def plan(body, project):
             # update of the skill's allowed-tools grant (seen 3 times in 20 runs: "requires approval").
             time.sleep(2)
             args = rest.format(project=project)
-            if "Bash" in names:
+            if "Bash" in names and os.environ.get("E2E_SHELL_TOOL", "Bash") == "Bash":
                 tool, cmd = "Bash", 'sh "%s/hooks/python.sh" %s say %s' % (root, plugin, args)
-            else:
-                tool, cmd = "PowerShell", '& "%s/hooks/python.ps1" %s say %s' % (root, plugin, args)
+            else:   # as the skill says: the bare path is what its PowerShell grant matches
+                tool, cmd = "PowerShell", '%s/hooks/python.ps1 %s say %s' % (root, plugin, args)
             return [{"type": "tool_use", "id": "toolu_run_" + sid, "name": tool,
                      "input": {"command": cmd, "description": "Run the skill's script"}}], "tool_use"
     return [{"type": "text", "text": "Done."}], "end_turn"
@@ -130,7 +130,8 @@ def main():
     problems = []
     last = reqs[-1] if reqs else {}
     results = {c["tool_use_id"]: c for c in claude_e2e.tool_results(last)}
-    shell = "Bash" if any(t.get("name") == "Bash" for t in last.get("tools", []) or []) else "PowerShell"
+    shell = "Bash" if any(t.get("name") == "Bash" for t in last.get("tools", []) or []) \
+        and os.environ.get("E2E_SHELL_TOOL", "Bash") == "Bash" else "PowerShell"
     for sid, skill, plugin, rest, want in STEPS:
         s = results.get("toolu_skill_" + sid)
         r = results.get("toolu_run_" + sid)

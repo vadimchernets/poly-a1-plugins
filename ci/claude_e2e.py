@@ -187,7 +187,7 @@ def main():
         btxt = text_of(b) if b else ""
         if "is not recognized" in btxt:
             problems.append("PowerShell's complaint about the sh line reached the model: %r" % btxt[:600])
-        elif "python.ps1" in btxt or "exec sh" in btxt:
+        elif "[scriptblock]::Create" in btxt or "exec sh" in btxt:
             problems.append("the block shows the hook's own command in front of its reason: %r" % btxt[:600])
         elif b and b.get("is_error") and "chasecall" in btxt.lower():
             print("ok   PreToolUse %s: chasecall blocked" % ("Bash" if any(t.get("name") == "Bash" for t in last.get("tools", [])) else "PowerShell") + " the payment: %s" % btxt[:200])
