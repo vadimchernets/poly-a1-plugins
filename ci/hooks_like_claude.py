@@ -9,7 +9,8 @@ How Claude Code (2.1.288) spawns a shell-form command hook, read from its own co
   - Windows without it:    pwsh|powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass
                            -Command <command>, with ${CLAUDE_PLUGIN_ROOT} (and _DATA, PROJECT_DIR)
                            rewritten to ${env:CLAUDE_PLUGIN_ROOT}
-The hook's JSON goes to stdin as UTF-8 plus a newline. Exit 0 = go on, exit 2 = block.
+The hook's JSON goes to stdin as UTF-8 plus a newline. Exit 0 = go on; a guard blocks with a
+JSON `permissionDecision: deny` on stdout (exit 0), so Claude Code shows its reason without the command.
 
 Each hook runs twice: with a real Python on PATH, and with none - only stubs that fail `-c` the way
 the Microsoft Store alias does - where the plugin must say its one step-0 line and never fail.
@@ -152,8 +153,15 @@ def cases(plugin, home, project):
         def guard(code, out, err, py):
             if not py:
                 return paused(code, out, err, py, False)
-            if code != 2 or not err.strip():
-                return "want exit 2 with a reason for a payment, got exit %d err=%r out=%r" % (code, err[-300:], out[-300:])
+            # A block is the documented PreToolUse deny on stdout with exit 0: Claude Code then shows only the
+            # reason, not the whole two-line hook command in front of it (as it does for exit 2).
+            try:
+                d = json.loads(out)["hookSpecificOutput"]
+            except (ValueError, KeyError, TypeError):
+                d = {}
+            if code != 0 or err.strip() or d.get("permissionDecision") != "deny" \
+                    or not d.get("permissionDecisionReason"):
+                return "want a JSON deny with a reason for a payment, got exit %d err=%r out=%r" % (code, err[-300:], out[-300:])
             return None
 
         return {

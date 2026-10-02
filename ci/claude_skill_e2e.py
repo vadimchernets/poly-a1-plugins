@@ -8,7 +8,7 @@ default permission mode (nothing approved in advance, no --dangerously-skip-perm
      folder where the skill says ${CLAUDE_PLUGIN_ROOT} - and runs it with the shell tool it has:
      Bash as written, or, with only the PowerShell tool (Windows without Git Bash), with the start
      changed the way the skill says;
-  3. does the same for /chasecall:scout (`tracker.py stats`), then says it is done.
+  3. says it is done. A second session does the same for /chasecall:scout (`tracker.py stats`).
 Checks: each command ran without a permission prompt (the skill's allowed-tools covered it - in
 `-p` an unapproved command comes back as "This command requires approval"), and its output is the
 script's own, not a Python error.
@@ -24,6 +24,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import time
 from http.server import ThreadingHTTPServer
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -67,6 +68,9 @@ def plan(body, project):
             if not m:
                 return [{"type": "text", "text": "NO-LAUNCHER-IN-SKILL-TEXT " + plugin}], "end_turn"
             root = m.group(1)
+            # A real model takes seconds to answer. Answering in a few milliseconds raced Claude Code's own
+            # update of the skill's allowed-tools grant (seen 3 times in 20 runs: "requires approval").
+            time.sleep(2)
             args = rest.format(project=project)
             if "Bash" in names:
                 tool, cmd = "Bash", 'sh "%s/hooks/python.sh" %s say %s' % (root, plugin, args)
@@ -85,7 +89,17 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", required=True)
     ap.add_argument("--claude", default=shutil.which("claude") or "claude")
+    ap.add_argument("--only", help="one step id; without it every step runs in a session of its own")
     args = ap.parse_args()
+    global STEPS
+    if not args.only:
+        # One skill per session, as a person opens one per message. Two skills opened in one turn lost the
+        # second one's allowed-tools now and then (Claude Code 2.1.288, about one run in two with the
+        # stand-in): the command then asks for permission - a prompt, not a failure, for a person.
+        codes = [subprocess.call([sys.executable, os.path.abspath(__file__), "--config", args.config,
+                                  "--claude", args.claude, "--only", sid]) for sid, *_ in STEPS]
+        return 1 if any(codes) else 0
+    STEPS = [st for st in STEPS if st[0] == args.only]
 
     tmp = tempfile.mkdtemp(prefix="claude-skill-e2e-")
     home = os.path.join(tmp, "дом пользователя")
@@ -128,8 +142,11 @@ def main():
         if not r:
             problems.append("%s: the command from the skill text was never run (no launcher line in it?)" % skill)
             continue
+        sent = [c.get("input", {}).get("command") for m in last.get("messages", []) if isinstance(m.get("content"), list)
+                for c in m["content"] if c.get("type") == "tool_use" and c.get("id") == "toolu_run_" + sid]
         if "requires approval" in rt or "permission" in rt.lower():
-            problems.append("%s: %s asked for permission - allowed-tools did not cover it: %r" % (skill, shell, rt[:400]))
+            problems.append("%s: %s asked for permission - allowed-tools did not cover it: %r (command %r)"
+                            % (skill, shell, rt[:400], sent))
         elif r.get("is_error") or want not in rt:
             problems.append("%s: %s ran, but not the script's answer: %r" % (skill, shell, rt[:400]))
         else:
@@ -139,6 +156,7 @@ def main():
     for pr in problems:
         print("FAIL " + pr)
     if problems:
+        print("--- kept: " + tmp)
         print("--- stdout\n" + out[-2000:] + "\n--- stderr\n" + err[-2000:])
         try:
             log = open(os.path.join(tmp, "debug.log"), encoding="utf-8", errors="replace").read()

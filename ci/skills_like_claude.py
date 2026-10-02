@@ -16,7 +16,7 @@ Cases, each with a real Python on PATH and with none (only stubs that fail `-c` 
   - every script a skill names, with --help: exit 0 and argparse's "usage:" - or, with no Python,
     exit 0 and exactly one "<plugin> is paused" line;
   - a probe script dropped into a copy of a plugin: arguments with spaces, a non-English word piped
-    to standard input (<<'EOF' in bash, @'...'@ | in PowerShell), and its exit code, all intact.
+    to standard input (<<'EOF' in bash, @'...'@ | in PowerShell, UTF-8 with no BOM), and a failing exit code.
 
   python skills_like_claude.py --installed <plugins/installed_plugins.json>
 Prints one line per case and exits 1 if any case failed.
@@ -126,7 +126,9 @@ def main():
                     if not python:
                         ok = code == 0 and len(lines) == 1 and ("%s is paused" % plugin) in lines[0]
                     elif want:
-                        ok = code == 3 and out.strip() == want
+                        # bash hands back the script's own 3; `powershell -Command` ends with 1 for any failed
+                        # last command, so there "not 0" is what a failing script can promise
+                        ok = (code == 3 if shell in ("bash", "gitbash") else code != 0) and out.strip() == want
                     else:
                         ok = code == 0 and "usage:" in out
                     if ok and "�" in out:
