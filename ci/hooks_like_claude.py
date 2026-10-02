@@ -37,6 +37,10 @@ def spawn(shell, command, env, stdin_text, cwd):
     if shell in ("pwsh", "powershell"):
         for name in PLACEHOLDERS:
             command = command.replace("${%s}" % name, "${env:%s}" % name)
+        if not WINDOWS and "\n" in command:
+            # PowerShell 7 on Mac and Linux has an `exec` of its own (Switch-Process) and would take the sh line;
+            # on Windows there is none. Give it the PowerShell line alone, as Windows ends up running it.
+            command = command.split("\n", 1)[1]
         argv = [shutil.which(shell), "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass",
                 "-Command", command]
     elif shell == "gitbash":
@@ -168,6 +172,10 @@ def cases(plugin, home, project):
 
 
 def main():
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except (AttributeError, ValueError):
+        pass
     ap = argparse.ArgumentParser()
     ap.add_argument("--installed", help="installed_plugins.json of a Claude Code config folder")
     ap.add_argument("--root", action="append", default=[], help="plugin=folder")
@@ -216,6 +224,8 @@ def main():
                     stdin_text, check = table[key]
                     code, out, err = spawn(shell, command, dict(env), stdin_text, project)
                     problem = check(code, out, err, python)
+                    if problem is None and "\ufffd" in out:
+                        problem = "the output is not UTF-8 any more: %r" % out[-300:]
                     ran += 1
                     tag = "ok  " if problem is None else "FAIL"
                     first = (out.strip().splitlines() or [""])[0][:110]

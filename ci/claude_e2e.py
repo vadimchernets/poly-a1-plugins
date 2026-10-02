@@ -123,6 +123,10 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except (AttributeError, ValueError):
+        pass
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", required=True, help="CLAUDE_CONFIG_DIR with the plugins installed")
     ap.add_argument("--claude", default=shutil.which("claude") or "claude")
