@@ -5,18 +5,18 @@
   },
   "metadata": {
     "description": "The Poly A1 plugins: six small, plain-spoken additions to Claude Code for a person who is not a programmer - a copy before anything is changed, a second opinion from another company, a remote for the computer you left working, a task that chases itself, Claude working through the night, and an agent that reads your mailbox. Each plugin lives in its own repository; this catalogue installs the zip attached to each plugin's GitHub release, pinned by sha256, so nothing here needs git.",
-    "version": "0.3.1"
+    "version": "0.3.2"
   },
   "plugins": [
     {
       "name": "safecall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/safecall/releases/download/v0.1.5/safecall-0.1.5.zip",
-        "sha256": "191f7923bb94fb46f651f7ac5d4bc85814ad44b87cd449eb1c1f5d52f5aa43b1"
+        "url": "https://github.com/vadimchernets/safecall/releases/download/v0.1.6/safecall-0.1.6.zip",
+        "sha256": "096a3382ac5e15fdbfdd772c31f191b304dbc09228c4fd25d4452abe5e1664ee"
       },
       "description": "Nothing is written before a copy exists, nothing is read before you have seen the list, and no answer ends without saying what nobody checked. Plus three ready readings of a document: where the catch is, what the plan is missing, what here is fact.",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -31,19 +31,19 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "771d3f00bfa5ca618270d4026ccbe52b944802d5",
-        "tag": "v0.1.5"
+        "commit": "61f6a3255647ea116f938c82bd7e2462a47176d0",
+        "tag": "v0.1.6"
       }
     },
     {
       "name": "duocall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/duocall/releases/download/v0.1.4/duocall-0.1.4.zip",
-        "sha256": "2e3eb65a293a06114e41deb2da452a17fc4632b439acf2622f1c37065012a199"
+        "url": "https://github.com/vadimchernets/duocall/releases/download/v0.1.5/duocall-0.1.5.zip",
+        "sha256": "4430033038839e0d65d5442bc03361dd53210edb0eb66b4e0895d83854228736"
       },
       "description": "A second opinion from a DIFFERENT company's AI, and an honest account of where the two disagreed - because two AIs agreeing is not proof. Works through a free browser chat when no second program is installed.",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -57,19 +57,19 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "0db117e1a6e21719677f03e5378906b6f419dc8f",
-        "tag": "v0.1.4"
+        "commit": "9f544c3847603f6709183a78bcb0eabecd558a5c",
+        "tag": "v0.1.5"
       }
     },
     {
       "name": "pocketcall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/pocketcall/releases/download/v0.2.2/pocketcall-0.2.2.zip",
-        "sha256": "d892609d4245d515f2229d5b2b9a852831fe33d605f273bffb44a7032f937472"
+        "url": "https://github.com/vadimchernets/pocketcall/releases/download/v0.2.3/pocketcall-0.2.3.zip",
+        "sha256": "6d299d51165eb44322d5a8c7ba705b3a39c1da1d8c2a699919a516201176d8b3"
       },
       "description": "Leave the computer working and take the phone, without finding out in town that it never started: the seven silent reasons an evening away fails, checked before you leave.",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -83,19 +83,19 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "2de3c73ed0e950f80daa1dc6f08659f2907e98b1",
-        "tag": "v0.2.2"
+        "commit": "58e1c379e8df7a43ad0173978e7eb14d6e6ff4d5",
+        "tag": "v0.2.3"
       }
     },
     {
       "name": "chasecall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/chasecall/releases/download/v0.1.4/chasecall-0.1.4.zip",
-        "sha256": "ddca40f5aae70893743548167b72d21360e0c2276429be5cac92f5e55522f5bd"
+        "url": "https://github.com/vadimchernets/chasecall/releases/download/v0.1.5/chasecall-0.1.5.zip",
+        "sha256": "096306c801381d0c63cc352431d79e3ce7c929b0fccea091371fd77c4c8da6e5"
       },
       "description": "Hand Claude Code something nobody is answering - a refund, a booking, an unanswered request. It keeps the task between sessions, writes the next letter, counts the attempts, and tells you when the call is yours to make.",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -109,19 +109,19 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "4c0d2836c950379d2b4e398d4ed6fc8410c65484",
-        "tag": "v0.1.4"
+        "commit": "4e098c46a3c7b6b2622a2d3d00e624f8da30d9b5",
+        "tag": "v0.1.5"
       }
     },
     {
       "name": "nightcall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/nightcall/releases/download/v0.3.7/nightcall-0.3.7.zip",
-        "sha256": "c8a9c12e70fd47ecd8185cd84d6e53fae37cc0d8b68568d0569114ef365280f8"
+        "url": "https://github.com/vadimchernets/nightcall/releases/download/v0.3.8/nightcall-0.3.8.zip",
+        "sha256": "0dc7a12e837e47e3ca4e7c20fe510fd78e799cc4ff9473c4cb310380e285cb5f"
       },
       "description": "Leave Claude Code working through the night: the computer kept awake for 8 or 12 hours on Mac, Linux or Windows, a plan and a progress file, self-critique, other AIs from your own subscriptions (or free web chats) checked alive and replaced when they die, and a morning report of what was done.",
-      "version": "0.3.7",
+      "version": "0.3.8",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -136,19 +136,19 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "1f0ff2fc9e685eb587878ec25d1b416e5cdab656",
-        "tag": "v0.3.7"
+        "commit": "8e5bae8a9ce59dcaaa954a8f421857e0a3800689",
+        "tag": "v0.3.8"
       }
     },
     {
       "name": "mailcall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/mailcall/releases/download/v0.1.5/mailcall-0.1.5.zip",
-        "sha256": "6818117cc66a3fd8b461ce7c88b75ffb59db3e9aca2b515e3da8d63b2ad01666"
+        "url": "https://github.com/vadimchernets/mailcall/releases/download/v0.1.6/mailcall-0.1.6.zip",
+        "sha256": "74b631152dd8613cdf88884698063c5c608ec7cb3b8ec5485677753dce06c7a4"
       },
       "description": "An agent that reads your mailbox: a morning summary of what matters and who waits for your answer, and your Google Alerts and newsletters boiled down by the words you watch. Gmail connector of your Claude subscription, or read-only IMAP with an app password kept in the system keychain. Drafts only - nothing is sent without your yes.",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -163,8 +163,8 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "b71460a23e18180c941178590e65107ae03ea9ad",
-        "tag": "v0.1.5"
+        "commit": "e7b5bc17316707667c75c569a9588572f202c736",
+        "tag": "v0.1.6"
       }
     }
   ]
