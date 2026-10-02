@@ -1,8 +1,0 @@
-{
-  "name": "duocall",
-  "description": "Get a real second opinion on a question that matters, from an AI of a DIFFERENT company, and then say honestly where the two agreed and where they did not. Finds a second AI program already installed and signed in on this computer; if there is none, hands the person the exact text to paste into a free chat in their browser and reads the reply back. Never claims the two agreed without quoting both, never merges two answers into one confident voice, and goes back for a second round only on the points that were actually in dispute. No keys, no accounts, no second subscription, nothing bought.",
-  "version": "0.1.2",
-  "author": { "name": "Vadym Chernets" },
-  "license": "Apache-2.0",
-  "keywords": ["second-opinion", "council", "cross-check", "disagreement", "non-programmers"]
-}

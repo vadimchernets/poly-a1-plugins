@@ -1,77 +1,91 @@
 #!/bin/sh
-# Keeps the copies of safecall and duocall in this catalogue in step with their working folders.
+# Keeps this catalogue pinned to what each plugin has actually published.
 #
-# Why a check and not just a copy: a plugin reaches the person by TWO roads - inside the paid
-# Poly A1 kit (`assets/kit/*.zip`, built by `site/build-kit.sh` straight from
-# `~/Developer/<plugin>`) and from here, via `/plugin marketplace add`. If the two copies drift
-# apart, the buyer gets one thing in the folder and another from the install line, and nobody
-# would tell them. build-kit already caught exactly this drift in chasecall on 25.09.2026 - two
-# files within a day.
+# Since 02.10.2026 this repository holds no plugin code at all: every entry in
+# `.claude-plugin/marketplace.json` points at that plugin's own public repository, pinned to a commit.
+# One copy of each plugin in the world, one catalogue. The paid Poly A1 kit generates its own
+# catalogue from this very file (`poly-a1/site/kit-marketplace.py`), with the sources turned into the
+# folders that ride inside it - same name `poly-a1`, same versions. That sameness is what lets a buyer
+# switch from the kit folder to this catalogue without losing a plugin (OFFER-THESE.md).
 #
-#   ./sync.sh          - copy from the working folders into here
-#   ./sync.sh --check  - change nothing, fail if anything drifted (run before publishing)
+# Before, safecall and duocall were COPIED here, and the copies drifted (README and .zenodo.json, found
+# 02.10.2026); the catalogue listed four plugins of six; and the kit's catalogue was a third file with
+# versions three releases behind. This script exists so none of that can happen silently again.
+#
+#   ./sync.sh          - pin every entry to its working repository's HEAD and plugin.json version
+#   ./sync.sh --check  - change nothing, fail if any pin or version is behind (run before publishing)
+#
+# A pin is written only for a commit that is already on GitHub: a catalogue pointing at an unpushed
+# commit would hand people an install that fails.
 
 set -u
 HERE=$(cd "$(dirname "$0")" && pwd)
 SRC_ROOT=${SRC_ROOT:-"$HOME/Developer"}
-PLUGINS="safecall duocall"
-EXCL="--exclude=.git --exclude=.DS_Store --exclude=._* --exclude=__pycache__ --exclude=.pytest_cache --exclude=*.pyc"
+mode=write
+[ "${1:-}" = "--check" ] && mode=check
 
-check=0
-[ "${1:-}" = "--check" ] && check=1
+python3 - "$HERE/.claude-plugin/marketplace.json" "$SRC_ROOT" "$mode" <<'PY'
+import json, os, subprocess, sys
 
-problems=0
-for p in $PLUGINS; do
-  src="$SRC_ROOT/$p"
-  if [ ! -d "$src" ]; then
-    echo "BAD: working folder $src is missing"
-    problems=$((problems + 1))
-    continue
-  fi
-  if [ "$check" -eq 1 ]; then
-    # shellcheck disable=SC2086
-    diff=$(rsync -rn --delete --itemize-changes $EXCL "$src/" "$HERE/$p/" 2>/dev/null)
-    if [ -n "$diff" ]; then
-      echo "BAD: $p here has drifted from $src:"
-      echo "$diff" | sed 's/^/    /'
-      problems=$((problems + 1))
-    else
-      echo "  $p - in step"
-    fi
-  else
-    # shellcheck disable=SC2086
-    rsync -a --delete $EXCL "$src/" "$HERE/$p/"
-    echo "  $p - copied"
-  fi
-done
+path, src_root, mode = sys.argv[1:4]
+with open(path, encoding="utf-8") as fh:
+    m = json.load(fh)
 
-# Every plugin must have a manifest, otherwise Claude Code sees loose files, not a plugin.
-for p in $PLUGINS; do
-  [ -s "$HERE/$p/.claude-plugin/plugin.json" ] || {
-    echo "BAD: $p/.claude-plugin/plugin.json is missing"; problems=$((problems + 1)); }
-done
+def git(repo, *args):
+    try:
+        return subprocess.check_output(["git", "-C", repo] + list(args), text=True,
+                                       stderr=subprocess.DEVNULL).strip()
+    except (OSError, subprocess.CalledProcessError):
+        return None
 
-# And every plugin the catalogue names by a relative path must exist.
-python3 - "$HERE" <<'PY' || problems=$((problems + 1))
-import json, sys, os
-root = sys.argv[1]
-m = json.load(open(os.path.join(root, ".claude-plugin", "marketplace.json"), encoding="utf-8"))
 bad = 0
-for p in m["plugins"]:
-    s = p["source"]
-    if isinstance(s, str):
-        if not os.path.isdir(os.path.join(root, s)):
-            print(f"BAD: the catalogue promises {p['name']} at {s}, but the folder is missing"); bad = 1
-    elif s.get("source") == "github" and not s.get("repo"):
-        print(f"BAD: {p['name']} has a github source without repo"); bad = 1
-print(f"  catalogue: {len(m['plugins'])} plugin(s), paths checked")
-sys.exit(bad)
+changed = 0
+for e in m["plugins"]:
+    name = e["name"]
+    work = os.path.join(src_root, name)
+    src = e.get("source")
+    url = "https://github.com/vadimchernets/%s.git" % name
+    # https, not `github`: a `github` source clones over SSH when the machine has any SSH setup,
+    # and a buyer without a GitHub key then gets "Permission denied (publickey)" (seen live 02.10.2026).
+    if not (isinstance(src, dict) and src.get("source") == "url" and src.get("url") == url and src.get("sha")):
+        print("BAD: %s - the source must be {source: url, url: %s, sha: <commit>}" % (name, url)); bad += 1
+        continue
+    if not os.path.isdir(os.path.join(work, ".git")):
+        print("BAD: %s - working repository %s is missing" % (name, work)); bad += 1
+        continue
+    if git(work, "status", "--porcelain"):
+        print("BAD: %s - %s has unpublished edits" % (name, work)); bad += 1
+        continue
+    head = git(work, "rev-parse", "HEAD")
+    upstream = git(work, "rev-parse", "@{upstream}")
+    if not head or head != upstream:
+        print("BAD: %s - HEAD of %s is not what GitHub has (push it first)" % (name, work)); bad += 1
+        continue
+    with open(os.path.join(work, ".claude-plugin", "plugin.json"), encoding="utf-8") as fh:
+        version = json.load(fh).get("version")
+    if src["sha"] == head and e.get("version") == version:
+        print("  %s %s - pinned to %s, in step" % (name, version, head[:7]))
+        continue
+    if mode == "check":
+        print("BAD: %s - catalogue says %s @ %s, the published plugin is %s @ %s"
+              % (name, e.get("version"), src["sha"][:7], version, head[:7])); bad += 1
+    else:
+        src["sha"] = head; e["version"] = version; changed += 1
+        print("  %s %s - pinned to %s" % (name, version, head[:7]))
+
+if mode == "write" and changed and not bad:
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(m, fh, ensure_ascii=False, indent=2); fh.write("\n")
+print("  catalogue: %d plugin(s)" % len(m["plugins"]))
+sys.exit(1 if bad else 0)
 PY
+rc=$?
+
+if command -v claude >/dev/null 2>&1; then
+  claude plugin validate "$HERE" >/dev/null 2>&1 || { echo "BAD: claude plugin validate fails on this catalogue"; rc=1; }
+fi
 
 echo
-if [ "$problems" -eq 0 ]; then
-  echo "sync: 0 problems"
-  exit 0
-fi
-echo "sync: $problems problems"
+[ "$rc" -eq 0 ] && { echo "sync: 0 problems"; exit 0; }
+echo "sync: problems found"
 exit 1

@@ -15,12 +15,12 @@ The orchestration runs on the phone itself. iPhone: a Shortcut calls Ask ChatGPT
 
 The phone part is [Duo and Trio](https://github.com/vadimchernets/c1m-duo); this repository is the computer part of Poly A1.
 
-Four small additions to [Claude Code](https://claude.com/claude-code) for a person who is not a
+Six small additions to [Claude Code](https://claude.com/claude-code) for a person who is not a
 programmer.
 
 ## Installing
 
-Published on 26.09.2026. Add it by name, and corrections made after today reach you:
+Add the catalogue by name, and corrections made later reach you:
 
 ```
 /plugin marketplace add vadimchernets/poly-a1-plugins
@@ -28,55 +28,37 @@ Published on 26.09.2026. Add it by name, and corrections made after today reach 
 /plugin install duocall@poly-a1
 /plugin install pocketcall@poly-a1
 /plugin install chasecall@poly-a1
+/plugin install nightcall@poly-a1
+/plugin install mailcall@poly-a1
 ```
 
-Or point Claude Code at a local copy of this folder — that path needs no network and no account:
-
-```
-/plugin marketplace add /path/to/poly-a1-plugins
-/plugin install safecall@poly-a1
-/plugin install duocall@poly-a1
-/plugin install pocketcall@poly-a1
-/plugin install chasecall@poly-a1
-```
-
-The same works from the Poly A1 folder for the computer: all four ride inside it, with their own
-catalogue at the root, and install with no network at all. Checked on a real machine on 26.09.2026 —
-all four come up enabled.
-
-`pocketcall` and `chasecall` are listed here from their own published repositories, so from **this**
-folder they resolve over the network; from the Poly A1 folder they resolve locally.
+This repository holds only the catalogue. Each plugin lives in its own public repository, and the
+catalogue pins the exact published commit of each - so there is one copy of every plugin in the
+world, and this list cannot drift from it.
 
 ## The step everybody misses
 
-**Auto-update is OFF by default for any marketplace that is not Anthropic's own.** There is no
-field in `marketplace.json` that can turn it on — only the person can, and if they do not, they stay
-on the version they first installed, for ever.
+**Auto-update is OFF by default for any marketplace that is not Anthropic's own**, and no field in
+`marketplace.json` can turn it on. Do it once, either in `/plugin` → **Marketplaces** → `poly-a1` →
+**Enable auto-update**, or in `~/.claude/settings.json`, beside the `source` of the
+`extraKnownMarketplaces.poly-a1` entry:
 
-So after adding it by name, do this once:
-
+```json
+"autoUpdate": true
 ```
-/plugin
-```
 
-→ **Marketplaces** tab → this marketplace → **Enable auto-update**.
-
-Without it, every correction made here after that day never reaches that machine. It is deliberately
-**not** offered to buyers before publication: an auto-update switch pointing at a 404 updates
-nothing and teaches them the product is broken.
+Without it, every correction made here after that day never reaches that machine.
 
 ## What is in it
 
 | | |
 |---|---|
-| **safecall** | Nothing is written before a copy exists; nothing is read before you have seen the list; no answer ends without saying what nobody checked. Plus three ready readings of a document — where the catch is, what a plan is missing, what here is fact and what is opinion. |
-| **duocall** | A second opinion from a **different company's** AI, and an honest account of where the two disagreed. Two AIs agreeing is not proof, and it says so. Works through a free browser chat when there is no second program. |
-| **pocketcall** | Leave the computer working and take the phone — the seven silent reasons an evening away never works, checked before you go out of the door. |
-| **chasecall** | Something nobody is answering — a refund, a booking, a request. It keeps the task between sessions, writes the next letter, counts the attempts, and says when the call is yours to make. |
-
-`safecall` and `duocall` live in this repository. `pocketcall` and `chasecall` are listed here but
-kept in their own repositories, so there is exactly one copy of each in the world and this
-marketplace cannot drift from it.
+| **[safecall](https://github.com/vadimchernets/safecall)** | Nothing is written before a copy exists; nothing is read before you have seen the list; no answer ends without saying what nobody checked. Plus three ready readings of a document - where the catch is, what a plan is missing, what here is fact and what is opinion. |
+| **[duocall](https://github.com/vadimchernets/duocall)** | A second opinion from a **different company's** AI, and an honest account of where the two disagreed. Two AIs agreeing is not proof, and it says so. Works through a free browser chat when there is no second program. |
+| **[pocketcall](https://github.com/vadimchernets/pocketcall)** | Leave the computer working and take the phone - the seven silent reasons an evening away never works, checked before you go out of the door. |
+| **[chasecall](https://github.com/vadimchernets/chasecall)** | Something nobody is answering - a refund, a booking, a request. It keeps the task between sessions, writes the next letter, counts the attempts, and says when the call is yours to make. |
+| **[nightcall](https://github.com/vadimchernets/nightcall)** | Claude Code working through the night: the computer kept awake for 8 or 12 hours, a plan and a progress file, other AIs checked alive and replaced when they die, and a morning report. |
+| **[mailcall](https://github.com/vadimchernets/mailcall)** | Reads your mailbox, read-only: a morning summary of what matters, and Google Alerts and newsletters boiled down by the words you watch. Drafts only - nothing is sent without your yes. |
 
 ## What none of them do
 
@@ -90,20 +72,25 @@ text goes.
 
 ## For the buyer of Poly A1
 
-All four also ride **inside** the Poly A1 folder for the computer, so they work with no network and
-no GitHub account at all. This marketplace exists for the other thing: getting corrections after the
-day you bought it.
+All six also ride **inside** the Poly A1 folder for the computer, with a catalogue generated from
+this one: the same name `poly-a1`, the same plugins, the same versions, only the sources point at the
+folders beside it - so they install with no network and no account. Later, to get corrections, point
+the same `poly-a1` at this repository instead of removing anything: the steps are in
+[`OFFER-THESE.md`](OFFER-THESE.md) (Claude Code reads that file and does it for you). Checked live on
+02.10.2026: installed from the folder, switched, plugins and their data stayed, updates arrived.
+Do **not** remove the `poly-a1` marketplace to re-add it - Claude Code then uninstalls its plugins and
+deletes their data.
 
 ## Keeping this repository in step
 
-`safecall` and `duocall` are developed in `~/Developer/safecall` and `~/Developer/duocall` and
-copied here. `./sync.sh` copies them in and `./sync.sh --check` fails if this repository has drifted
-from them — run the check before publishing, or the marketplace will hand people an older plugin
-than the paid folder contains.
+`./sync.sh` pins every entry to its working repository's published HEAD and `plugin.json` version;
+`./sync.sh --check` changes nothing and fails if any pin or version is behind, if a working repository
+has unpushed edits, or if `claude plugin validate` rejects the catalogue. Run the check before
+publishing. The Poly A1 kit build refuses to ship a catalogue that disagrees with the folders it ships.
 
 ## Licence
 
-Apache-2.0 for all four. Each plugin carries its own `LICENSE` and `NOTICE`.
+Apache-2.0 for all six. Each plugin carries its own `LICENSE` and `NOTICE`.
 
 ---
 

@@ -1,51 +1,146 @@
 {
   "name": "poly-a1",
-  "owner": { "name": "Vadym Chernets" },
+  "owner": {
+    "name": "Vadym Chernets"
+  },
   "metadata": {
-    "description": "The Poly A1 plugins: four small, plain-spoken additions to Claude Code for a person who is not a programmer - a copy before anything is changed, a second opinion from another company, a remote for the computer you left working, and a task that chases itself.",
-    "version": "0.1.2"
+    "description": "The Poly A1 plugins: six small, plain-spoken additions to Claude Code for a person who is not a programmer - a copy before anything is changed, a second opinion from another company, a remote for the computer you left working, a task that chases itself, Claude working through the night, and an agent that reads your mailbox. Each plugin lives in its own repository; this catalogue pins the exact published commit of each.",
+    "version": "0.2.0"
   },
   "plugins": [
     {
       "name": "safecall",
-      "source": "./safecall",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/vadimchernets/safecall.git",
+        "sha": "c4da77eb87d9bbbb42e65f59bfe8c496c3bb3559"
+      },
       "description": "Nothing is written before a copy exists, nothing is read before you have seen the list, and no answer ends without saying what nobody checked. Plus three ready readings of a document: where the catch is, what the plan is missing, what here is fact.",
       "version": "0.1.3",
-      "author": { "name": "Vadym Chernets" },
+      "author": {
+        "name": "Vadym Chernets"
+      },
       "license": "Apache-2.0",
-      "keywords": ["undo", "snapshot", "safety", "receipt", "document-review"],
+      "homepage": "https://github.com/vadimchernets/safecall",
+      "keywords": [
+        "undo",
+        "snapshot",
+        "safety",
+        "receipt",
+        "document-review"
+      ],
       "category": "productivity"
     },
     {
       "name": "duocall",
-      "source": "./duocall",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/vadimchernets/duocall.git",
+        "sha": "ae87d621e35db260fd1ecc4ffcfcd273c3a98eb8"
+      },
       "description": "A second opinion from a DIFFERENT company's AI, and an honest account of where the two disagreed - because two AIs agreeing is not proof. Works through a free browser chat when no second program is installed.",
       "version": "0.1.2",
-      "author": { "name": "Vadym Chernets" },
+      "author": {
+        "name": "Vadym Chernets"
+      },
       "license": "Apache-2.0",
-      "keywords": ["second-opinion", "council", "cross-check", "disagreement"],
+      "homepage": "https://github.com/vadimchernets/duocall",
+      "keywords": [
+        "second-opinion",
+        "council",
+        "cross-check",
+        "disagreement"
+      ],
       "category": "productivity"
     },
     {
       "name": "pocketcall",
-      "source": { "source": "url", "url": "https://github.com/vadimchernets/pocketcall.git", "sha": "08334f4f8bef8565fbf96716b776a771e4033da0" },
+      "source": {
+        "source": "url",
+        "url": "https://github.com/vadimchernets/pocketcall.git",
+        "sha": "3bba2a4157137a1e36cdfcccda6d912ad48abb43"
+      },
       "description": "Leave the computer working and take the phone, without finding out in town that it never started: the seven silent reasons an evening away fails, checked before you leave.",
       "version": "0.2.0",
-      "author": { "name": "Vadym Chernets" },
+      "author": {
+        "name": "Vadym Chernets"
+      },
       "license": "Apache-2.0",
       "homepage": "https://github.com/vadimchernets/pocketcall",
-      "keywords": ["remote-control", "mobile", "readiness", "handover"],
+      "keywords": [
+        "remote-control",
+        "mobile",
+        "readiness",
+        "handover"
+      ],
       "category": "productivity"
     },
     {
       "name": "chasecall",
-      "source": { "source": "url", "url": "https://github.com/vadimchernets/chasecall.git", "sha": "1429baaa36443fcc3f270e9894dc881729511071" },
+      "source": {
+        "source": "url",
+        "url": "https://github.com/vadimchernets/chasecall.git",
+        "sha": "a425e94250e7c57c689f6140b7054ff3f10bf4a4"
+      },
       "description": "Hand Claude Code something nobody is answering - a refund, a booking, an unanswered request. It keeps the task between sessions, writes the next letter, counts the attempts, and tells you when the call is yours to make.",
       "version": "0.1.2",
-      "author": { "name": "Vadym Chernets" },
+      "author": {
+        "name": "Vadym Chernets"
+      },
       "license": "Apache-2.0",
       "homepage": "https://github.com/vadimchernets/chasecall",
-      "keywords": ["follow-up", "tracker", "reminders", "assistant"],
+      "keywords": [
+        "follow-up",
+        "tracker",
+        "reminders",
+        "assistant"
+      ],
+      "category": "productivity"
+    },
+    {
+      "name": "nightcall",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/vadimchernets/nightcall.git",
+        "sha": "c7d6b889d0c45e9b830033cd2b09b5ad2c986f47"
+      },
+      "description": "Leave Claude Code working through the night: the computer kept awake for 8 or 12 hours on Mac, Linux or Windows, a plan and a progress file, self-critique, other AIs from your own subscriptions (or free web chats) checked alive and replaced when they die, and a morning report of what was done.",
+      "version": "0.3.5",
+      "author": {
+        "name": "Vadym Chernets"
+      },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/vadimchernets/nightcall",
+      "keywords": [
+        "overnight",
+        "autonomous",
+        "keep-awake",
+        "multi-ai",
+        "morning-report"
+      ],
+      "category": "productivity"
+    },
+    {
+      "name": "mailcall",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/vadimchernets/mailcall.git",
+        "sha": "48cfa5e69284e81bd4d66cd3427be931b36dd6e4"
+      },
+      "description": "An agent that reads your mailbox: a morning summary of what matters and who waits for your answer, and your Google Alerts and newsletters boiled down by the words you watch. Gmail connector of your Claude subscription, or read-only IMAP with an app password kept in the system keychain. Drafts only - nothing is sent without your yes.",
+      "version": "0.1.3",
+      "author": {
+        "name": "Vadym Chernets"
+      },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/vadimchernets/mailcall",
+      "keywords": [
+        "email",
+        "gmail",
+        "digest",
+        "google-alerts",
+        "read-only"
+      ],
       "category": "productivity"
     }
   ]

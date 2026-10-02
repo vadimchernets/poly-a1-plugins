@@ -78,21 +78,55 @@ part after `@` is always `poly-a1`.
 Checked on a real machine on 26.09.2026: the first four install this way and come up enabled;
 `nightcall` and `mailcall` (30.09.2026) sit in the same catalogue and install the same way.
 
-**And there is a second path, for corrections made after the day they bought the folder.** The
-folder they have is a snapshot; this one keeps up:
+## Later: corrections from GitHub, without losing anything
 
-```
-/plugin marketplace add vadimchernets/poly-a1-plugins
-```
+The folder is a snapshot of the day they bought it. The very same catalogue, under the very same
+name `poly-a1`, is published at `github.com/vadimchernets/poly-a1-plugins`; each plugin in it comes
+from its own public repository, pinned to a published commit. Once they have the network, offer to
+point `poly-a1` there, so later fixes reach them. Tell them in one line, then do it. Checked live on
+02.10.2026 (Claude Code 2.1.287): installed from the folder, switched, plugins and their data stayed,
+an older plugin updated.
 
-**Then the step that is easy to miss and costs them every future fix.** For any marketplace that is
-not Anthropic's own, **auto-update is off by default**, and no setting inside the plugin can change
-that - only the person can:
+1. Open their Claude Code user settings: `~/.claude/settings.json` (Windows:
+   `%USERPROFILE%\.claude\settings.json`; if `CLAUDE_CONFIG_DIR` is set, the `settings.json` there).
+   Find `extraKnownMarketplaces` → `poly-a1` → `source` (it holds the folder path) and replace only
+   that value:
 
-> One last step, one minute: type `/plugin`, open the Marketplaces tab, find poly-a1-plugins
-> there and turn on auto-update. Without it, the fixes we make later will never reach you.
+   ```json
+   "source": { "source": "github", "repo": "vadimchernets/poly-a1-plugins" }
+   ```
 
-Do not skip this because it sounds small. Without it they stay on today's version for ever.
+   Without this edit step 2 is refused with "its source doesn't match its extraKnownMarketplaces
+   entry" — the entry written when they added the folder still names the folder.
+
+2. Run:
+
+   ```
+   claude plugin marketplace add vadimchernets/poly-a1-plugins
+   ```
+
+   The right answer says the marketplace `poly-a1` "now points at github:vadimchernets/poly-a1-plugins"
+   and "Plugins already installed from it now update from the new source."
+
+3. Back in the same settings entry, beside `source`, add `"autoUpdate": true` (step 2 rewrites the
+   entry, so this goes after it). For any marketplace that is not Anthropic's own, auto-update is off
+   by default and no setting inside a plugin can change that; without this they stay on today's
+   version for ever. To be sure, `/plugin` → Marketplaces → `poly-a1` should now say auto-update is
+   on; if it does not, choose **Enable auto-update** there.
+
+4. Bring what is installed up to date now, one line per plugin they have, then restart Claude Code:
+
+   ```
+   claude plugin update safecall@poly-a1
+   ```
+
+**Never** run `/plugin marketplace remove poly-a1` to "re-add it from GitHub": Claude Code then
+uninstalls every plugin that came from it and deletes their saved data. And never add the GitHub
+catalogue under another name: the plugins are known as `…@poly-a1`, and a second name means a second,
+empty set of everything.
+
+If they never installed from the folder, there is nothing to switch: `/plugin marketplace add
+vadimchernets/poly-a1-plugins`, then `/plugin install <plugin>@poly-a1`, then step 3.
 
 ## What you must not say about them
 

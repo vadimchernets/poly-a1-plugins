@@ -1,6 +1,0 @@
-{
-  "name": "Português",
-  "state_file": "NEXT.md",
-  "state_file_legacy": ["AGORA.md"],
-  "secret_words": ["senha", "segredo", "chave", "passaporte", "\\bpin\\b"]
-}
