@@ -8,9 +8,11 @@ it is about to change, and makes sure a copy of that file exists before the writ
 IT MAKES THE COPY ITSELF. The first version blocked instead and told Claude to run the copy command
 - the round of criticism on 26.09.2026 killed that design with two scenarios and both were right:
 
-  (1) Poly A1's own coach writes a state file (`NEXT.md`, `СЕЙЧАС.md`, `ЗАРАЗ.md`) at the end of
-      every evening. Second evening on, that file exists, so the guard stopped the one action that
-      ends a person's evening well, and showed them a shell command instead of "done".
+  (1) Poly A1's own coach writes a state file at the end of every evening - its name per
+      language is `state_file` in lang/<code>.json (English: NEXT.md; each other language has
+      its own entry, loaded below). Second evening on, that file exists, so the guard stopped
+      the one action that ends a person's evening well, and showed them a shell command
+      instead of "done".
   (2) blocking once and allowing afterwards meant that a frightened person who said "no copies"
       lost the protection permanently, at exactly the moment they were most afraid.
 
@@ -39,8 +41,27 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 SNAPSHOT = HERE / "snapshot.py"
+LANG_DIR = HERE.parent / "lang"
 
 WRITERS = {"Write", "Edit", "MultiEdit", "NotebookEdit"}
+
+
+def state_file_names():
+    """The Poly A1 coach's end-of-evening state file name, per language - one entry per
+    lang/<code>.json (`state_file`), every language read the same way. Not used by the guard's
+    own logic (which is file-name-agnostic - see the module docstring), only exposed so that
+    nothing outside lang/*.json has to spell these names out in a language that is not English.
+    """
+    names = {}
+    if LANG_DIR.is_dir():
+        for f in sorted(LANG_DIR.glob("*.json")):
+            try:
+                data = json.loads(f.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                continue
+            if "state_file" in data:
+                names[f.stem] = data["state_file"]
+    return names
 
 
 def _target(payload):

@@ -38,28 +38,61 @@ MAX_SNAPSHOT = 50 * 1024 * 1024     # 50 MB per snapshot
 KEEP_DAYS = 14
 KEEP_SNAPSHOTS = 20
 
+LANG_DIR = Path(__file__).resolve().parent.parent / "lang"
+
+
+def _load_lang(code):
+    try:
+        return json.loads((LANG_DIR / f"{code}.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def _all_langs():
+    """Every lang/<code>.json found, as {code: data}. Each language is read the same way -
+    there is no "main" language file and no special-cased one."""
+    if not LANG_DIR.is_dir():
+        return {}
+    return {p.stem: _load_lang(p.stem) for p in sorted(LANG_DIR.glob("*.json"))}
+
+
 # Files whose NAME says they hold a secret are never copied: a copy of a secret is a second secret,
 # and this folder is not protected the way the original might be. Same rule V1 applies to rollback.
-# The list was English-only until 26.09.2026, and that made it blind exactly where this
+# The word list was English-only until 26.09.2026, and that made it blind exactly where this
 # plugin is used: the person it is written for does not know what an extension is and
-# names the file «пароли.txt», «senhas.txt», «claves.docx». Caught by running it -
-# пароли.txt was copied without a word. The words below are the ones such a person
-# actually types. Over-matching costs a copy that is not made and IS announced;
-# under-matching copies a secret into a second place and says nothing.
-SECRET_NAME = re.compile(
-    r"(^\.env|\.env$|\.env\.|secret|password|passwd|credential|\.pem$|\.key$|\.p12$|"
-    r"\.keystore$|id_rsa|id_ed25519|\.netrc|\.htpasswd|token|"
-    r"парол|секрет|ключ|паспорт|токен|логин|пин-?код|"          # ru / uk
-    r"contrase|clave|secreto|"                                   # es
-    r"senha|segredo|chave)", re.I)                               # pt
+# names the file in their own language. Caught by running it - a Russian-named password file
+# was copied without a word. The words below are the ones such a person actually types, one
+# list per language in lang/*.json (every language equal - none of them lives in this file).
+# Over-matching costs a copy that is not made and IS announced; under-matching copies a secret
+# into a second place and says nothing.
+#
+# Patterns here are technical conventions, not any one language's word, so they stay here
+# rather than in a lang file: a dotfile or key-file name reads the same regardless of what
+# language the person who typed it speaks.
+_UNIVERSAL_SECRET_PATTERNS = (
+    r"^\.env|\.env$|\.env\.|\.pem$|\.key$|\.p12$|\.keystore$|id_rsa|id_ed25519|\.netrc|\.htpasswd"
+)
+
+
+def _secret_name_pattern():
+    parts = [_UNIVERSAL_SECRET_PATTERNS]
+    for data in _all_langs().values():
+        parts.extend(data.get("secret_words", []))
+    return re.compile("(" + "|".join(parts) + ")", re.I)
+
+
+SECRET_NAME = _secret_name_pattern()
 
 # LEGACY (read-only): names written by safecall <= 0.1.0, before snapshot metadata was renamed
-# from Russian to English. A copy made by that version has a `снимок.json` file whose keys are
-# Russian too - we never write these names again, but we keep reading them so upgrading never
-# drops or breaks a copy that already exists on somebody's machine.
-LEGACY_META_NAME = "снимок.json"
-LEGACY_META_KEYS = {"when": "когда", "folder": "папка", "files": "файлы", "skipped": "пропущено"}
-LEGACY_ENTRY_KEYS = {"file": "файл", "inside": "внутри", "bytes": "байт"}
+# from Russian to English. A copy made by that version has a metadata file whose name and keys
+# are Russian too - we never write these names again, but we keep reading them so upgrading
+# never drops or breaks a copy that already exists on somebody's machine. The names themselves
+# live in lang/ru.json ("legacy"), not here - this file stays English-only.
+_RU_LEGACY = _load_lang("ru").get("legacy", {})
+# No lang/ru.json: no legacy name (None), never a guess that could collide with a current name.
+LEGACY_META_NAME = _RU_LEGACY.get("meta_file_name")
+LEGACY_META_KEYS = _RU_LEGACY.get("meta_keys", {})
+LEGACY_ENTRY_KEYS = _RU_LEGACY.get("entry_keys", {})
 
 README = """This is your safety net. Do not delete this folder.
 
@@ -215,8 +248,8 @@ def _meta_file(d: Path):
     new = d / "snapshot.json"
     if new.exists():
         return new
-    legacy = d / LEGACY_META_NAME
-    if legacy.exists():
+    legacy = d / LEGACY_META_NAME if LEGACY_META_NAME else None
+    if legacy is not None and legacy.exists():
         return legacy
     return None
 

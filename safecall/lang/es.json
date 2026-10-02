@@ -1,0 +1,5 @@
+{
+  "name": "Español",
+  "state_file": "AHORA.md",
+  "secret_words": ["contrase", "clave", "secreto", "pasaporte", "\\bpin\\b"]
+}

@@ -6,6 +6,7 @@ These are written to FAIL if the thing they watch stops working - a check that c
 decoration. See CONTRIBUTING.md.
 """
 
+import importlib.util
 import json
 import os
 import shutil
@@ -20,6 +21,26 @@ SCRIPTS = HERE.parent / "scripts"
 SNAP = SCRIPTS / "snapshot.py"
 GUARD = SCRIPTS / "guard.py"
 STATE = SCRIPTS / "state.py"
+LANG_DIR = HERE.parent / "lang"
+FIXTURES = HERE / "fixtures"
+
+
+def _load_lang(code):
+    """lang/<code>.json, parsed. Every language-specific word or legacy name a test needs
+    comes from here (or from tests/fixtures/<code>/) rather than being spelled out in this
+    file, which is not itself a language place - see scripts/check_language.py."""
+    return json.loads((LANG_DIR / f"{code}.json").read_text(encoding="utf-8"))
+
+
+def _load_fixture(lang, name):
+    return json.loads((FIXTURES / lang / f"{name}.json").read_text(encoding="utf-8"))
+
+
+def _load_module(name, path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
 
 
 class Base(unittest.TestCase):
@@ -50,13 +71,16 @@ class TestSnapshot(Base):
         """A copy of a secret is a second secret - in every language, not only English.
 
         This guard was English-only until 26.09.2026. The person this plugin is written
-        for does not know what a file extension is; they call the file «пароли.txt».
-        Found by running it: пароли.txt was copied and nothing was said.
+        for does not know what a file extension is; they call the file by a word in their
+        own language (the sample names below live in tests/fixtures/ru/, a language place -
+        see scripts/check_language.py). Found by running it: a Russian-named password file
+        was copied and nothing was said.
         """
-        ordinary = self.work / "письмо.txt"
-        ordinary.write_text("обычный файл", encoding="utf-8")
+        ru = _load_fixture("ru", "secret_samples")
+        ordinary = self.work / ru["ordinary_file"]
+        ordinary.write_text(ru["ordinary_content"], encoding="utf-8")
 
-        secrets = ["пароли.txt", "мои-ключи.txt", "паспорт.jpg", "секретное.docx",
+        secrets = list(ru["legacy_secret_names"]) + [
                    "senhas.txt", "claves.docx", "contrasenas.txt", "chaves.txt",
                    "passwords.txt", "secret-notes.txt"]
         for name in secrets:
@@ -70,7 +94,34 @@ class TestSnapshot(Base):
         for name in secrets:
             self.assertNotIn(name, copied,
                              "%s was copied — a copy of a secret is a second secret" % name)
-        self.assertIn("письмо.txt", copied, "an ordinary file must still be copied")
+        self.assertIn(ru["ordinary_file"], copied, "an ordinary file must still be copied")
+
+    def test_secret_detection_sample_per_language(self):
+        """One natural secret-named file per language must be refused - every language is
+        equal (en/es/pt/ru/uk), none hardcoded in this file - see lang/*.json and
+        tests/fixtures/ru|uk/secret_samples.json."""
+        samples = {
+            "en": "my-password.txt",
+            "es": "mi-contrasena-nueva.txt",
+            "pt": "minha-senha-nova.txt",
+            "ru": _load_fixture("ru", "secret_samples")["sample_secret_name"],
+            "uk": _load_fixture("uk", "secret_samples")["sample_secret_name"],
+        }
+        ordinary = self.work / "notes.txt"
+        ordinary.write_text("x", encoding="utf-8")
+        paths = [str(ordinary)]
+        for name in samples.values():
+            (self.work / name).write_text("x", encoding="utf-8")
+            paths.append(str(self.work / name))
+
+        out = self.snap("save", *paths, "--folder", str(self.work))
+        self.assertEqual(out.returncode, 0, out.stderr)
+        copied = {p.name for p in self.home.rglob("*") if p.is_file()}
+        for lang, name in samples.items():
+            self.assertNotIn(name, copied,
+                             "%s (%s sample) was copied — a copy of a secret is a second "
+                             "secret" % (name, lang))
+        self.assertIn("notes.txt", copied, "an ordinary file must still be copied")
 
     def test_save_and_restore_round_trip(self):
         f = self.work / "letter.txt"
@@ -130,15 +181,18 @@ class TestSnapshot(Base):
 
     # ── Legacy snapshots (safecall <= 0.1.0, before the Russian->English rename) ────────────
     #
-    # `снимок.json` and its Russian keys were renamed to `snapshot.json` / English keys. A
-    # person who already has copies made by the old version must not lose them on upgrade:
-    # list, restore and covered must still read a snapshot in the old shape. New snapshots are
-    # always written in the new shape - only reading looks back.
+    # The old Russian metadata file name and keys were renamed to `snapshot.json` / English
+    # keys (the old names live in lang/ru.json's "legacy" section, not here - see
+    # scripts/snapshot.py). A person who already has copies made by the old version must not
+    # lose them on upgrade: list, restore and covered must still read a snapshot in the old
+    # shape. New snapshots are always written in the new shape - only reading looks back.
 
     def _make_legacy_snapshot(self, *files):
         """Make one real snapshot (so the directory/slug are exactly what the real code would
-        use), then rewrite its metadata file into the pre-rename shape: `снимок.json` with
-        Russian keys, in place of `snapshot.json`."""
+        use), then rewrite its metadata file into the pre-rename shape (Russian meta file name
+        and keys, loaded from lang/ru.json's "legacy" section)."""
+        legacy_cfg = _load_lang("ru")["legacy"]
+        mk, ek = legacy_cfg["meta_keys"], legacy_cfg["entry_keys"]
         out = self.snap("save", *[str(f) for f in files], "--folder", str(self.work))
         self.assertEqual(out.returncode, 0, out.stderr)
         slug_dirs = [d for d in (self.home / "copies").iterdir() if d.is_dir()]
@@ -148,13 +202,13 @@ class TestSnapshot(Base):
         shot_dir = shot_dirs[0]
         meta = json.loads((shot_dir / "snapshot.json").read_text(encoding="utf-8"))
         legacy = {
-            "когда": meta["when"], "папка": meta["folder"],
-            "файлы": [{"файл": e["file"], "внутри": e["inside"], "байт": e["bytes"]}
-                      for e in meta["files"]],
-            "пропущено": meta["skipped"],
+            mk["when"]: meta["when"], mk["folder"]: meta["folder"],
+            mk["files"]: [{ek["file"]: e["file"], ek["inside"]: e["inside"], ek["bytes"]: e["bytes"]}
+                          for e in meta["files"]],
+            mk["skipped"]: meta["skipped"],
         }
-        (shot_dir / "снимок.json").write_text(json.dumps(legacy, ensure_ascii=False, indent=2),
-                                              encoding="utf-8")
+        (shot_dir / legacy_cfg["meta_file_name"]).write_text(
+            json.dumps(legacy, ensure_ascii=False, indent=2), encoding="utf-8")
         (shot_dir / "snapshot.json").unlink()
         return shot_dir
 
@@ -193,10 +247,12 @@ class TestSnapshot(Base):
         old_name = "2020-01-01_00-00-00"
         old_dir = shot_dir.parent / old_name
         shot_dir.rename(old_dir)
-        legacy_meta = json.loads((old_dir / "снимок.json").read_text(encoding="utf-8"))
-        legacy_meta["когда"] = old_name
-        (old_dir / "снимок.json").write_text(json.dumps(legacy_meta, ensure_ascii=False, indent=2),
-                                             encoding="utf-8")
+        legacy_cfg = _load_lang("ru")["legacy"]
+        meta_name = legacy_cfg["meta_file_name"]
+        legacy_meta = json.loads((old_dir / meta_name).read_text(encoding="utf-8"))
+        legacy_meta[legacy_cfg["meta_keys"]["when"]] = old_name
+        (old_dir / meta_name).write_text(json.dumps(legacy_meta, ensure_ascii=False, indent=2),
+                                         encoding="utf-8")
 
         f.write_text("corrupted", encoding="utf-8")
         out = self.snap("restore", "--yes", "--folder", str(self.work))
@@ -224,9 +280,14 @@ class TestGuard(Base):
                          "a copy must exist after the hook runs")
 
     def test_never_stops_the_evening_note(self):
-        """The state file the coach appends to every evening must never meet a block."""
-        for name in ("NEXT.md", "СЕЙЧАС.md", "ЗАРАЗ.md", "AHORA.md", "AGORA.md"):
-            with self.subTest(name=name):
+        """The state file the coach appends to every evening must never meet a block - in
+        any language. Names come from guard.state_file_names() (one per lang/<code>.json),
+        not spelled out here."""
+        guard_mod = _load_module("guard", GUARD)
+        names = guard_mod.state_file_names()
+        self.assertGreaterEqual(len(names), 5, "expected a state_file entry per language")
+        for lang, name in names.items():
+            with self.subTest(lang=lang, name=name):
                 f = self.work / name
                 f.write_text("yesterday's content", encoding="utf-8")
                 self.assertEqual(self.guard("Edit", f).returncode, 0)
@@ -372,12 +433,16 @@ class TestState(Base):
 
     # ── Legacy notes (safecall <= 0.1.0, before the Russian->English rename) ────────────────
     #
-    # `где-остановились/` and its Russian keys were renamed to `notes/` / English keys. A
+    # The old Russian notes folder name and keys were renamed to `notes/` / English keys (the
+    # old names live in lang/ru.json's "legacy" section, not here - see scripts/state.py). A
     # person who already has a "where we stopped" note from the old version must still see it.
 
     def _make_legacy_note(self, **fields):
         """Write one real note (so the file name - folder slug plus hash - is exactly what the
-        real code would use), then move it into the pre-rename location with Russian keys."""
+        real code would use), then move it into the pre-rename location (Russian folder name
+        and keys, loaded from lang/ru.json's "legacy" section)."""
+        legacy_cfg = _load_lang("ru")["legacy"]
+        nk = legacy_cfg["note_keys"]
         args = [sys.executable, str(STATE), "save", "--folder", str(self.work)]
         for k, v in fields.items():
             args += [f"--{k}", v]
@@ -387,9 +452,9 @@ class TestState(Base):
         self.assertEqual(len(notes), 1, "expected exactly one note file")
         note_path = notes[0]
         data = json.loads(note_path.read_text(encoding="utf-8"))
-        legacy = {"когда": data["when"], "папка": data["folder"], "сделано": data["done"],
-                  "не_сделано": data["left"], "дальше": data["next"], "ловушки": data["traps"]}
-        legacy_dir = self.home / "где-остановились"
+        legacy = {nk["when"]: data["when"], nk["folder"]: data["folder"], nk["done"]: data["done"],
+                  nk["left"]: data["left"], nk["next"]: data["next"], nk["traps"]: data["traps"]}
+        legacy_dir = self.home / legacy_cfg["notes_dir_name"]
         legacy_dir.mkdir(parents=True, exist_ok=True)
         (legacy_dir / note_path.name).write_text(
             json.dumps(legacy, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -465,5 +530,51 @@ class TestNamedFiles(Base):
         self.assertIn("exists: letter.txt", out.stdout)
 
 
+class TestLangFiles(unittest.TestCase):
+    """lang/<code>.json: every language loads, and is equal - none of them is "the" language
+    the others are a localization of. See scripts/check_language.py and CONTRIBUTING.md."""
+
+    def test_every_language_file_loads_and_has_the_shared_shape(self):
+        codes = sorted(p.stem for p in LANG_DIR.glob("*.json"))
+        self.assertEqual(codes, ["en", "es", "pt", "ru", "uk"],
+                         "expected exactly these five language files")
+        for code in codes:
+            with self.subTest(lang=code):
+                data = _load_lang(code)
+                self.assertIn("state_file", data, "%s is missing state_file" % code)
+                self.assertTrue(data["state_file"], "%s has an empty state_file" % code)
+                self.assertIn("secret_words", data, "%s is missing secret_words" % code)
+                self.assertTrue(data["secret_words"], "%s has no secret words at all" % code)
+
+    def test_ru_carries_the_legacy_section_no_other_language_needs(self):
+        ru = _load_lang("ru")
+        legacy = ru["legacy"]
+        for key in ("meta_file_name", "meta_keys", "entry_keys", "notes_dir_name", "note_keys"):
+            self.assertIn(key, legacy)
+        self.assertNotIn("legacy", _load_lang("en"))
+
+
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_without_lang_files_legacy_names_never_collide_with_current_ones(tmp_path):
+    """If lang/ is missing, the legacy names are absent (None), not a guess equal to a current name."""
+    import importlib.util
+    import shutil
+    scripts = tmp_path / "scripts"
+    shutil.copytree(Path(__file__).resolve().parent.parent / "scripts", scripts,
+                    ignore=shutil.ignore_patterns("__pycache__"))
+    names = {}
+    for module in ("snapshot", "state"):
+        spec = importlib.util.spec_from_file_location(f"bare_{module}", scripts / f"{module}.py")
+        mod = importlib.util.module_from_spec(spec)
+        import sys
+        sys.path.insert(0, str(scripts))
+        try:
+            spec.loader.exec_module(mod)
+        finally:
+            sys.path.remove(str(scripts))
+        names[module] = mod
+    assert names["snapshot"].LEGACY_META_NAME is None
+    assert names["state"].LEGACY_NOTES_DIR_NAME is None

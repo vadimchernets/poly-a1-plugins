@@ -46,6 +46,23 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 PLUGIN_ROOT = HERE.parent.parent
 SKILLS = PLUGIN_ROOT / "skills"
+LANG_DIR = PLUGIN_ROOT / "lang"
+
+
+def _load_lang(code):
+    try:
+        return json.loads((LANG_DIR / f"{code}.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+# Checker-only words and letters for each language's behaviour suite, kept in lang/<code>.json
+# rather than spelled out here, same as every other place in this plugin that needs a word in a
+# language other than English (see scripts/snapshot.py, scripts/state.py). Not product runtime -
+# this is test-checker configuration only.
+_BEHAVIOR_TEST = {code: data.get("behavior_test", {}) for code, data in
+                  ((p.stem, _load_lang(p.stem)) for p in sorted(LANG_DIR.glob("*.json")))
+                  if data.get("behavior_test")}
 
 
 def available_langs():
@@ -175,12 +192,15 @@ def normalise(t):
 
     Written because the first run failed two cases the model had in fact got right: a
     bolded negation did not match the plain-text pattern for it, because of the
-    asterisks, and a word spelled with the Cyrillic letter "yo" (ё) did not match the
-    pattern spelled with the plain "e" (е) it is interchangeable with. A behaviour test
-    must fail on behaviour, never on a bold marker or a spelling variant. Line breaks
-    survive - the question counter needs them.
+    asterisks, and a word spelled with the Russian letter "yo" did not match the pattern
+    spelled with the plain "ye" it is interchangeable with (the two letters themselves
+    live in lang/ru.json's "behavior_test", not here). A behaviour test must fail on
+    behaviour, never on a bold marker or a spelling variant. Line breaks survive - the
+    question counter needs them.
     """
-    t = t.replace("ё", "е").replace("Ё", "Е")  # ru: these two letters are interchangeable
+    ru = _BEHAVIOR_TEST.get("ru", {})
+    if ru.get("yo") and ru.get("ye"):
+        t = t.replace(ru["yo"], ru["ye"]).replace(ru["YO"], ru["YE"])  # ru: interchangeable letters
     # Typography is never behaviour. Added 26.09.2026 after the weak-model run:
     # gpt-oss-120b writes file names with U+2011 NON-BREAKING HYPHEN instead of a plain
     # hyphen (e.g. inside a hyphenated file name), so a case that required the model to
@@ -208,9 +228,9 @@ WINDOW = 26
 # `unless` entries this narrow are what the hole was made of. Keyed by the case's own
 # language (its folder under tests/behavior/), since the loose filler words are
 # language-specific; check() looks up the entry for whatever language it is running.
-TOO_LOOSE = {
-    "ru": {"не", "не ", "нет", "это не", "сейчас", "буду", "хочу", "когда", "если"},
-}
+# The words themselves live in each lang/<code>.json's "behavior_test.too_loose".
+TOO_LOOSE = {code: set(data.get("too_loose", [])) for code, data in _BEHAVIOR_TEST.items()
+             if data.get("too_loose")}
 
 
 def _find(pattern, text, unless=None):
@@ -310,10 +330,16 @@ def check(case, raw, lang="ru"):
         # The heading regex below matches the ru and en phrasing of that heading side by
         # side (the model may answer in either language regardless of which language the
         # case itself is in) - add further languages' phrasing here alongside, not instead.
+        # The ru phrasing lives in lang/ru.json's "behavior_test.questions_heading".
+        heading_alts = ["three questions"] + [
+            data["questions_heading"] for data in _BEHAVIOR_TEST.values()
+            if data.get("questions_heading")
+        ]
+        heading_re = r"(" + "|".join(heading_alts) + r")"
         lines = answer.splitlines()
         start = 0
         for i, l in enumerate(lines):
-            if re.search(r"(три вопроса|three questions|3 вопроса)", l, FLAGS):
+            if re.search(heading_re, l, FLAGS):
                 start = i + 1
         n = len([l for l in lines[start:]
                  if re.match(r"\s*\d+[.)]\s", l) and "?" in l])

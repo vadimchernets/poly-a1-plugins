@@ -1,0 +1,5 @@
+{
+  "name": "Português",
+  "state_file": "AGORA.md",
+  "secret_words": ["senha", "segredo", "chave", "passaporte", "\\bpin\\b"]
+}

@@ -25,13 +25,24 @@ from pathlib import Path
 ROOT = Path(os.environ.get("SAFECALL_HOME", Path.home() / ".safecall"))
 NOTES = ROOT / "notes"
 
+
+def _load_lang(code):
+    lang_dir = Path(__file__).resolve().parent.parent / "lang"
+    try:
+        return json.loads((lang_dir / f"{code}.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
 # LEGACY (read-only): names written by safecall <= 0.1.0, before this was renamed from Russian
-# to English. A note made by that version lives in `где-остановились/` and has Russian keys -
+# to English. A note made by that version lives in a Russian-named folder and has Russian keys -
 # we never write these names again, but we keep reading them so upgrading never loses the last
-# note somebody already has on their machine.
-LEGACY_NOTES_DIR_NAME = "где-остановились"
-LEGACY_NOTE_KEYS = {"when": "когда", "folder": "папка", "done": "сделано",
-                     "left": "не_сделано", "next": "дальше", "traps": "ловушки"}
+# note somebody already has on their machine. The names themselves live in lang/ru.json
+# ("legacy"), not here - this file stays English-only.
+_RU_LEGACY = _load_lang("ru").get("legacy", {})
+# No lang/ru.json: no legacy folder (None), never a guess that could collide with `notes`.
+LEGACY_NOTES_DIR_NAME = _RU_LEGACY.get("notes_dir_name")
+LEGACY_NOTE_KEYS = _RU_LEGACY.get("note_keys", {})
 
 MONTHS = ["January", "February", "March", "April", "May", "June",
           "July", "August", "September", "October", "November", "December"]
@@ -62,6 +73,8 @@ def _find_note(folder: Path):
     new = _note_path(folder)
     if new.exists():
         return new
+    if not LEGACY_NOTES_DIR_NAME:
+        return None
     legacy_dir = ROOT / LEGACY_NOTES_DIR_NAME
     if not legacy_dir.exists():
         return None
