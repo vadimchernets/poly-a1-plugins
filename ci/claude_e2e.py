@@ -185,7 +185,9 @@ def main():
                 problems.append("the Write did not go through: %r" % (w,))
         b = results.get("toolu_bash_1")
         btxt = text_of(b) if b else ""
-        if b and b.get("is_error") and "chasecall" in btxt.lower():
+        if "is not recognized" in btxt:
+            problems.append("PowerShell's complaint about the sh line reached the model: %r" % btxt[:600])
+        elif b and b.get("is_error") and "chasecall" in btxt.lower():
             print("ok   PreToolUse %s: chasecall blocked" % ("Bash" if any(t.get("name") == "Bash" for t in last.get("tools", [])) else "PowerShell") + " the payment: %s" % btxt[:200])
         else:
             problems.append("PreToolUse Bash: payment not blocked by chasecall: %r" % (btxt[:400],))

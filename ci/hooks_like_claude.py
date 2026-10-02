@@ -224,6 +224,8 @@ def main():
                     stdin_text, check = table[key]
                     code, out, err = spawn(shell, command, dict(env), stdin_text, project)
                     problem = check(code, out, err, python)
+                    if problem is None and "is not recognized" in err:
+                        problem = "PowerShell complained about the sh line: %r" % err[-300:]
                     if problem is None and "\ufffd" in out:
                         problem = "the output is not UTF-8 any more: %r" % out[-300:]
                     ran += 1
