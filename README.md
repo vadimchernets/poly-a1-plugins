@@ -20,10 +20,11 @@ programmer.
 
 ## Installing
 
-Add the catalogue by name, and corrections made later reach you:
+Add the catalogue by its link - one file, no git and no GitHub account needed - and corrections made
+later reach you from the same place:
 
 ```
-/plugin marketplace add vadimchernets/poly-a1-plugins
+/plugin marketplace add https://raw.githubusercontent.com/vadimchernets/poly-a1-plugins/main/.claude-plugin/marketplace.json
 /plugin install safecall@poly-a1
 /plugin install duocall@poly-a1
 /plugin install pocketcall@poly-a1
@@ -32,9 +33,15 @@ Add the catalogue by name, and corrections made later reach you:
 /plugin install mailcall@poly-a1
 ```
 
-This repository holds only the catalogue. Each plugin lives in its own public repository, and the
-catalogue pins the exact published commit of each - so there is one copy of every plugin in the
-world, and this list cannot drift from it.
+Needs Claude Code 2.1.224 or later (`claude update`). With git installed, the short form
+`/plugin marketplace add vadimchernets/poly-a1-plugins` works too.
+
+This repository holds only the catalogue. Each plugin lives in its own public repository, and every
+release of it carries `<plugin>-<version>.zip`; the catalogue installs that zip as an `archive`
+source pinned by its `sha256`. So there is one copy of every plugin in the world, a release file
+never changes after it is published, and the person's machine needs nothing but HTTPS. Checked live
+on 02.10.2026 in a fresh Ubuntu 24.04 with no git, no unzip and no Python: all six installed and came
+up enabled.
 
 ## The step everybody misses
 
@@ -64,7 +71,9 @@ Without it, every correction made here after that day never reaches that machine
 
 No account. No API key. No second subscription. Nothing bought, and nothing that suggests buying.
 They drive only what is already installed and already signed in on the machine. Python 3.8+ and the
-standard library, no dependencies.
+standard library, no dependencies. Without Python, safecall's and chasecall's hooks say so in one line
+and stay quiet - on a Mac without Apple's Command Line Tools they never start the `/usr/bin/python3`
+stub that pops Apple's install window.
 
 None of them makes Claude Code private: what Claude Code reads still goes to Anthropic. These
 plugins decide whether a change can be undone and whether an answer can be trusted — not where the
@@ -74,19 +83,29 @@ text goes.
 
 All six also ride **inside** the Poly A1 folder for the computer, with a catalogue generated from
 this one: the same name `poly-a1`, the same plugins, the same versions, only the sources point at the
-folders beside it - so they install with no network and no account. Later, to get corrections, point
-the same `poly-a1` at this repository instead of removing anything: the steps are in
+folders beside it - so they install with no network and no account. The setup in START-HERE adds
+`poly-a1` from the link above first and uses the folder only when that fails. Later, to get
+corrections, point the same `poly-a1` at the link instead of removing anything: the steps are in
 [`OFFER-THESE.md`](OFFER-THESE.md) (Claude Code reads that file and does it for you). Checked live on
-02.10.2026: installed from the folder, switched, plugins and their data stayed, updates arrived.
+02.10.2026 (Claude Code 2.1.288): installed from a folder with older versions, switched to the link,
+all six stayed installed with their data, and `claude plugin update` brought each to its new release.
 Do **not** remove the `poly-a1` marketplace to re-add it - Claude Code then uninstalls its plugins and
 deletes their data.
 
 ## Keeping this repository in step
 
-`./sync.sh` pins every entry to its working repository's published HEAD and `plugin.json` version;
-`./sync.sh --check` changes nothing and fails if any pin or version is behind, if a working repository
-has unpushed edits, or if `claude plugin validate` rejects the catalogue. Run the check before
-publishing. The Poly A1 kit build refuses to ship a catalogue that disagrees with the folders it ships.
+A plugin is released by tagging it: `git tag -a v<version>` and `git push origin v<version>` in its
+repository, where `<version>` is the one in its `plugin.json`. Its `.github/workflows/release.yml`
+then builds `<plugin>-<version>.zip` (`scripts/release-zip.sh`: one top folder
+`<plugin>-<version>/`, committed files only, no tests) and publishes the release with the zip
+attached; Zenodo archives the release and mints its DOI.
+
+`./sync.sh` then pins every entry of this catalogue to that release: it checks the working repository
+is clean, pushed and exactly at the tag, downloads the zip, checks its top folder and manifest, and
+writes the url, the `sha256` of the published bytes, the version and `metadata.commit`.
+`./sync.sh --check` changes nothing and fails if anything is behind or if `claude plugin validate`
+rejects the catalogue. Run the check before publishing. The Poly A1 kit build refuses to ship a
+catalogue that disagrees with the folders it ships.
 
 ## Licence
 

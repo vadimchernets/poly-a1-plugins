@@ -1,8 +1,8 @@
 # For Claude Code: when to offer these six plugins, and how
 
 You are reading this inside the Poly A1 folder on somebody's computer. Beside you are six plugin
-folders — `safecall`, `duocall`, `pocketcall`, `chasecall`, `nightcall`, `mailcall`. They are already here: nothing needs
-downloading and no account is needed to use them.
+folders — `safecall`, `duocall`, `pocketcall`, `chasecall`, `nightcall`, `mailcall`. They are already here, and the same
+six are published on GitHub: no account is needed to use them, and no git either.
 
 **This file is for you, not for the person.** Read it, then speak to them in their own language and
 in their own words. The sample lines below are in English; say them in the person's language.
@@ -61,39 +61,70 @@ own words. The "News in your own words" lesson is its evening.
 
 ## How they are turned on
 
-All six are already in this folder. Nothing is downloaded, nothing is published, no account and no
-network are needed — the catalogue is the `.claude-plugin/marketplace.json` beside you, and every
-plugin in it points at a folder you can see. Tell them what you are doing, in one line, and do it:
+All six are already in this folder, and the same six are published on GitHub. Either way the
+catalogue is called `poly-a1`, and the part after `@` is always `poly-a1`. Tell them what you are
+doing, in one line, and do it.
+
+**First check that `poly-a1` is not already there** (`claude plugin marketplace list` in the shell). The
+setup in START-HERE adds it; if it is listed, go straight to the install line below.
+
+**If it is not there, add it from GitHub first** - one file by its link, no git and no account
+needed, and later fixes reach them from the same place:
+
+```
+/plugin marketplace add https://raw.githubusercontent.com/vadimchernets/poly-a1-plugins/main/.claude-plugin/marketplace.json
+```
+
+This needs Claude Code 2.1.224 or later (`claude --version`; if older, `claude update` first).
+Each plugin then arrives as the zip attached to its GitHub release, checked against the `sha256`
+the catalogue states. Checked live on 02.10.2026 in a fresh Ubuntu 24.04 with no git, no unzip and
+no Python: the catalogue added and all six installed and came up enabled.
+
+**No network, or GitHub refused?** Add this folder instead - nothing is downloaded then:
 
 ```
 /plugin marketplace add <path to this folder>
+```
+
+`<path to this folder>` is the folder that contains this `plugins/` directory — the one with the
+start-here file in it, not `plugins/` itself. Drag the folder into the terminal and it types its
+own path. Later, when the network is back, switch it to GitHub as below.
+
+Then, when the moment comes:
+
+```
 /plugin install safecall@poly-a1
 ```
 
-`<path to this folder>` is the folder that contains this `plugins/` directory — the one with
-the start-here file in it, not `plugins/` itself. Drag the folder into the terminal and it types its
-own path. Swap `safecall` for `duocall`, `pocketcall`, `chasecall`, `nightcall` or `mailcall` when their moment comes; the
-part after `@` is always `poly-a1`.
+Swap `safecall` for `duocall`, `pocketcall`, `chasecall`, `nightcall` or `mailcall` when their
+moment comes. Restart Claude Code (or `/reload-plugins`) for it to take effect.
 
-Checked on a real machine on 26.09.2026: the first four install this way and come up enabled;
-`nightcall` and `mailcall` (30.09.2026) sit in the same catalogue and install the same way.
+**Auto-update, once.** For any catalogue that is not Anthropic's own it is off by default, and no
+setting inside a plugin can change that. In their Claude Code user settings (`~/.claude/settings.json`;
+Windows `%USERPROFILE%\.claude\settings.json`; if `CLAUDE_CONFIG_DIR` is set, the `settings.json`
+there), beside the `source` of `extraKnownMarketplaces` → `poly-a1`, add `"autoUpdate": true`. To be
+sure, `/plugin` → Marketplaces → `poly-a1` should say auto-update is on; if it does not, choose
+**Enable auto-update** there.
 
-## Later: corrections from GitHub, without losing anything
+**Python.** safecall and chasecall check Python 3 before every hook. If this computer has none yet
+(on a Mac: no Apple Command Line Tools), they say so in one line at the start of a session and stay
+quiet until step 0 of START-HERE is done - they never pop Apple's install window in the middle of
+a lesson.
 
-The folder is a snapshot of the day they bought it. The very same catalogue, under the very same
-name `poly-a1`, is published at `github.com/vadimchernets/poly-a1-plugins`; each plugin in it comes
-from its own public repository, pinned to a published commit. Once they have the network, offer to
-point `poly-a1` there, so later fixes reach them. Tell them in one line, then do it. Checked live on
-02.10.2026 (Claude Code 2.1.287): installed from the folder, switched, plugins and their data stayed,
-an older plugin updated.
+## Later: from the folder to GitHub, without losing anything
 
-1. Open their Claude Code user settings: `~/.claude/settings.json` (Windows:
-   `%USERPROFILE%\.claude\settings.json`; if `CLAUDE_CONFIG_DIR` is set, the `settings.json` there).
-   Find `extraKnownMarketplaces` → `poly-a1` → `source` (it holds the folder path) and replace only
-   that value:
+If they added `poly-a1` from this folder, it is a snapshot of the day they bought it. Once they
+have the network, offer to point the same `poly-a1` at GitHub, so later fixes reach them. Tell them
+in one line, then do it. Checked live on 02.10.2026 (Claude Code 2.1.288, a throwaway
+`CLAUDE_CONFIG_DIR`): all six installed from a folder with older versions, switched, all six still
+installed and enabled, their data in `plugins/data/` untouched, and `claude plugin update` brought
+each to its newer release.
+
+1. In their Claude Code user settings (see above), find `extraKnownMarketplaces` → `poly-a1` →
+   `source` (it holds the folder path) and replace only that value:
 
    ```json
-   "source": { "source": "github", "repo": "vadimchernets/poly-a1-plugins" }
+   "source": { "source": "url", "url": "https://raw.githubusercontent.com/vadimchernets/poly-a1-plugins/main/.claude-plugin/marketplace.json" }
    ```
 
    Without this edit step 2 is refused with "its source doesn't match its extraKnownMarketplaces
@@ -102,17 +133,14 @@ an older plugin updated.
 2. Run:
 
    ```
-   claude plugin marketplace add vadimchernets/poly-a1-plugins
+   claude plugin marketplace add https://raw.githubusercontent.com/vadimchernets/poly-a1-plugins/main/.claude-plugin/marketplace.json
    ```
 
-   The right answer says the marketplace `poly-a1` "now points at github:vadimchernets/poly-a1-plugins"
+   The right answer says the marketplace `poly-a1` "now points at https://raw.githubusercontent.com/…"
    and "Plugins already installed from it now update from the new source."
 
 3. Back in the same settings entry, beside `source`, add `"autoUpdate": true` (step 2 rewrites the
-   entry, so this goes after it). For any marketplace that is not Anthropic's own, auto-update is off
-   by default and no setting inside a plugin can change that; without this they stay on today's
-   version for ever. To be sure, `/plugin` → Marketplaces → `poly-a1` should now say auto-update is
-   on; if it does not, choose **Enable auto-update** there.
+   entry, so this goes after it), and check `/plugin` → Marketplaces as above.
 
 4. Bring what is installed up to date now, one line per plugin they have, then restart Claude Code:
 
@@ -120,13 +148,15 @@ an older plugin updated.
    claude plugin update safecall@poly-a1
    ```
 
+   The right answer is `Plugin "safecall" updated from … to …` or `already at the latest version`.
+
+If their `poly-a1` was added earlier as `vadimchernets/poly-a1-plugins` (a git source), it keeps
+working where git is installed; switch it the same way so it never needs git again.
+
 **Never** run `/plugin marketplace remove poly-a1` to "re-add it from GitHub": Claude Code then
 uninstalls every plugin that came from it and deletes their saved data. And never add the GitHub
 catalogue under another name: the plugins are known as `…@poly-a1`, and a second name means a second,
 empty set of everything.
-
-If they never installed from the folder, there is nothing to switch: `/plugin marketplace add
-vadimchernets/poly-a1-plugins`, then `/plugin install <plugin>@poly-a1`, then step 3.
 
 ## What you must not say about them
 
