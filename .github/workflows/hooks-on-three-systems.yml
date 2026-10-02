@@ -1,0 +1,108 @@
+# The plugins' hooks on Windows, macOS and Linux, run by a real Claude Code.
+#
+# Each job installs Claude Code the way a person does, adds the six plugins from a local folder
+# (a catalogue next to their checkouts), installs them, and then:
+#   1. ci/hooks_like_claude.py runs every hook command exactly as Claude Code spawns it - on Windows
+#      in PowerShell 7, Windows PowerShell 5.1 and Git Bash - with a real Python and with none;
+#   2. ci/claude_e2e.py runs a real `claude -p` session against a stand-in API that asks for a Write
+#      and a Bash call, and checks what the hooks did and said.
+# On Windows step 2 runs twice: with Git Bash, and after Git is moved away, when Claude Code falls
+# back to PowerShell for hooks (the case a person without Git for Windows is in).
+name: hooks on three systems
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch or tag of the plugin repositories"
+        default: main
+  push:
+    branches: [main]
+    paths: ["ci/**", ".github/workflows/hooks-on-three-systems.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  hooks:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      REF: ${{ inputs.ref || 'main' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: catalogue
+
+      - name: Check out the six plugins
+        shell: bash
+        run: |
+          mkdir -p local/.claude-plugin
+          for p in safecall duocall nightcall mailcall chasecall pocketcall; do
+            git clone --quiet --depth 1 --branch "$REF" "https://github.com/vadimchernets/$p" "local/$p"
+            rm -rf "local/$p/.git"
+            echo "$p $(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["version"])' "local/$p/.claude-plugin/plugin.json" 2>/dev/null || python -c 'import json,sys;print(json.load(open(sys.argv[1]))["version"])' "local/$p/.claude-plugin/plugin.json")"
+          done
+          cat > local/.claude-plugin/marketplace.json <<'EOF'
+          {"name": "ci-local", "owner": {"name": "ci"}, "plugins": [
+            {"name": "safecall", "source": "./safecall"}, {"name": "duocall", "source": "./duocall"},
+            {"name": "nightcall", "source": "./nightcall"}, {"name": "mailcall", "source": "./mailcall"},
+            {"name": "chasecall", "source": "./chasecall"}, {"name": "pocketcall", "source": "./pocketcall"}]}
+          EOF
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Claude Code (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          irm https://claude.ai/install.ps1 | iex
+          "$env:USERPROFILE\.local\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+      - name: Install Claude Code (macOS, Linux)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          curl -fsSL https://claude.ai/install.sh | bash
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Add the catalogue and install the six plugins
+        shell: bash
+        run: |
+          export CLAUDE_CONFIG_DIR="$RUNNER_TEMP/claude-config"
+          claude --version
+          claude plugin marketplace add "$GITHUB_WORKSPACE/local"
+          for p in safecall duocall nightcall mailcall chasecall pocketcall; do
+            claude plugin install "$p@ci-local"
+          done
+          claude plugin list
+
+      - name: Every hook, the way Claude Code spawns it
+        shell: bash
+        run: |
+          python catalogue/ci/hooks_like_claude.py --installed "$RUNNER_TEMP/claude-config/plugins/installed_plugins.json"
+
+      - name: A real session fires the hooks (default shell - Git Bash on Windows)
+        shell: bash
+        run: |
+          python catalogue/ci/claude_e2e.py --config "$RUNNER_TEMP/claude-config"
+
+      - name: A real session fires the hooks (Windows with no Git Bash - PowerShell)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $py = (Get-Command python).Source
+          Rename-Item "C:\Program Files\Git" "Git-moved-away"
+          $env:PATH = ($env:PATH -split ';' | Where-Object { $_ -notmatch '\\Git\\' }) -join ';'
+          if (Get-Command git -ErrorAction SilentlyContinue) { throw "git is still on PATH" }
+          if (Test-Path "C:\Program Files\Git\bin\bash.exe") { throw "Git Bash is still there" }
+          & $py catalogue/ci/claude_e2e.py --config "$env:RUNNER_TEMP/claude-config"
+          $code = $LASTEXITCODE
+          Rename-Item "C:\Program Files\Git-moved-away" "Git"
+          exit $code
