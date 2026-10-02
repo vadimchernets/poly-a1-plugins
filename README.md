@@ -1,5 +1,7 @@
 # Poly A1 plugins
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23107737.svg)](https://doi.org/10.5281/zenodo.23107737)
+
 **Pay $5 once — that's it: two AIs from different companies work together right on your phone. ChatGPT answers, Claude checks. No paid keys, no servers, no computer, nothing more to pay.**
 
 Have ChatGPT and Claude? Start right away. Have one? It helps you install the other. Have neither? Gemini (Google) or Meta AI (WhatsApp, Facebook) helps you install both, free.
