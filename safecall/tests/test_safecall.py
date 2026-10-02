@@ -291,6 +291,37 @@ class TestGuard(Base):
                 f = self.work / name
                 f.write_text("yesterday's content", encoding="utf-8")
                 self.assertEqual(self.guard("Edit", f).returncode, 0)
+        for lang, legacy in guard_mod.legacy_state_file_names().items():
+            for name in legacy:
+                with self.subTest(lang=lang, legacy=name):
+                    f = self.work / name
+                    f.write_text("an old evening's content", encoding="utf-8")
+                    self.assertEqual(self.guard("Edit", f).returncode, 0)
+
+    def test_state_file_is_next_md_in_every_language(self):
+        guard_mod = _load_module("guard", GUARD)
+        names = guard_mod.state_file_names()
+        self.assertEqual(set(names.values()), {"NEXT.md"},
+                         "every language writes NEXT.md, the same name Poly A1 uses")
+        legacy = guard_mod.legacy_state_file_names()
+        self.assertEqual(sorted(legacy), ["es", "pt", "ru", "uk"],
+                         "the old localized names stay recognized for reading")
+        for code, old in legacy.items():
+            self.assertNotIn("NEXT.md", old, code)
+
+    def test_state_file_reads_legacy_only_when_next_md_is_absent(self):
+        guard_mod = _load_module("guard", GUARD)
+        folder = self.work / "evening"
+        folder.mkdir()
+        self.assertEqual(guard_mod.state_file(folder), folder / "NEXT.md",
+                         "nothing there yet: a new file goes to NEXT.md")
+        old_name = guard_mod.legacy_state_file_names()["es"][0]
+        (folder / old_name).write_text("old", encoding="utf-8")
+        self.assertEqual(guard_mod.state_file(folder), folder / old_name,
+                         "an existing user's legacy file must still be found")
+        (folder / "NEXT.md").write_text("new", encoding="utf-8")
+        self.assertEqual(guard_mod.state_file(folder), folder / "NEXT.md",
+                         "NEXT.md wins over a legacy file")
 
     def test_allows_a_brand_new_file(self):
         out = self.guard("Write", self.work / "does-not-exist-yet.txt")
@@ -543,6 +574,7 @@ class TestLangFiles(unittest.TestCase):
                 data = _load_lang(code)
                 self.assertIn("state_file", data, "%s is missing state_file" % code)
                 self.assertTrue(data["state_file"], "%s has an empty state_file" % code)
+                self.assertEqual(data["state_file"], "NEXT.md", code)
                 self.assertIn("secret_words", data, "%s is missing secret_words" % code)
                 self.assertTrue(data["secret_words"], "%s has no secret words at all" % code)
 

@@ -10,7 +10,7 @@
       "name": "safecall",
       "source": "./safecall",
       "description": "Nothing is written before a copy exists, nothing is read before you have seen the list, and no answer ends without saying what nobody checked. Plus three ready readings of a document: where the catch is, what the plan is missing, what here is fact.",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "author": { "name": "Vadym Chernets" },
       "license": "Apache-2.0",
       "keywords": ["undo", "snapshot", "safety", "receipt", "document-review"],

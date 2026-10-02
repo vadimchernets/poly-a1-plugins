@@ -1,7 +1,7 @@
 {
   "name": "safecall",
   "description": "Let Claude Code work on the files of a person who is not a programmer, without the two things that frighten them: losing their documents, and believing a confident answer that was never checked. Copies every file before it is touched and gives it back on one sentence, lists what it is about to read before it reads it, and ends an answer by saying who checked what - and what nobody checked. Also three ready readings of an ordinary document: where the catch is, what the plan is missing, what here is fact and what is opinion. No keys, no accounts, no second program to install.",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "author": { "name": "Vadym Chernets" },
   "license": "Apache-2.0",
   "keywords": ["undo", "snapshot", "safety", "receipt", "document-review", "non-programmers", "accessibility"]

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.3 — 2026-10-02
+
+- The Poly A1 coach's state file is `NEXT.md` in every language now - the same name Poly A1
+  itself uses - instead of a different name per language. `state_file` in every `lang/<code>.json`
+  is `NEXT.md`; the old localized names (es, pt, ru, uk) stay listed in a new
+  `state_file_legacy` field, recognized for reading only, so a file an existing user already has
+  is still found and never blocked.
+- `scripts/guard.py` gained `legacy_state_file_names()` and `state_file(folder)`: NEXT.md if it
+  exists, else an existing legacy file, else NEXT.md (where a new file is written).
+- Tests: every language's `state_file` is `NEXT.md`; the guard never blocks a legacy-named state
+  file either; `state_file()` falls back to a legacy file only when NEXT.md is absent.
+
 ## 0.1.2 — 2026-10-02
 
 - Every language is equal now: the per-language word tables (the Poly A1 coach's state-file name,

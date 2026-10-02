@@ -1,6 +1,7 @@
 {
   "name": "Русский",
-  "state_file": "СЕЙЧАС.md",
+  "state_file": "NEXT.md",
+  "state_file_legacy": ["СЕЙЧАС.md"],
   "secret_words": ["парол", "секрет", "ключ", "паспорт", "токен", "логин", "пин-?код"],
   "legacy": {
     "note": "Names written by safecall <= 0.1.0, before snapshot and note metadata were renamed from Russian to English. Never written again - kept only so upgrading never drops or breaks a copy or note that already exists on somebody's machine.",

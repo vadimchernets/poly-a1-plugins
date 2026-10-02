@@ -1,5 +1,6 @@
 {
   "name": "Español",
-  "state_file": "AHORA.md",
+  "state_file": "NEXT.md",
+  "state_file_legacy": ["AHORA.md"],
   "secret_words": ["contrase", "clave", "secreto", "pasaporte", "\\bpin\\b"]
 }

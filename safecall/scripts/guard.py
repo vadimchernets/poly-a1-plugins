@@ -9,8 +9,10 @@ IT MAKES THE COPY ITSELF. The first version blocked instead and told Claude to r
 - the round of criticism on 26.09.2026 killed that design with two scenarios and both were right:
 
   (1) Poly A1's own coach writes a state file at the end of every evening - its name per
-      language is `state_file` in lang/<code>.json (English: NEXT.md; each other language has
-      its own entry, loaded below). Second evening on, that file exists, so the guard stopped
+      language is `state_file` in lang/<code>.json - NEXT.md in every language since 0.1.3, the
+      same name Poly A1 uses; the older per-language names stay listed in `state_file_legacy`
+      so a file an existing user already has is still found. Second evening on, that file
+      exists, so the guard stopped
       the one action that ends a person's evening well, and showed them a shell command
       instead of "done".
   (2) blocking once and allowing afterwards meant that a frightened person who said "no copies"
@@ -46,22 +48,56 @@ LANG_DIR = HERE.parent / "lang"
 WRITERS = {"Write", "Edit", "MultiEdit", "NotebookEdit"}
 
 
-def state_file_names():
-    """The Poly A1 coach's end-of-evening state file name, per language - one entry per
-    lang/<code>.json (`state_file`), every language read the same way. Not used by the guard's
-    own logic (which is file-name-agnostic - see the module docstring), only exposed so that
-    nothing outside lang/*.json has to spell these names out in a language that is not English.
-    """
-    names = {}
+def _lang_files():
+    """Every lang/<code>.json, parsed, as (code, data). Unreadable files are skipped."""
+    out = []
     if LANG_DIR.is_dir():
         for f in sorted(LANG_DIR.glob("*.json")):
             try:
-                data = json.loads(f.read_text(encoding="utf-8"))
+                out.append((f.stem, json.loads(f.read_text(encoding="utf-8"))))
             except (OSError, ValueError):
                 continue
-            if "state_file" in data:
-                names[f.stem] = data["state_file"]
+    return out
+
+
+def state_file_names():
+    """The Poly A1 coach's end-of-evening state file name, per language - one entry per
+    lang/<code>.json (`state_file`), every language read the same way. NEXT.md in every
+    language since 0.1.3. Not used by the guard's own logic (which is file-name-agnostic - see
+    the module docstring), only exposed so that nothing outside lang/*.json has to spell these
+    names out.
+    """
+    return {code: data["state_file"] for code, data in _lang_files() if "state_file" in data}
+
+
+def legacy_state_file_names():
+    """Older per-language state-file names (`state_file_legacy` in lang/<code>.json), written
+    before 0.1.3. Recognized for reading only - never created again."""
+    names = {}
+    for code, data in _lang_files():
+        legacy = [n for n in data.get("state_file_legacy", []) if n]
+        if legacy:
+            names[code] = legacy
     return names
+
+
+def state_file(folder):
+    """Where the state file of `folder` is. Reading: NEXT.md if it exists; otherwise the first
+    legacy name that exists (an existing user's file is still found); otherwise NEXT.md - the
+    name every new file is written under."""
+    folder = Path(folder)
+    primary = folder / "NEXT.md"
+    if primary.exists():
+        return primary
+    seen = set()
+    for names in legacy_state_file_names().values():
+        for name in names:
+            if name in seen:
+                continue
+            seen.add(name)
+            if (folder / name).exists():
+                return folder / name
+    return primary
 
 
 def _target(payload):
