@@ -3,9 +3,9 @@
 """Safecall: does every file the answer names actually exist?
 
 The failure this catches is specific and common, and a person of sixty has no defence against it:
-an AI writes «в вашей папке есть договор-2024.pdf, в нём сказано…» and there is no such file. The
-sentence is fluent, the filename is plausible, and the person believes it — sometimes about a
-document they then go looking for at the bank.
+an AI writes "there is a contract-2024.pdf in your folder, and it says…" and there is no such
+file. The sentence is fluent, the filename is plausible, and the person believes it — sometimes
+about a document they then go looking for at the bank.
 
 V1 meets the same problem in its folder council and answers it the same way: every path a seat
 cites is checked against the disk, and a citation that does not resolve is not an answer
@@ -14,7 +14,7 @@ cites is checked against the disk, and a citation that does not resolve is not a
 This does the checking half. It reads text on standard input, pulls out everything that looks like
 a file name or a path, and says which of them are really on the disk.
 
-  python3 paths.py --folder <папка> < answer.txt
+  python3 paths.py --folder <folder> < answer.txt
 
 It deliberately does NOT judge the sentence around the name - it says what is there and what is
 not, and the skill decides what to do about it.
@@ -59,7 +59,7 @@ def candidates(text: str):
 
 
 def resolve(name: str, base: Path):
-    """Where this name really is, if anywhere. Returns (exists, где)."""
+    """Where this name really is, if anywhere. Returns (exists, where)."""
     p = Path(os.path.expanduser(name))
     tries = [p] if p.is_absolute() else [base / p, Path.cwd() / p]
     for t in tries:
@@ -74,7 +74,7 @@ def resolve(name: str, base: Path):
     if leaf and leaf != name:
         try:
             for found in list(base.rglob(leaf))[:1]:
-                return False, f"нет по названному пути, но такой файл есть здесь: {found}"
+                return False, f"not at the named path, but a file by this name is here: {found}"
         except OSError:
             pass
     else:
@@ -88,9 +88,9 @@ def resolve(name: str, base: Path):
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(description="Safecall: проверка названных файлов по диску.")
-    ap.add_argument("--folder", help="папка человека; по умолчанию текущая")
-    ap.add_argument("--text", help="текст прямо в аргументе; иначе читается со стандартного ввода")
+    ap = argparse.ArgumentParser(description="Safecall: check named files against the disk.")
+    ap.add_argument("--folder", help="the person's folder; defaults to the current one")
+    ap.add_argument("--text", help="text given directly as an argument; otherwise read from standard input")
     args = ap.parse_args(argv)
 
     base = Path(args.folder).expanduser().resolve() if args.folder else Path.cwd().resolve()
@@ -98,7 +98,7 @@ def main(argv=None):
 
     names = candidates(text)
     if not names:
-        print("В этом тексте не названо ни одного файла — проверять нечего.")
+        print("No file was named in this text — nothing to check.")
         return 0
 
     good, bad = [], []
@@ -107,14 +107,14 @@ def main(argv=None):
         (good if ok else bad).append((n, where))
 
     for n, where in good:
-        print(f"  есть: {n}" + (f"  → {where}" if where and where != n else ""))
+        print(f"  exists: {n}" + (f"  → {where}" if where and where != n else ""))
     for n, where in bad:
-        print(f"  НЕТ: {n}" + (f"  ({where})" if where else ""))
+        print(f"  MISSING: {n}" + (f"  ({where})" if where else ""))
 
-    print(f"\nназвано файлов: {len(names)} · найдено: {len(good)} · не найдено: {len(bad)}")
+    print(f"\nfiles named: {len(names)} · found: {len(good)} · not found: {len(bad)}")
     if bad:
-        print("Не найденное НЕ называйте человеку как существующее. Либо поправьте название, "
-              "либо скажите прямо, что такого файла в папке нет.")
+        print("Do NOT tell the person a file that was not found exists. Either fix the name, "
+              "or say plainly that no such file is in the folder.")
         return 1
     return 0
 

@@ -23,7 +23,7 @@ Safecall answers both, and adds the three readings such a person actually needs 
 | `/safecall:holes` | What a plan is missing, as three questions, not thirty. |
 | `/safecall:facts` | What here can be checked, what is opinion, what says nothing at all. |
 | `/safecall:where` | Picks up where the last evening stopped; writes down where this one stopped. |
-| `/safecall:clearer` | Turns "ну это, с банком" into a question that can be answered - by guessing two or three versions out loud, not by interrogating. |
+| `/safecall:clearer` | Turns "umm, that thing with the bank" into a question that can be answered - by guessing two or three versions out loud, not by interrogating. |
 | `/safecall:send` | Reads a letter, complaint or reply the way a cold stranger would, **before** it goes: what should not leave, blanks nobody filled in, a tone that will cost them. |
 | `/safecall:named` | Checks that every file an answer names really exists on the disk, before naming it — and finds the one that is real but a folder further down. |
 | `/safecall:doctor` | Why the AI is silent, in words, with one step at a time. |
@@ -51,8 +51,8 @@ Anthropic's own it is off by default, and without it you stay on the version you
 ## Where the copies live
 
 `~/.safecall/copies/`, outside your own folder, with a note in it saying not to delete it.
-The name is ASCII on purpose: a folder called `снимки` cannot be typed by somebody on a Spanish
-keyboard when support tells them to open it.
+The name is ASCII on purpose: a folder named in Cyrillic or another non-Latin script cannot be
+typed by somebody on a different keyboard layout when support tells them to open it.
 A copy sitting next to your documents gets mistaken for clutter and thrown away by the very person
 it protects. Copies older than 14 days remove themselves; at most 20 are kept per folder; nothing
 larger than 5 MB a file or 50 MB a copy.

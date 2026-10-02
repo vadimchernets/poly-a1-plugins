@@ -1,6 +1,6 @@
 ---
 name: named
-description: Check that every file you are about to name in an answer really exists on this person's disk, before you name it. Use it before telling them what is in their folder, before citing a document back at them, and before any answer that says "в вашей папке есть…" or "в файле X написано…". Also use it when they ask "а где этот файл?", "я такого не вижу", "у меня нет такого".
+description: Check that every file you are about to name in an answer really exists on this person's disk, before you name it. Use it before telling them what is in their folder, before citing a document back at them, and before any answer that says "your folder has…" or "file X says…". Also use it when they ask "where is this file?", "I don't see one like that", "I don't have that".
 argument-hint: "[the folder, if it is not the one we are in]"
 allowed-tools: Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/paths.py *) Read Glob
 ---
@@ -13,7 +13,7 @@ Answer in the person's language.
 
 ## 1. The failure this prevents
 
-You write: *«В вашей папке есть договор-2024.pdf, в нём сказано…»* — and there is no such file. The
+You write: *"Your folder has contract-2024.pdf, and it says…"* — and there is no such file. The
 sentence is fluent, the name is plausible, and this person has no way to tell. Sometimes they then
 go to the bank looking for it.
 
@@ -38,21 +38,22 @@ folder further down**, which is the mistake that reads as a lie and is not one.
 
 **Never quietly drop it and never quietly rename it.** One of three, out loud:
 
-> Я ошибся: файла «договор-2024.pdf» в папке нет. Есть «договор.pdf» — вы его имели в виду?
+> I made a mistake: there is no file "contract-2024.pdf" in the folder. There is "contract.pdf" —
+> did you mean that one?
 
-> Такого файла у вас нет. Возможно, он в другой папке или ещё не сохранён.
+> You don't have a file like that. It might be in another folder or not saved yet.
 
-> Я назвал его по памяти и проверил — его нет. Вычёркиваю.
+> I named it from memory and checked — it's not there. Striking it out.
 
 Admitting it in one line costs nothing. Being caught later costs the whole relationship with the
 tool, and this person will not come back to it.
 
 ## 4. The same rule for what you claim to have read
 
-If you say «я прочитал», you must have read it in this conversation. Not "it is the kind of file
+If you say "I read it", you must have read it in this conversation. Not "it is the kind of file
 that usually says", not a guess from the name. If you did not open it, the receipt says
-**«не проверял»** (`/safecall:receipt`), and the sentence says «судя по названию», never «в нём
-написано».
+**"didn't check"** (`/safecall:receipt`), and the sentence says "going by the name", never "it
+says".
 
 ## 5. Do not turn this into noise
 

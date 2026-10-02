@@ -7,7 +7,7 @@ documents that matters to them. Every change is judged by what it does for them.
   has already lost this person.
 - **No network.** Not for telemetry, not for updates, not for anything.
 - **Plain words in anything a person sees.** Not "repository", "commit", "directory", "backup" —
-  "папка", "копия", "файл". English error text is translated, never repeated at them.
+  "folder", "copy", "file". Error text is translated into plain words, never repeated at them.
 - **A guard that can fail open, fails open.** Breaking somebody's session is worse than missing one
   snapshot.
 - **Run the tests:** `python3 -m pytest tests/ -q` (or `python3 -m unittest discover tests`).

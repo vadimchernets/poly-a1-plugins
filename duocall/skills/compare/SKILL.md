@@ -1,6 +1,6 @@
 ---
 name: compare
-description: Put two AI answers side by side and say honestly where they agree and where they do not - quoting both, never claiming agreement that cannot be shown. Use it right after a second AI has answered, and whenever the person pastes in what another AI told them and asks "кто прав", "они расходятся?", "what do you think of this answer", "мне другой ИИ сказал другое".
+description: Put two AI answers side by side and say honestly where they agree and where they do not - quoting both, never claiming agreement that cannot be shown. Use it right after a second AI has answered, and whenever the person pastes in what another AI told them and asks "who's right", "do they disagree?", "what do you think of this answer", "the other AI told me something different".
 argument-hint: "[the second answer, if the person is pasting it in]"
 allowed-tools: Read
 ---
@@ -20,46 +20,47 @@ for the person** — a letter, a complaint, a message, a text they will send und
 If they wrote something, then the answer you give ends with **one of their two texts, whole and
 untouched**, and everything you think the other one does better goes in a list beside it. Not in it.
 
-> Я бы отправил **первое** письмо как есть — оно написано вашим голосом, так вы и говорите.
-> Что стоит взять у второго, если сосед не отзовётся: срок («в течение трёх дней») и упоминание
-> управляющей компании. Это уже другое письмо, второе по счёту, — напишем его тогда, если понадобится.
+> I'd send the **first** letter as it is — it's written in your voice, that's how you talk.
+> What's worth taking from the second one, if the neighbour doesn't respond: a deadline ("within
+> three days") and a mention of the property management company. That's a different letter, a
+> second one — we'll write it then, if it's needed.
 
-**Объединять их не стоит, и вот почему это не вкусовщина:** the person has to say these words to a
-neighbour they will meet in the lift tomorrow. A text that is half theirs and half an official
+**Merging them isn't a good idea, and here's why that isn't just taste:** the person has to say these
+words to a neighbour they will meet in the lift tomorrow. A text that is half theirs and half an official
 notice sounds like neither, and the one thing they cannot judge from the inside is whether it still
 sounds like them. Keeping one voice whole is the only version of this they can check.
 
-The pull is strong and it looks like diligence: «возьму тон первого, но добавлю срок из второго».
-That sentence is the failure. Write it and you have made the third letter — the one nobody asked
-for and nobody can vouch for.
+The pull is strong and it looks like diligence: "I'll take the tone of the first one, but add the
+deadline from the second." That sentence is the failure. Write it and you have made the third
+letter — the one nobody asked for and nobody can vouch for.
 
 ## 1. Agreement has to be shown, not claimed
 
-**Never write «они согласны» without quoting both.** V1 found this exact failure in its own
+**Never write "they agree" without quoting both.** V1 found this exact failure in its own
 council: the model that merges the answers also judges whether they agreed, and nobody had ever
 compared its verdict with what the answers actually said (`docs/CAPABILITY-MATRIX.md:134`).
 
-> **Сошлись:** оба говорят, что срок — 14 дней.
-> Первый: «…в течение четырнадцати дней с момента получения…»
-> Второй: «…у вас есть две недели…»
+> **Agreed:** both say the deadline is 14 days.
+> First: "...within fourteen days of receipt..."
+> Second: "...you have two weeks..."
 
 If you cannot produce both quotes, it is not agreement — it goes in the next list.
 
 ## 2. Every difference, named — including the small ones
 
-> **Разошлись:**
-> — **Сумма.** Первый: «удержат 30%». Второй: «удержат 30% но не меньше 5000». Разница в том, что
->   при маленьком остатке второй считает больше.
-> — **Кому писать.** Первый: в банк. Второй: сначала в страховую.
+> **Disagreed:**
+> — **Amount.** First: "they'll withhold 30%." Second: "they'll withhold 30% but no less than
+>   5000." The difference is that on a small balance the second one comes out higher.
+> — **Who to write to.** First: the bank. Second: the insurer first.
 
 A difference in a number, a date, a name or a next step is always worth naming, however small.
 A difference in wording alone is not — say so and move on.
 
 ## 3. The sentence that has to be there
 
-> Два ИИ, согласных между собой, — это не доказательство. Они учились на одном и том же интернете
-> и ошибаются в одну сторону чаще, чем вы думаете. Согласие значит только, что очевидной ошибки
-> не видно.
+> Two AIs agreeing with each other is not proof. They trained on the same internet and make the
+> same kind of mistake more often than you'd think. Agreement only means no obvious error is
+> visible.
 
 The person came here to be told who is right. What they can actually be given is where to look,
 and that is worth more.
@@ -68,8 +69,8 @@ and that is worth more.
 
 One short paragraph, clearly labelled as your view and not as the verdict of "the AIs":
 
-> **Моё мнение:** я бы взял срок 14 дней и проверил сумму — в вашей бумаге про минимум ничего нет,
-> а второй ИИ это откуда-то добавил.
+> **My opinion:** I'd go with the 14-day deadline and double-check the amount — your document says
+> nothing about a minimum, and the second AI added that from somewhere.
 
 **Do not average the two answers.** If one wrote the person's letter in their own voice, do not
 blend it with the other into something official-sounding — the voice was the point
@@ -77,12 +78,12 @@ blend it with the other into something official-sounding — the voice was the p
 
 ## 5. Close with who actually answered
 
-> **Отвечали:** я (Claude) и ChatGPT. Оба ответили.
+> **Who answered:** me (Claude) and ChatGPT. Both answered.
 
 or
 
-> **Отвечали:** только я. У ChatGPT кончился запас, второго мнения сегодня нет — то, что ниже,
-> одна точка зрения, не две.
+> **Who answered:** only me. ChatGPT has run out of its allowance, there's no second opinion today
+> — what follows is one point of view, not two.
 
 Never present one opinion as two. If the pair did not happen, the person must know it before they
 act.

@@ -1,6 +1,6 @@
 ---
 name: facts
-description: Separate what can be checked from what is somebody's opinion or sales talk. Use it for an advertisement, a medicine leaflet, a news article, an investment offer, a health claim, a message from a stranger, anything a relative forwarded. Triggers on "это правда?", "что здесь факт", "is this true", "проверь эту статью", "мне прислали, что думаешь".
+description: Separate what can be checked from what is somebody's opinion or sales talk. Use it for an advertisement, a medicine leaflet, a news article, an investment offer, a health claim, a message from a stranger, anything a relative forwarded. Triggers on "is this true?", "what's fact here", "is this true", "check this article", "they sent me this, what do you think".
 argument-hint: "<the text, link or file>"
 allowed-tools: Read Glob
 ---
@@ -14,15 +14,15 @@ believe something, often something a relative sent them.
 
 ## 1. Three lists
 
-**МОЖНО ПРОВЕРИТЬ** — statements with a number, a date, a name or an event behind them. For each,
+**CAN BE CHECKED** — statements with a number, a date, a name or an event behind them. For each,
 one line saying *where* it would be checked:
 
-> «Одобрено Минздравом в 2024 году» — проверяется в реестре Минздрава.
+> "Approved by the Ministry of Health in 2024" — checked in the Ministry of Health's registry.
 
-**ЭТО МНЕНИЕ ИЛИ РЕКЛАМА** — statements that sound like fact and are not: "лучший", "доказано",
-"врачи рекомендуют", "все знают", "естественный значит безопасный". Quote the phrase.
+**THIS IS OPINION OR ADVERTISING** — statements that sound like fact and are not: "best", "proven",
+"doctors recommend", "everyone knows", "natural means safe". Quote the phrase.
 
-**ЗДЕСЬ ВООБЩЕ НИЧЕГО НЕ СКАЗАНО** — the sentences that carry no claim at all but feel like they
+**NOTHING IS ACTUALLY SAID HERE** — the sentences that carry no claim at all but feel like they
 do. This list is the one people have never seen, and it is usually the longest part of an
 advertisement.
 
@@ -30,9 +30,10 @@ advertisement.
 
 Name them only when they are actually present, and quote the words:
 
-- **Число без сравнения.** «Снижает риск на 40%» — с чего до чего? 40% от одного случая на миллион.
-- **Настоящий факт рядом с ненастоящим выводом.** The study is real; what they say it proves is not.
-- **Срочность.** «Только сегодня», «осталось три места» — this is not information, it is pressure
+- **A number with no comparison.** "Reduces risk by 40%" — from what, to what? 40% of one case in
+  a million.
+- **A real fact next to a fake conclusion.** The study is real; what they say it proves is not.
+- **Urgency.** "Only today", "three spots left" — this is not information, it is pressure
   to stop you checking.
 
 ## 3. What you must admit
@@ -41,29 +42,30 @@ Name them only when they are actually present, and quote the words:
 person gave you a link or a file, **use it and check** — and then say what you checked and what you
 found. Refusing to look when you can look is its own kind of dishonesty.
 
-If you have no way to reach the web, say so plainly and do not guess. You then do not say "это
-правда" or "это ложь" about anything current. You say which of the three lists it falls in, and for
-the first list, the exact page to open:
+If you have no way to reach the web, say so plainly and do not guess. You then do not say "this is
+true" or "this is false" about anything current. You say which of the three lists it falls in, and
+for the first list, the exact page to open:
 
-> Я не могу это проверить отсюда. Откройте <источник> и найдите <что именно>.
+> I can't check this from here. Open <source> and find <what exactly>.
 
-Either way, **say which of the two situations you were in.** "Я проверил на сайте X" and "я не мог
-проверить" are different answers, and the person must never have to guess which one they got.
+Either way, **say which of the two situations you were in.** "I checked on site X" and "I could not
+check" are different answers, and the person must never have to guess which one they got.
 
 If it smells like a fraud aimed at this person — an unexpected win, a request for a code from an
 SMS, a "bank" asking them to move money "to a safe account", a relative in trouble asking for money
 by message — say it directly, first, before the lists:
 
-> Так делают мошенники. Не переводите деньги и не называйте код из СМС никому, включая тех, кто
-> звонит «из банка». Позвоните в банк сами, по номеру с карты.
+> This is how scammers operate. Do not transfer money and do not give the code from a text message
+> to anyone, including someone who calls "from the bank." Call the bank yourself, using the number
+> on your card.
 
 Then close with the receipt, written out here rather than called as another skill —
 a skill cannot invoke a skill, and `/safecall:receipt` written in your answer reaches the person as
 a literal line of text they cannot use:
 
-> **Проверил:** <что именно открыл и прочитал>
-> **Не проверял:** <чего не смотрел, и чего в бумаге просто нет>
-> **Откуда:** <только из этого документа / из общего знания, может устареть>
+> **Checked:** <exactly what was opened and read>
+> **Not checked:** <what was not looked at, and what simply is not in the paper>
+> **Source:** <only from this document / from general knowledge, may be outdated>
 
 And if anything here turns on a rule, a price or a date that changes, add the line that says which
-page to open and what to look for on it. Never write «всё в порядке» when the truth is «не смотрел».
+page to open and what to look for on it. Never write "all clear" when the truth is "didn't look".

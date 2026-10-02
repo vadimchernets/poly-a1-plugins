@@ -4,10 +4,6 @@
 
 Have ChatGPT and Claude? Start right away. Have one? It helps you install the other. Have neither? Gemini (Google) or Meta AI (WhatsApp, Facebook) helps you install both, free.
 
-**Купили за $5 — и всё: два ИИ разных компаний работают вместе прямо в вашем телефоне. ChatGPT отвечает, Claude проверяет. Без платных ключей, серверов, компьютера и доплат.**
-
-Есть ChatGPT и Claude — начинаете сразу. Есть один — он поможет поставить второй. Нет ни одного — Gemini (Google) или Meta AI (WhatsApp, Facebook) помогут поставить оба, бесплатно.
-
 <details>
 <summary><b>How it works</b></summary>
 

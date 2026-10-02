@@ -10,8 +10,8 @@ IT MAKES THE COPY ITSELF. The first version blocked instead and told Claude to r
 
   (1) Poly A1's own coach writes a state file (`NEXT.md`, `СЕЙЧАС.md`, `ЗАРАЗ.md`) at the end of
       every evening. Second evening on, that file exists, so the guard stopped the one action that
-      ends a person's evening well, and showed them a shell command instead of "готово".
-  (2) blocking once and allowing afterwards meant that a frightened person who said "без копий"
+      ends a person's evening well, and showed them a shell command instead of "done".
+  (2) blocking once and allowing afterwards meant that a frightened person who said "no copies"
       lost the protection permanently, at exactly the moment they were most afraid.
 
 Making the copy keeps the promise absolutely and costs the person nothing, so there is nothing to
@@ -90,10 +90,9 @@ def main():
     except (OSError, subprocess.SubprocessError):
         return 0                                   # our own trouble is never their problem
 
-    if made.returncode == 0 and "Копия сделана" in made.stdout:
+    if made.returncode == 0 and "Copy made" in made.stdout:
         # Allowed, with a line Claude can pass on in the person's own language.
-        print(f"Safecall: сделал копию «{target.name}» перед правкой — вернуть можно словами "
-              f"«верни, как было». / Safecall: copied \"{target.name}\" before editing — "
+        print(f"Safecall: copied \"{target.name}\" before editing — "
               f"say \"put it back the way it was\" to undo.")
         return 0
 
@@ -104,24 +103,17 @@ def main():
 
     # The one case worth stopping for: we could not protect this file, so the change is one-way.
     why = (made.stdout or made.stderr or "").strip().splitlines()
-    why = why[0] if why else "причина неизвестна / reason unknown"
+    why = why[0] if why else "reason unknown"
     if not _give_pass(target, payload):
         # We cannot even remember that we asked. Blocking now would block this file FOREVER, with
         # no way through - the person repeats the edit and is refused again, every time. That is
         # the guard breaking the session, which this file forbids at the top. So: let it through
         # and say so. Our own broken home is never their problem.
-        print(f"Safecall: не смог сделать копию «{target.name}» и не смог запомнить вопрос о нём "
-              f"— скорее всего папка копий недоступна. Правка прошла БЕЗ копии. "
-              f"Скажите это человеку его языком. / Safecall: could not copy \"{target.name}\" and "
-              f"could not remember asking about it - the copies folder is probably unavailable. "
-              f"The edit went through WITH NO COPY. Tell the person in THEIR language.")
+        print(f"Safecall: could not copy \"{target.name}\" and could not remember asking about "
+              f"it - the copies folder is probably unavailable. The edit went through WITH NO "
+              f"COPY. Tell the person in THEIR language.")
         return 0
     sys.stderr.write(
-        f"Safecall: не смог сделать копию «{target.name}», поэтому правка была бы без возврата.\n"
-        f"Причина: {why}\n"
-        f"Скажите человеку об этом ЕГО языком и спросите, менять ли файл без копии. Если он "
-        f"скажет да — повторите правку, второй раз она пройдёт.\n"
-        f"---\n"
         f"Safecall: could not copy \"{target.name}\", so this edit would be one-way.\n"
         f"Reason: {why}\n"
         f"Tell the person in THEIR language and ask whether to change the file with no copy. "
@@ -161,7 +153,7 @@ PASS_HOURS = 24
 def _pass_key(target: Path, payload) -> str:
     who = str(payload.get("session_id") or "")
     if not who:
-        who = "день-" + datetime.now().strftime("%Y-%m-%d")
+        who = "day-" + datetime.now().strftime("%Y-%m-%d")
     return f"{who}\n{target}"
 
 

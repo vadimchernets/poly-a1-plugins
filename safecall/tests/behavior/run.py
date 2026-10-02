@@ -18,6 +18,11 @@ Run:
     python3 tests/behavior/run.py --model grok
     python3 tests/behavior/run.py --model codex --case receipt-no-all-clear
     python3 tests/behavior/run.py --model agy --jobs 4
+    python3 tests/behavior/run.py --model sonnet --lang ru   # one language only
+
+Cases and recorded answers live per language under tests/behavior/<lang>/ (cases.json +
+answers/). With no --lang, every language folder present is run (right now: ru). A second
+language is just another folder with the same shape.
 
 Models (the point is that the model running this is NOT the model that wrote the skill):
     grok   grok -p ... -m grok-4.6 --permission-mode dontAsk
@@ -41,8 +46,13 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 PLUGIN_ROOT = HERE.parent.parent
 SKILLS = PLUGIN_ROOT / "skills"
-CASES = HERE / "cases.json"
-OUT = HERE / "answers"
+
+
+def available_langs():
+    """Language folders under tests/behavior/, each holding its own cases.json and
+    answers/ (e.g. tests/behavior/ru/). Everything below is language-agnostic, so a
+    second language is just another folder with the same shape."""
+    return sorted(p.name for p in HERE.iterdir() if p.is_dir() and (p / "cases.json").exists())
 
 MODELS = {
     "grok": ["grok", "-p", "{prompt}", "-m", "grok-4.6", "--permission-mode", "dontAsk"],
@@ -54,8 +64,8 @@ MODELS = {
     # 26.09.2026) was unanimous with citations: these skills only ever execute inside Claude Code
     # on the buyer's computer, so they only ever execute on a Claude model - and the product fixes
     # nowhere WHICH one, it is whatever /model happens to be. Everything above is therefore a
-    # stand-in, not the case. `haiku` is the floor: a shipped step tells the buyer to try
-    # `--model haiku` (Terminal-Onboarding/шаги/08-шпаргалка-и-три-недели.md:88).
+    # stand-in, not the case. `haiku` is the floor: a shipped onboarding step (outside
+    # this repo) tells the buyer to try `--model haiku`.
     "sonnet": ["claude", "-p", "--model", "sonnet", "{prompt}"],
     "haiku": ["claude", "-p", "--model", "haiku", "{prompt}"],
     # Weak models. These are the ones that matter: a strong model behaves well with or
@@ -128,7 +138,7 @@ def skill_body(name):
 
 def build_prompt(case, bare=False):
     # `situation_bare` exists for the second half of the same objection: some situations hand the
-    # model the conclusion («The second answer does not state any number of days anywhere»). Where
+    # model the conclusion ("The second answer does not state any number of days anywhere"). Where
     # a case has one, --bare uses the version with the giveaway taken out and only the raw material
     # left. Cases without a giveaway have no second version and use the same text.
     sit = case.get("situation", "(nothing else - this is the start of the conversation)")
@@ -163,18 +173,20 @@ def call_model(model, prompt, timeout):
 def normalise(t):
     """Strip away what is formatting, keep what is words.
 
-    Written because the first run failed two cases the model had in fact got right:
-    «Они **не** согласились» did not match `не соглас` because of the asterisks, and
-    `нашёл` did not match `нашел`. A behaviour test must fail on behaviour, never on
-    a bold marker. Line breaks survive - the question counter needs them.
+    Written because the first run failed two cases the model had in fact got right: a
+    bolded negation did not match the plain-text pattern for it, because of the
+    asterisks, and a word spelled with the Cyrillic letter "yo" (ё) did not match the
+    pattern spelled with the plain "e" (е) it is interchangeable with. A behaviour test
+    must fail on behaviour, never on a bold marker or a spelling variant. Line breaks
+    survive - the question counter needs them.
     """
-    t = t.replace("ё", "е").replace("Ё", "Е")  # ё -> е
+    t = t.replace("ё", "е").replace("Ё", "Е")  # ru: these two letters are interchangeable
     # Typography is never behaviour. Added 26.09.2026 after the weak-model run:
-    # gpt-oss-120b writes file names with U+2011 NON-BREAKING HYPHEN
-    # («письмо‑в‑банк.docx»), so a case that required the model to read
-    # the folder listing back failed although the listing was right there in its
+    # gpt-oss-120b writes file names with U+2011 NON-BREAKING HYPHEN instead of a plain
+    # hyphen (e.g. inside a hyphenated file name), so a case that required the model to
+    # read the folder listing back failed although the listing was right there in its
     # answer. That is the checker breaking, not the skill. Same for U+202F, which it
-    # puts inside «14,9 %».
+    # puts inside a formatted percentage.
     t = t.translate({0x2010: "-", 0x2011: "-", 0x2012: "-", 0x2013: "-", 0x2212: "-",
                      0x00A0: " ", 0x202F: " ", 0x2009: " "})
     t = re.sub(r"[*_`]+", "", t)
@@ -187,25 +199,29 @@ FLAGS = re.IGNORECASE | re.UNICODE | re.DOTALL
 # How far either side of a hit to look for the words that cancel it.
 #
 # Was 70 until an outside review (grok-4.6, 26.09.2026) broke it: at that width a bare
-# «не » anywhere in the neighbourhood cancelled the hit, so «Я отправил содержимое папки
-# ... Не выполняю больше ничего» passed. A cancel has to sit against the phrase it
-# cancels, not merely near it. Single loose particles are banned from `unless` outright -
-# see the guard in check().
+# negation particle anywhere in the neighbourhood cancelled the hit, so an answer that
+# did the forbidden thing and, much later and unrelated, said "I'm not doing anything
+# else" passed. A cancel has to sit against the phrase it cancels, not merely near it.
+# Single loose particles are banned from `unless` outright - see the guard in check().
 WINDOW = 26
 
-# `unless` entries this narrow are what the hole was made of.
-TOO_LOOSE = {"не", "не ", "нет", "это не", "сейчас", "буду", "хочу", "когда", "если"}
+# `unless` entries this narrow are what the hole was made of. Keyed by the case's own
+# language (its folder under tests/behavior/), since the loose filler words are
+# language-specific; check() looks up the entry for whatever language it is running.
+TOO_LOOSE = {
+    "ru": {"не", "не ", "нет", "это не", "сейчас", "буду", "хочу", "когда", "если"},
+}
 
 
 def _find(pattern, text, unless=None):
     """First match of `pattern`, skipping matches that `unless` cancels.
 
     `unless` exists because the forbidden phrase is often the very phrase a correct
-    answer quotes in order to refuse it: «„Всё в порядке" я сказать не могу», «даже
-    если бы оба назвали 14 дней», «Два ИИ посмотрели - это не то же самое, что
-    „проверено"». Those are the skill working, not failing. The cancel is deliberately
-    narrow - a window of a few words, and a phrase named in the case - so that a plain
-    «всё в порядке» still fails.
+    answer quotes in order to refuse it: "'All clear' is not something I can say here",
+    "even if both of them had named 14 days", "two AIs looked at it - that is not the
+    same as 'verified'". Those are the skill working, not failing. The cancel is
+    deliberately narrow - a window of a few words, and a phrase named in the case - so
+    that a plain, unrefused "all clear" still fails.
     """
     pattern = normalise(pattern)
     unless = normalise(unless) if unless else None
@@ -220,12 +236,12 @@ def _find(pattern, text, unless=None):
                 # around it, not a fixed number of characters.
                 lo = max(text.rfind(c, 0, m.start()) for c in ".!?\n")
                 # A list item's context is the line that introduces it. Added 26.09.2026:
-                # gemini-3.1-pro answered «**Чего я не нашёл в бумаге:**» and then bulleted
-                # «* Каких-либо скрытых комиссий, штрафов…». Scoped to the bullet alone that
-                # reads as an invented fee; scoped with its heading it reads as what it is.
-                # Only one line back, and only when that line INTRODUCES a list - it ends
-                # with a colon. (normalise() has already stripped the «*» off the bullet, so
-                # the bullet marker itself is not there to test.)
+                # gemini-3.1-pro answered with a heading like "What I did not find in the
+                # document:" and then bulleted something like "* Any hidden fees, fines...".
+                # Scoped to the bullet alone that reads as an invented fee; scoped with its
+                # heading it reads as what it is. Only one line back, and only when that line
+                # INTRODUCES a list - it ends with a colon. (normalise() has already stripped
+                # the "*" off the bullet, so the bullet marker itself is not there to test.)
                 if lo >= 0 and text[lo] == "\n":
                     # Walk back over the sibling bullets to the line that introduces the list.
                     # Bounded at eight lines, and every line crossed must be non-empty, so this
@@ -252,7 +268,7 @@ def _find(pattern, text, unless=None):
     return None
 
 
-def check(case, raw):
+def check(case, raw, lang="ru"):
     """Return a list of failure strings. Empty list means the behaviour was right."""
     bad = []
     answer = normalise(raw)
@@ -260,7 +276,7 @@ def check(case, raw):
     for pat in case.get("forbid", []):
         u = pat.get("unless")
         if u:
-            loose = [a for a in u.split("|") if a.strip() in TOO_LOOSE]
+            loose = [a for a in u.split("|") if a.strip() in TOO_LOOSE.get(lang, set())]
             if loose:
                 bad.append("BAD CASE: unless of %r contains a loose particle %s - it would "
                            "cancel real failures" % (pat["why"][:40], loose))
@@ -280,16 +296,20 @@ def check(case, raw):
     mnq = case.get("max_numbered_questions")
     if mnq is not None:
         # The skill caps the questions it ENDS with, not every question mark in the
-        # answer - saying the plan back and asking «Так?» is the skill working. So count
-        # the numbered list, which is the shape the skill prescribes.
+        # answer - saying the plan back and asking "Right?" is the skill working. So
+        # count the numbered list, which is the shape the skill prescribes.
         #
         # And only the CLOSING list. Corrected 26.09.2026: the skill's §2 prescribes four
         # numbered kinds of hole, and its own example of one ends in a question mark
-        # («План держится на том, что <X>. Это проверено?»). Counting those as «questions
-        # asked» made the checker fail an answer for obeying the skill it is testing - the
+        # (e.g. "The plan rests on <X>. Is that verified?"). Counting those as "questions
+        # asked" made the checker fail an answer for obeying the skill it is testing - the
         # worst kind of checker bug, because it reads as a product defect. The closing block
         # is identifiable: the skill makes the model head it. Absent that heading, everything
         # counts, so dropping the heading is not an escape.
+        #
+        # The heading regex below matches the ru and en phrasing of that heading side by
+        # side (the model may answer in either language regardless of which language the
+        # case itself is in) - add further languages' phrasing here alongside, not instead.
         lines = answer.splitlines()
         start = 0
         for i, l in enumerate(lines):
@@ -303,7 +323,7 @@ def check(case, raw):
     mq = case.get("max_questions")
     if mq is not None:
         # Questions put TO the person. Lines that are quoted script for the person to
-        # send on ("спросите у них: ...") are the skill working, not the AI interrogating,
+        # send on (e.g. "ask them: ...") are the skill working, not the AI interrogating,
         # so only count question marks outside blockquoted example blocks.
         body = "\n".join(l for l in answer.splitlines() if not l.lstrip().startswith(">"))
         n = body.count("?") + body.count("？")
@@ -315,8 +335,8 @@ def check(case, raw):
 
 # ---------------------------------------------------------------- runner
 
-def run_case(case, model, timeout, refresh, bare=False):
-    dest = OUT / (model + "-bare" if bare else model)
+def run_case(case, model, timeout, refresh, lang, bare=False):
+    dest = HERE / lang / "answers" / (model + "-bare" if bare else model)
     dest.mkdir(parents=True, exist_ok=True)
     path = dest / (case["id"] + ".txt")
 
@@ -330,27 +350,14 @@ def run_case(case, model, timeout, refresh, bare=False):
         path.write_text(answer, encoding="utf-8")
         fresh = True
 
-    bad = check(case, answer)
+    bad = check(case, answer, lang)
     return case, ("PASS" if not bad else "FAIL"), bad, fresh
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--model", default=os.environ.get("BEHAVIOUR_MODEL", "grok"), choices=sorted(MODELS))
-    ap.add_argument("--case", action="append", help="run only these case ids")
-    ap.add_argument("--row", action="append", help="run only cases covering these registry rows, e.g. R12")
-    ap.add_argument("--jobs", type=int, default=4)
-    ap.add_argument("--timeout", type=int, default=300)
-    ap.add_argument("--refresh", action="store_true", help="re-ask the model even if an answer is stored")
-    ap.add_argument("--list", action="store_true")
-    ap.add_argument("--bare", action="store_true",
-                    help="drop the 'follow this skill' instruction and the giveaways in the situations - "
-                         "the harder, more honest condition. Answers go to answers/<model>-bare/.")
-    ap.add_argument("--selftest", action="store_true",
-                    help="check the checker: every case must flag its own failing_example. No model is called.")
-    args = ap.parse_args()
-
-    cases = json.loads(CASES.read_text(encoding="utf-8"))["cases"]
+def run_lang(lang, args):
+    """Run (or list/selftest) one language folder's cases.json. Returns an exit code."""
+    cases_path = HERE / lang / "cases.json"
+    cases = json.loads(cases_path.read_text(encoding="utf-8"))["cases"]
     if args.case:
         cases = [c for c in cases if c["id"] in args.case]
     if args.row:
@@ -359,11 +366,11 @@ def main():
 
     if args.list:
         for c in cases:
-            print("%-34s %-22s %s" % (c["id"], ",".join(c["rows"]), c["what"]))
+            print("%-6s %-34s %-22s %s" % (lang, c["id"], ",".join(c["rows"]), c["what"]))
         return 0
 
     if not cases:
-        print("no cases selected")
+        print("%s: no cases selected" % lang)
         return 2
 
     if args.selftest:
@@ -371,7 +378,7 @@ def main():
         # going red. Each case carries `failing_example`: a short answer that commits
         # the failure the case exists to catch. If the checker passes it, the case is
         # decoration and says so here rather than in six months.
-        print("selftest - every case must flag its own failing_example (no model is called)\n")
+        print("%s selftest - every case must flag its own failing_example (no model is called)\n" % lang)
         vacuous = []
         for c in cases:
             exs = c.get("failing_examples") or ([c["failing_example"]] if c.get("failing_example") else [])
@@ -379,25 +386,26 @@ def main():
                 print("MISSING failing_example  %s" % c["id"])
                 vacuous.append(c["id"])
                 continue
-            missed = [e for e in exs if not check(c, e)]
+            missed = [e for e in exs if not check(c, e, lang)]
             if missed:
                 for e in missed:
                     print("LETS THROUGH %-36s %s" % (c["id"], e[:100].replace("\n", " ")))
                 vacuous.append(c["id"])
             else:
                 print("ok   %-44s catches all %d" % (c["id"], len(exs)))
-        print("\n%d/%d cases can go red." % (len(cases) - len(vacuous), len(cases)))
+        print("\n%s: %d/%d cases can go red." % (lang, len(cases) - len(vacuous), len(cases)))
         if vacuous:
             print("not provable: %s" % ", ".join(vacuous))
         return 0 if not vacuous else 1
 
-    print("safecall behaviour suite - %d cases - model: %s%s" % (len(cases), args.model, " - BARE (no 'follow it')" if args.bare else ""))
+    print("safecall behaviour suite [%s] - %d cases - model: %s%s" % (
+        lang, len(cases), args.model, " - BARE (no 'follow it')" if args.bare else ""))
     print("(the checker is regular expressions, not a model; the model only answers)\n")
 
     started = time.time()
     results = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as ex:
-        futs = [ex.submit(run_case, c, args.model, args.timeout, args.refresh, args.bare) for c in cases]
+        futs = [ex.submit(run_case, c, args.model, args.timeout, args.refresh, lang, args.bare) for c in cases]
         for f in concurrent.futures.as_completed(futs):
             case, status, bad, fresh = f.result()
             results.append((case, status, bad))
@@ -409,13 +417,46 @@ def main():
 
     results.sort(key=lambda r: r[0]["id"])
     ok = sum(1 for _, s, _ in results if s == "PASS")
-    print("\n%d/%d passed in %ds. Answers: %s" % (ok, len(results), time.time() - started,
-                                                     OUT / (args.model + "-bare" if args.bare else args.model)))
+    out_dir = HERE / lang / "answers" / (args.model + "-bare" if args.bare else args.model)
+    print("\n%s: %d/%d passed in %ds. Answers: %s" % (lang, ok, len(results), time.time() - started, out_dir))
 
     failed = [c["id"] for c, s, _ in results if s != "PASS"]
     if failed:
         print("not passing: %s" % ", ".join(sorted(failed)))
     return 0 if not failed else 1
+
+
+def main():
+    langs_present = available_langs()
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--model", default=os.environ.get("BEHAVIOUR_MODEL", "grok"), choices=sorted(MODELS))
+    ap.add_argument("--lang", action="append", choices=langs_present or None,
+                    help="language folder(s) under tests/behavior/ to run, e.g. ru "
+                         "(default: every language folder present - %s)" % ", ".join(langs_present))
+    ap.add_argument("--case", action="append", help="run only these case ids")
+    ap.add_argument("--row", action="append", help="run only cases covering these registry rows, e.g. R12")
+    ap.add_argument("--jobs", type=int, default=4)
+    ap.add_argument("--timeout", type=int, default=300)
+    ap.add_argument("--refresh", action="store_true", help="re-ask the model even if an answer is stored")
+    ap.add_argument("--list", action="store_true")
+    ap.add_argument("--bare", action="store_true",
+                    help="drop the 'follow this skill' instruction and the giveaways in the situations - "
+                         "the harder, more honest condition. Answers go to <lang>/answers/<model>-bare/.")
+    ap.add_argument("--selftest", action="store_true",
+                    help="check the checker: every case must flag its own failing_example. No model is called.")
+    args = ap.parse_args()
+
+    langs = args.lang or langs_present
+    if not langs:
+        print("no language folders found under tests/behavior/ (each needs its own cases.json)")
+        return 2
+
+    exit_code = 0
+    for lang in langs:
+        rc = run_lang(lang, args)
+        if rc != 0:
+            exit_code = rc
+    return exit_code
 
 
 if __name__ == "__main__":

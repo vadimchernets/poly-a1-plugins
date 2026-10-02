@@ -3,7 +3,9 @@
     "Behaviour cases for duocall. Each case names the registry rows (R..) it is the",
     "proof for. 'forbid' is the important half: the point of duocall is that the AI",
     "stops claiming a pair that did not happen and agreement it cannot quote.",
-    "Registry: .../V1/Архив/Synthesizer/V1-для-Poly-A1-ЗАНОВО-26-сен/РЕЕСТР.md"
+    "Registry: V1's own registry of behaviour rows (R..), kept outside this repo.",
+    "These cases and their recorded answers (answers/) are the Russian-language",
+    "localization of this suite - see tests/behavior/run.py for the language mechanism."
   ],
   "cases": [
     {

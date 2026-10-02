@@ -48,83 +48,83 @@ def available():
         path = shutil.which(binary)
         if path:
             seen.add(family)
-            out.append({"семья": family, "программа": binary, "имя": label, "где": path})
+            out.append({"family": family, "binary": binary, "name": label, "path": path})
     return out
 
 
 def cmd_list(args):
     found = available()
     if not found:
-        print("Второй программы другой компании на этом компьютере нет.")
-        print("Это не поломка: второе мнение можно взять в браузере, бесплатно, "
-              "в чате другой компании — так и сделайте.")
+        print("There is no second program from another company on this computer.")
+        print("That isn't a malfunction: you can get a second opinion for free, in another "
+              "company's browser chat - just do that.")
         return 1
-    print(f"Нашёл {len(found)} программ(ы) другой компании, уже установленных и вошедших:")
+    print(f"Found {len(found)} program(s) from another company, already installed and signed in:")
     for f in found:
-        print(f"  {f['имя']} — {f['программа']}")
+        print(f"  {f['name']} - {f['binary']}")
     return 0
 
 
 def cmd_ask(args):
     found = available()
     if not found:
-        print(json.dumps({"ok": False, "почему": "нет второй программы другой компании"},
+        print(json.dumps({"ok": False, "why": "no second program from another company"},
                          ensure_ascii=False))
         return 1
 
     pick = None
     if args.who:
-        pick = next((f for f in found if args.who.lower() in (f["программа"], f["семья"])), None)
+        pick = next((f for f in found if args.who.lower() in (f["binary"], f["family"])), None)
         if pick is None:
-            print(json.dumps({"ok": False, "почему": f"{args.who} на этом компьютере нет"},
+            print(json.dumps({"ok": False, "why": f"{args.who} is not on this computer"},
                              ensure_ascii=False))
             return 1
     else:
         pick = found[0]
 
-    build = next(b for fam, bin_, b, _ in FAMILIES if bin_ == pick["программа"])
+    build = next(b for fam, bin_, b, _ in FAMILIES if bin_ == pick["binary"])
     prompt = args.prompt
     if prompt == "-":
         prompt = sys.stdin.read()
 
     try:
-        done = subprocess.run([pick["программа"], *build(prompt)],
+        done = subprocess.run([pick["binary"], *build(prompt)],
                               capture_output=True, text=True, timeout=TIMEOUT)
     except subprocess.TimeoutExpired:
-        print(json.dumps({"ok": False, "кто": pick["имя"], "программа": pick["программа"],
-                          "почему": f"не ответил за {TIMEOUT} секунд"}, ensure_ascii=False))
+        print(json.dumps({"ok": False, "who": pick["name"], "binary": pick["binary"],
+                          "why": f"did not answer within {TIMEOUT} seconds"}, ensure_ascii=False))
         return 1
     except OSError as e:
-        print(json.dumps({"ok": False, "кто": pick["имя"], "почему": f"не запустился: {e}"},
+        print(json.dumps({"ok": False, "who": pick["name"], "why": f"failed to start: {e}"},
                          ensure_ascii=False))
         return 1
 
     text = (done.stdout or "").strip()
     if done.returncode != 0 or not text:
         why = (done.stderr or "").strip().splitlines()
-        why = why[-1] if why else f"код возврата {done.returncode}"
+        why = why[-1] if why else f"exit code {done.returncode}"
         # The single most common failure, and it is not the person's fault.
         if any(w in why.lower() for w in ("quota", "limit", "rate", "usage", "429")):
-            why = "у этой программы кончился месячный или дневной запас"
-        print(json.dumps({"ok": False, "кто": pick["имя"], "программа": pick["программа"],
-                          "почему": why}, ensure_ascii=False))
+            why = "this program's monthly or daily allowance has run out"
+        print(json.dumps({"ok": False, "who": pick["name"], "binary": pick["binary"],
+                          "why": why}, ensure_ascii=False))
         return 1
 
-    print(json.dumps({"ok": True, "кто": pick["имя"], "программа": pick["программа"],
-                      "семья": pick["семья"], "ответ": text}, ensure_ascii=False))
+    print(json.dumps({"ok": True, "who": pick["name"], "binary": pick["binary"],
+                      "family": pick["family"], "answer": text}, ensure_ascii=False))
     return 0
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(description="Duocall: второй ИИ другой компании.")
+    ap = argparse.ArgumentParser(description="Duocall: a second AI from another company.")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
-    s = sub.add_parser("list", help="какие программы другой компании тут есть")
+    s = sub.add_parser("list", help="which programs from another company are here")
     s.set_defaults(func=cmd_list)
 
-    s = sub.add_parser("ask", help="задать вопрос второму ИИ")
-    s.add_argument("prompt", help="текст вопроса, или - чтобы прочитать со стандартного ввода")
-    s.add_argument("--who", help="кого именно спросить (codex, agy, grok, kimi, qwen)")
+    s = sub.add_parser("ask", help="ask the second AI a question")
+    s.add_argument("prompt", help="the question text, or - to read it from standard input")
+    s.add_argument("--who", help="who exactly to ask (codex, agy, grok, kimi, qwen)")
     s.set_defaults(func=cmd_ask)
 
     args = ap.parse_args(argv)
