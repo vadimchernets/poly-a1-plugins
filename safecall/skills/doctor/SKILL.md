@@ -51,7 +51,7 @@ Never repeat the English error text at them. Translate it:
 > установлена, но окно не знает, где она лежит. Давайте проверим первое: <one step>.
 
 **One step at a time. Wait for the answer before giving the next.** A numbered list of six steps
-is how a person 50+ loses the thread and stops.
+is how a beginner loses the thread and stops.
 
 ## 4. What not to say
 

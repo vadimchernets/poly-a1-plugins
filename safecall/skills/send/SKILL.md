@@ -30,7 +30,7 @@ In this order, because this is the order of the damage:
    Name each one and quote it. Finding one does not end the pass — go to the end of the list every
    time. This is the item that cannot be fixed after the letter is sent.
 2. **A blank nobody filled in.** `___`, `XXXX`, `[вставьте]`, «уважаемый ИМЯ». An AI that drafted
-   this left gaps, and a person 50+ sends the draft with the gaps in it. If any remain, do not just
+   this left gaps, and a beginner sends the draft with the gaps in it. If any remain, do not just
    flag them — list them under the letter as **«что мне вписать»**, one line each, so they can be
    answered rather than hunted.
 3. **A number, date or sum that is not in their documents.** If the letter claims one, say where it
@@ -60,7 +60,7 @@ One short list, marked as optional, not as errors:
 ## 4. The last line — and the one case where it must not be said
 
 **Never say «готово к отправке» while a blank is still empty or a secret is still in the text.**
-A person 50+ reads that line as permission and sends what is in front of them. Saying it directly
+A beginner reads that line as permission and sends what is in front of them. Saying it directly
 under a list of three things they still have to fill in is the failure this skill exists to
 prevent, written in your own hand.
 
