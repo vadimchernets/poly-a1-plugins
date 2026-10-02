@@ -69,6 +69,24 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Since 02.10.2026 the launcher on Windows also finds a Python that is not on PATH (installed after Claude
+      # Code started: the py launcher, %LOCALAPPDATA%\Programs\Python, the registry). The runner image has such
+      # Pythons, so "with no Python" would still find one: here the only Python left is setup-python's, on PATH.
+      # The job `just-installed-python` checks the places PATH does not know.
+      - name: Leave PATH the only place a Python is found (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          foreach ($k in 'HKCU:\Software\Python', 'HKLM:\Software\Python', 'HKLM:\Software\WOW6432Node\Python') {
+            Remove-Item -LiteralPath $k -Recurse -Force -ErrorAction SilentlyContinue
+          }
+          foreach ($f in "$env:SystemRoot\py.exe", "$env:SystemRoot\pyw.exe", "$env:LOCALAPPDATA\Programs\Python") {
+            Remove-Item -LiteralPath $f -Recurse -Force -ErrorAction SilentlyContinue
+          }
+          Get-ChildItem $env:ProgramFiles -Directory -Filter 'Python3*' -ErrorAction SilentlyContinue |
+            ForEach-Object { Rename-Item -LiteralPath $_.FullName "$($_.Name)-moved-away" }
+          python -c "import sys; print('the Python on PATH:', sys.executable)"
+
       - name: Install Claude Code (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
