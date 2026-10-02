@@ -15,7 +15,7 @@ set -u
 HERE=$(cd "$(dirname "$0")" && pwd)
 SRC_ROOT=${SRC_ROOT:-"$HOME/Developer"}
 PLUGINS="safecall duocall"
-EXCL="--exclude=.git --exclude=.DS_Store --exclude=._* --exclude=__pycache__ --exclude=*.pyc"
+EXCL="--exclude=.git --exclude=.DS_Store --exclude=._* --exclude=__pycache__ --exclude=.pytest_cache --exclude=*.pyc"
 
 check=0
 [ "${1:-}" = "--check" ] && check=1
