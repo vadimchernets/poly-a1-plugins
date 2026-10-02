@@ -43,6 +43,12 @@ never changes after it is published, and the person's machine needs nothing but 
 on 02.10.2026 in a fresh Ubuntu 24.04 with no git, no unzip and no Python: all six installed and came
 up enabled.
 
+The plugins' hooks run on Windows, macOS and Linux - on Windows whether Claude Code uses Git Bash or,
+without Git for Windows, PowerShell. `.github/workflows/hooks-on-three-systems.yml` proves it on
+GitHub's `windows-latest`, `macos-latest` and `ubuntu-latest`: every hook command run the way Claude
+Code spawns it (`ci/hooks_like_claude.py`), and a real `claude -p` session that fires them
+(`ci/claude_e2e.py`).
+
 ## The step everybody misses
 
 **Auto-update is OFF by default for any marketplace that is not Anthropic's own**, and no field in
