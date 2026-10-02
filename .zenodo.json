@@ -1,0 +1,16 @@
+{
+  "title": "poly-a1-plugins: Claude Code plugin marketplace for Poly A1",
+  "description": "Claude Code plugin marketplace that bundles the open Poly A1 plugins (safecall, duocall and others) so Claude Code can install them with one command.",
+  "creators": [
+    {
+      "name": "Chernets, Vadym"
+    }
+  ],
+  "upload_type": "software",
+  "license": "apache-2.0",
+  "keywords": [
+    "claude-code-plugin",
+    "marketplace",
+    "poly-a1"
+  ]
+}
