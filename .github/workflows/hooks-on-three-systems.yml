@@ -6,9 +6,15 @@
 #      in PowerShell 7, Windows PowerShell 5.1 and Git Bash - with a real Python and with none;
 #   2. ci/claude_e2e.py runs a real `claude -p` session against a stand-in API that asks for a Write
 #      and a Bash call, and checks what the hooks did and said.
-# On Windows step 2 runs twice: with Git Bash, and after Git is moved away, when Claude Code falls
-# back to PowerShell for hooks (the case a person without Git for Windows is in).
-name: hooks on three systems
+#   3. ci/skills_like_claude.py runs every script the skills name, the way the Bash tool and the
+#      PowerShell tool run a skill's command (Windows: Git Bash, PowerShell 7, Windows PowerShell 5.1),
+#      with a real Python and with none;
+#   4. ci/claude_skill_e2e.py runs a real `claude -p` in the default permission mode that opens two
+#      skills and runs the command written in each - it must run on the skill's allowed-tools, no prompt.
+# On Windows steps 2 and 4 run twice: with Git Bash, and after Git is moved away, when Claude Code falls
+# back to PowerShell for hooks and has only the PowerShell tool (the case a person without Git for
+# Windows is in).
+name: hooks and skills on three systems
 
 on:
   workflow_dispatch:
@@ -93,6 +99,16 @@ jobs:
         run: |
           python catalogue/ci/claude_e2e.py --config "$RUNNER_TEMP/claude-config"
 
+      - name: Every skill's script, the way Claude Code's shell tools run it
+        shell: bash
+        run: |
+          python catalogue/ci/skills_like_claude.py --installed "$RUNNER_TEMP/claude-config/plugins/installed_plugins.json"
+
+      - name: A real session runs the scripts written in two skills (default shell - Git Bash on Windows)
+        shell: bash
+        run: |
+          python catalogue/ci/claude_skill_e2e.py --config "$RUNNER_TEMP/claude-config"
+
       - name: A real session fires the hooks (Windows with no Git Bash - PowerShell)
         if: runner.os == 'Windows'
         shell: pwsh
@@ -104,5 +120,7 @@ jobs:
           if (Test-Path "C:\Program Files\Git\bin\bash.exe") { throw "Git Bash is still there" }
           & $py catalogue/ci/claude_e2e.py --config "$env:RUNNER_TEMP/claude-config"
           $code = $LASTEXITCODE
+          & $py catalogue/ci/claude_skill_e2e.py --config "$env:RUNNER_TEMP/claude-config"
+          if ($LASTEXITCODE -ne 0) { $code = $LASTEXITCODE }
           Rename-Item "C:\Program Files\Git-moved-away" "Git"
           exit $code
