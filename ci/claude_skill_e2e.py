@@ -11,7 +11,10 @@ default permission mode (nothing approved in advance, no --dangerously-skip-perm
   3. says it is done. A second session does the same for /chasecall:scout (`tracker.py stats`).
 Checks: each command ran without a permission prompt (the skill's allowed-tools covered it - in
 `-p` an unapproved command comes back as "This command requires approval"), and its output is the
-script's own, not a Python error.
+script's own, not a Python error. When a command is asked about, Claude Code's own matcher decides whose
+fault it is: the same command in a fresh session with only the skill's rules approved. Not covered there -
+our skill is wrong, FAIL. Covered - Claude Code dropped the skill's grant (a known bug of 2.1.288, see
+main()): a ::warning, and a 300 ms-pause probe at the end shows whether that bug is still there.
 
   python claude_skill_e2e.py --config <CLAUDE_CONFIG_DIR with the plugins installed>
 """
@@ -24,7 +27,6 @@ import subprocess
 import sys
 import tempfile
 import threading
-import time
 from http.server import ThreadingHTTPServer
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -68,9 +70,6 @@ def plan(body, project):
             if not m:
                 return [{"type": "text", "text": "NO-LAUNCHER-IN-SKILL-TEXT " + plugin}], "end_turn"
             root = m.group(1)
-            # A real model takes seconds to answer. Answering in a few milliseconds raced Claude Code's own
-            # update of the skill's allowed-tools grant (seen 3 times in 20 runs: "requires approval").
-            time.sleep(2)
             args = rest.format(project=project)
             if "Bash" in names and os.environ.get("E2E_SHELL_TOOL", "Bash") == "Bash":
                 tool, cmd = "Bash", 'sh "%s/hooks/python.sh" %s say %s' % (root, plugin, args)
@@ -79,6 +78,25 @@ def plan(body, project):
             return [{"type": "tool_use", "id": "toolu_run_" + sid, "name": tool,
                      "input": {"command": cmd, "description": "Run the skill's script"}}], "tool_use"
     return [{"type": "text", "text": "Done."}], "end_turn"
+
+
+def skill_rules(root, skill, tool):
+    """The skill's own allowed-tools rules for this shell tool, with its plugin folder put in."""
+    name = skill.split(":", 1)[1]
+    text = open(os.path.join(root, "skills", name, "SKILL.md"), encoding="utf-8").read()
+    line = next(l for l in text.split("---")[1].splitlines() if l.startswith("allowed-tools:"))
+    return ["%s(%s)" % (t, r.replace("${CLAUDE_PLUGIN_ROOT}", root))
+            for t, r in re.findall(r"\b(Bash|PowerShell)\((.*?)\)(?=\s|$)", line) if t == tool]
+
+
+def recheck_plan(body, tool, command):
+    """The same command, asked for straight away, with no skill opened."""
+    if "toolu_recheck" in {c.get("tool_use_id") for c in claude_e2e.tool_results(body)}:
+        return [{"type": "text", "text": "Done."}], "end_turn"
+    if tool not in {t.get("name") for t in body.get("tools", []) or []}:
+        return [{"type": "text", "text": "ok"}], "end_turn"
+    return [{"type": "tool_use", "id": "toolu_recheck", "name": tool,
+             "input": {"command": command, "description": "Run the skill's script"}}], "tool_use"
 
 
 def main():
@@ -90,22 +108,49 @@ def main():
     ap.add_argument("--config", required=True)
     ap.add_argument("--claude", default=shutil.which("claude") or "claude")
     ap.add_argument("--only", help="one step id; without it every step runs in a session of its own")
+    ap.add_argument("--gap-ms", type=int, default=0,
+                    help="pause the stand-in this long between a tool call and the end of its answer")
+    ap.add_argument("--recheck", help=argparse.SUPPRESS)   # JSON {tool, command, rules}: see below
     args = ap.parse_args()
     global STEPS
     if not args.only:
-        # One skill per session, as a person opens one per message. Two skills opened in one turn lost the
-        # second one's allowed-tools now and then (Claude Code 2.1.288, about one run in two with the
-        # stand-in): the command then asks for permission - a prompt, not a failure, for a person.
-        codes = [subprocess.call([sys.executable, os.path.abspath(__file__), "--config", args.config,
-                                  "--claude", args.claude, "--only", sid]) for sid, *_ in STEPS]
+        # One skill per session, as a person opens one per message.
+        me = [sys.executable, os.path.abspath(__file__), "--config", args.config, "--claude", args.claude]
+        codes = [subprocess.call(me + ["--only", sid]) for sid, *_ in STEPS]
+        # A known Claude Code bug, kept in sight (not a failure of ours, and not hidden either). When the Skill
+        # tool finishes while the model's answer is still streaming, Claude Code 2.1.288 drops the skill's
+        # allowed-tools grant for the rest of the turn, and the skill's own command is asked about. The query
+        # loop collects tool results mid-stream without the context they carry: in the binary, the mid-stream
+        # drain reads only `message` from getCompletedResults(), while getRemainingResults() after the stream
+        # also takes `newContext` - and the Skill tool is not concurrency-safe, so its permission layer travels
+        # only in that `newContext`. A real API leaves such a pause now and then; the stand-in answered event by
+        # event and so hit it in about 1 run in 6 (CI runs 37103036388, 37149272044). The stand-in now answers
+        # in one write (claude_e2e.py), which checks our skills' allowed-tools exactly; this probe adds a 300 ms
+        # pause and reports whether Claude Code still drops the grant. It turns into a note when that is fixed.
+        out = subprocess.run(me + ["--only", STEPS[0][0], "--gap-ms", "300"], stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT).stdout.decode("utf-8", "replace")
+        if "Claude Code dropped" in out:
+            print("::warning title=Claude Code drops a skill's allowed-tools::Known Claude Code bug still there: "
+                  "the Skill tool finished while the answer was streaming (300 ms pause) and the skill's own "
+                  "command was asked about. Our allowed-tools are right (the steps above); the fix is Claude Code's.")
+        elif "no prompt" in out:
+            print("note: with a 300 ms pause in the answer the skill's grant held - Claude Code may have fixed the "
+                  "dropped allowed-tools; the comment in claude_skill_e2e.py main() can go.")
+        else:
+            print("note: the stream-pause probe gave no verdict:\n" + out[-1500:])
         return 1 if any(codes) else 0
+    claude_e2e.STREAM_GAP_MS = args.gap_ms
     STEPS = [st for st in STEPS if st[0] == args.only]
+    recheck = json.loads(args.recheck) if args.recheck else None
 
     tmp = tempfile.mkdtemp(prefix="claude-skill-e2e-")
     home = os.path.join(tmp, "дом пользователя")
     project = os.path.join(home, "проект")
     os.makedirs(project)
-    claude_e2e.plan = lambda body, _note: plan(body, project)
+    if recheck:
+        claude_e2e.plan = lambda body, _note: recheck_plan(body, recheck["tool"], recheck["command"])
+    else:
+        claude_e2e.plan = lambda body, _note: plan(body, project)
     server = ThreadingHTTPServer(("127.0.0.1", 0), claude_e2e.Handler)
     threading.Thread(target=server.serve_forever, daemon=True).start()
 
@@ -120,7 +165,8 @@ def main():
                         "--permission-mode", "default",
                         # opening a skill is the one thing approved in advance (a person says yes to it once);
                         # its script then has to run on the skill's own allowed-tools
-                        "--allowedTools", "Skill", "--debug-file", os.path.join(tmp, "debug.log")],
+                        "--debug-file", os.path.join(tmp, "debug.log"),
+                        "--allowedTools"] + (recheck["rules"] if recheck else ["Skill"]),
                        cwd=project, env=env, capture_output=True, timeout=300, stdin=subprocess.DEVNULL)
     server.shutdown()
     out = p.stdout.decode("utf-8", "replace")
@@ -130,6 +176,10 @@ def main():
     problems = []
     last = reqs[-1] if reqs else {}
     results = {c["tool_use_id"]: c for c in claude_e2e.tool_results(last)}
+    if recheck:
+        rt = claude_e2e.text_of(results["toolu_recheck"]) if "toolu_recheck" in results else ""
+        print("recheck %s: %s" % ("covered" if rt and "requires approval" not in rt else "NOT covered", rt[:300]))
+        return 0 if rt and "requires approval" not in rt else 1
     shell = "Bash" if any(t.get("name") == "Bash" for t in last.get("tools", []) or []) \
         and os.environ.get("E2E_SHELL_TOOL", "Bash") == "Bash" else "PowerShell"
     for sid, skill, plugin, rest, want in STEPS:
@@ -146,8 +196,24 @@ def main():
         sent = [c.get("input", {}).get("command") for m in last.get("messages", []) if isinstance(m.get("content"), list)
                 for c in m["content"] if c.get("type") == "tool_use" and c.get("id") == "toolu_run_" + sid]
         if "requires approval" in rt or "permission" in rt.lower():
-            problems.append("%s: %s asked for permission - allowed-tools did not cover it: %r (command %r)"
-                            % (skill, shell, rt[:400], sent))
+            # Asked. Either our allowed-tools rule does not cover the command (our bug), or Claude Code dropped
+            # the skill's grant (its bug, see main()). Claude Code's own matcher tells which: a fresh session
+            # with nothing but the skill's rules approved runs the very same command.
+            root = re.search(r'^(?:sh ")?(.+?)/hooks/python\.(?:sh|ps1)', sent[0] if sent else "")
+            rules = skill_rules(root.group(1), skill, shell) if root else []
+            rc = subprocess.run([sys.executable, os.path.abspath(__file__), "--config", args.config, "--claude",
+                                 args.claude, "--only", sid, "--recheck",
+                                 json.dumps({"tool": shell, "command": sent[0], "rules": rules})],
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT) if rules else None
+            if rc is not None and rc.returncode == 0:
+                print("::warning title=Claude Code dropped %s's allowed-tools::%s's command was asked about in the "
+                      "turn that opened the skill, yet the skill's own rule %r covers it (rechecked by Claude Code "
+                      "itself). The known Claude Code bug in main(); our skill is right." % (skill, skill, rules))
+                print("ok   %s rule covers the command (Claude Code dropped the grant this time)" % skill)
+            else:
+                problems.append("%s: %s asked for permission - allowed-tools did not cover it: %r (command %r, "
+                                "rules %r)\n%s" % (skill, shell, rt[:400], sent, rules,
+                                                    rc.stdout.decode("utf-8", "replace")[-800:] if rc else ""))
         elif r.get("is_error") or want not in rt:
             problems.append("%s: %s ran, but not the script's answer: %r" % (skill, shell, rt[:400]))
         else:

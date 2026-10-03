@@ -23,9 +23,11 @@ import subprocess
 import sys
 import tempfile
 import threading
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 REQUESTS = []
+STREAM_GAP_MS = 0   # see Handler.do_POST
 NOTE = "заметка.txt"
 
 
@@ -116,6 +118,11 @@ class Handler(BaseHTTPRequestHandler):
                                            "delta": {"type": "input_json_delta",
                                                      "partial_json": json.dumps(b["input"], ensure_ascii=False)}})
             ev("content_block_stop", {"type": "content_block_stop", "index": i})
+        if STREAM_GAP_MS and any(b["type"] == "tool_use" for b in blocks):
+            # a pause between the last tool call and the end of the answer, as a real API leaves now and then
+            # (claude_skill_e2e.py: Claude Code drops a skill's allowed-tools when the Skill tool ends first)
+            self.wfile.flush()
+            time.sleep(STREAM_GAP_MS / 1000.0)
         ev("message_delta", {"type": "message_delta", "delta": {"stop_reason": stop, "stop_sequence": None},
                              "usage": {"output_tokens": 5}})
         ev("message_stop", {"type": "message_stop"})
