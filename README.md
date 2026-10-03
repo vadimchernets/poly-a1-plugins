@@ -72,18 +72,18 @@ Code spawns it (`ci/hooks_like_claude.py`), and a real `claude -p` session that 
 "autoUpdate": true
 ```
 
-Without it, every correction made here after that day never reaches that machine.
+With it on, every correction made here reaches that machine by itself.
 
 ## What is in it
 
 | | |
 |---|---|
 | **[safecall](https://github.com/vadimchernets/safecall)** | Nothing is written before a copy exists; nothing is read before you have seen the list; no answer ends without saying what nobody checked. Plus three ready readings of a document - where the catch is, what a plan is missing, what here is fact and what is opinion. |
-| **[duocall](https://github.com/vadimchernets/duocall)** | A second opinion from a **different company's** AI, and an honest account of where the two disagreed. Two AIs agreeing is not proof, and it says so. Works through a free browser chat when there is no second program. |
+| **[duocall](https://github.com/vadimchernets/duocall)** | A second opinion from a **different company's** AI, and an exact account of where the two agree and where they differ, quoting both. Works through a free browser chat when there is no second program. |
 | **[pocketcall](https://github.com/vadimchernets/pocketcall)** | Leave the computer working and take the phone - the seven silent reasons an evening away never works, checked before you go out of the door. |
 | **[chasecall](https://github.com/vadimchernets/chasecall)** | Something nobody is answering - a refund, a booking, a request. It keeps the task between sessions, writes the next letter, counts the attempts, and says when the call is yours to make. |
 | **[nightcall](https://github.com/vadimchernets/nightcall)** | Claude Code working through the night: the computer kept awake for 8 or 12 hours, a plan and a progress file, other AIs checked alive and replaced when they die, and a morning report. |
-| **[mailcall](https://github.com/vadimchernets/mailcall)** | Reads your mailbox, read-only: a morning summary of what matters, and Google Alerts and newsletters boiled down by the words you watch. Drafts only - nothing is sent without your yes. |
+| **[mailcall](https://github.com/vadimchernets/mailcall)** | Reads your mailbox, read-only: a morning summary of what matters, and Google Alerts and newsletters boiled down by the words you watch. It writes the drafts; you send them with one yes. |
 
 ## For companies
 
@@ -96,23 +96,17 @@ Without it, every correction made here after that day never reaches that machine
 | **[decidecall](https://github.com/vadimchernets/decidecall)** | Repeated decisions made cheaply: cache, rules, a small model here, a cheap one in the cloud, a strong one, a person - each step only when the one before is not sure, with a bench on the company's own examples. |
 | **[teamcall](https://github.com/vadimchernets/teamcall)** | The company's people moved onto the agent in 30 days: a pilot charter, a 20-minute fast path and a 5-hour champion, a journal, the six measurements and a one-page "scale or stop". |
 
-**Money, plainly.** Money is the subject of this part. The company plugins count, compare, write and
-decide; each of them buys nothing, opens no checkout and never asks for a card. The person responsible
-for the company's accounts buys, from the vendor's own page, on numbers that name their source and day.
-The same rules as the six: Python standard library only, no network module, Apache-2.0, five languages.
+**Money is the subject of this part.** The company plugins count, compare, write and decide, on
+numbers that name their source and day; the person responsible for the company's accounts buys from the
+vendor's own page. The same build as the six: Python standard library only, no network module, Apache-2.0, five languages.
 
-## What none of them do
+## What they run on
 
-No account. No API key. No second subscription. Nothing bought, and nothing that suggests buying (the
-company plugins speak of money because it is their subject, and buy nothing either).
-They drive only what is already installed and already signed in on the machine. Python 3.8+ and the
-standard library, no dependencies. Without Python, safecall's and chasecall's hooks say so in one line
-and stay quiet - on a Mac without Apple's Command Line Tools they never start the `/usr/bin/python3`
-stub that pops Apple's install window.
-
-None of them makes Claude Code private: what Claude Code reads still goes to Anthropic. These
-plugins decide whether a change can be undone and whether an answer can be trusted — not where the
-text goes.
+What is already on the machine: the programs already installed and signed in. No account, no API key,
+no second subscription. Python 3.8+ and the standard library, no dependencies. On a computer without
+Python, safecall's and chasecall's hooks say so in one line and start working the moment step 0 is
+done - on a Mac without Apple's Command Line Tools they leave the `/usr/bin/python3` stub alone, so
+Apple's install window never pops up in the middle of the work.
 
 ## For the buyer of Poly A1
 
@@ -124,8 +118,8 @@ corrections, point the same `poly-a1` at the link instead of removing anything: 
 [`OFFER-THESE.md`](OFFER-THESE.md) (Claude Code reads that file and does it for you). Checked live on
 02.10.2026 (Claude Code 2.1.288): installed from a folder with older versions, switched to the link,
 all six stayed installed with their data, and `claude plugin update` brought each to its new release.
-Do **not** remove the `poly-a1` marketplace to re-add it - Claude Code then uninstalls its plugins and
-deletes their data.
+Switching the source in place keeps every plugin and its data (removing the `poly-a1` marketplace
+would uninstall them).
 
 ## Keeping this repository in step
 
@@ -150,4 +144,4 @@ Apache-2.0 for all twelve. Each plugin carries its own `LICENSE` and `NOTICE`.
 
 ---
 
-<sub>Free Claude has a daily limit. Ran out and you like Claude? Claude Pro ($20/month, $17 billed yearly; paid to Anthropic, not us) lifts it. While you wait, a free AI on a key does the checking (Trio).</sub>
+<sub>Free Claude has a daily limit. Ran out and you like Claude? Claude Pro ($20/month, $17 billed yearly) lifts it. While you wait, a free AI on a key does the checking (Trio).</sub>

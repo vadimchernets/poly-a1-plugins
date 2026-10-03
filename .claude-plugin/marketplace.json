@@ -12,11 +12,11 @@
       "name": "safecall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/safecall/releases/download/v0.1.7/safecall-0.1.7.zip",
-        "sha256": "f8cb031276979a94ff63303e6839ae6864aa04850f4e879be972f68187e9c7a2"
+        "url": "https://github.com/vadimchernets/safecall/releases/download/v0.1.8/safecall-0.1.8.zip",
+        "sha256": "37e4161fb35c5e6246618851b38fdcf6b0a2ce1a91c5bf163a08b5f046639def"
       },
       "description": "Nothing is written before a copy exists, nothing is read before you have seen the list, and no answer ends without saying what nobody checked. Plus three ready readings of a document: where the catch is, what the plan is missing, what here is fact.",
-      "version": "0.1.7",
+      "version": "0.1.8",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -31,19 +31,19 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "ea38b91b55578a4540f826e7f2c795aa1b20d8bf",
-        "tag": "v0.1.7"
+        "commit": "c6cef1e707a8ab42df29a237786f9cc439bd9855",
+        "tag": "v0.1.8"
       }
     },
     {
       "name": "duocall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/duocall/releases/download/v0.2.0/duocall-0.2.0.zip",
-        "sha256": "37cf8d127aa33a5558bbe4054be38494df0975bad0c6e52393684878f4bb3ee0"
+        "url": "https://github.com/vadimchernets/duocall/releases/download/v0.2.1/duocall-0.2.1.zip",
+        "sha256": "b05480df4bbc74c8d894d0164a0152ede4c5215cc5fcd5b9b3fed3d5342072bb"
       },
       "description": "A second opinion from a DIFFERENT company's AI, and an honest account of where the two disagreed - because two AIs agreeing is not proof. Works through a free browser chat when no second program is installed.",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -57,19 +57,19 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "78c28615c63799ac49b6e55e8b75088944fd4ed6",
-        "tag": "v0.2.0"
+        "commit": "3e21ed8f4d209433407d0005e9b8a5e44a39db5e",
+        "tag": "v0.2.1"
       }
     },
     {
       "name": "pocketcall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/pocketcall/releases/download/v0.3.0/pocketcall-0.3.0.zip",
-        "sha256": "a313acfc282d7b3bb4197b31fec98f052bde9298515cf11d22ff2c4ac7d87cfc"
+        "url": "https://github.com/vadimchernets/pocketcall/releases/download/v0.3.1/pocketcall-0.3.1.zip",
+        "sha256": "2e726e0469ce2b321b458f8f07bf3ea475cbe766a3cea973900b21bc0dad33eb"
       },
       "description": "Leave the computer working and take the phone, without finding out in town that it never started: the seven silent reasons an evening away fails, checked before you leave.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -83,19 +83,19 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "8912ca4efe3343ab9b77efe7fdd4d9a67be2cd36",
-        "tag": "v0.3.0"
+        "commit": "93ed891a427a4faf7c7a1c0e4ed7b09c8687b4ce",
+        "tag": "v0.3.1"
       }
     },
     {
       "name": "chasecall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/chasecall/releases/download/v0.1.6/chasecall-0.1.6.zip",
-        "sha256": "15d17dc5f40d415ee9e6dfa8dcb6cfdc8a94bffcc5c61ae8631bccee297292ee"
+        "url": "https://github.com/vadimchernets/chasecall/releases/download/v0.1.7/chasecall-0.1.7.zip",
+        "sha256": "85d40ea3a5940368023bb8ba32f3a16339a58481786161495b9af3523b3ce3ca"
       },
       "description": "Hand Claude Code something nobody is answering - a refund, a booking, an unanswered request. It keeps the task between sessions, writes the next letter, counts the attempts, and tells you when the call is yours to make.",
-      "version": "0.1.6",
+      "version": "0.1.7",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -109,19 +109,19 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "4164f85cd785b5e6e6825d1561b432510c38a48d",
-        "tag": "v0.1.6"
+        "commit": "561f45fd9b5bbe79d9c94ea93cf7c6a30fb5ec85",
+        "tag": "v0.1.7"
       }
     },
     {
       "name": "nightcall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/nightcall/releases/download/v0.3.9/nightcall-0.3.9.zip",
-        "sha256": "bc8e8594452e5f6ed2666ab9af1924d0afa65c8f50695e447f6b5f5601d2c873"
+        "url": "https://github.com/vadimchernets/nightcall/releases/download/v0.3.10/nightcall-0.3.10.zip",
+        "sha256": "c3e8969d545373954aa6c3a5680186b3440ad885a70adb7b0ffe13d71a402028"
       },
       "description": "Leave Claude Code working through the night: the computer kept awake for 8 or 12 hours on Mac, Linux or Windows, a plan and a progress file, self-critique, other AIs from your own subscriptions (or free web chats) checked alive and replaced when they die, and a morning report of what was done.",
-      "version": "0.3.9",
+      "version": "0.3.10",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -136,19 +136,19 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "6ab6d5d39d12ce422b3f38ad3d7f123042661f24",
-        "tag": "v0.3.9"
+        "commit": "65af1d2f23f3b6e653409fed0f851d429788106f",
+        "tag": "v0.3.10"
       }
     },
     {
       "name": "mailcall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/mailcall/releases/download/v0.2.0/mailcall-0.2.0.zip",
-        "sha256": "c987d016d9c7d0ec4461b24a42fc3481a963e4128ba2ff800fe807de3e47adc7"
+        "url": "https://github.com/vadimchernets/mailcall/releases/download/v0.2.1/mailcall-0.2.1.zip",
+        "sha256": "1f9b87d2473f17e88dca7eaefcda681a9473013593f541623e06d5644809c046"
       },
       "description": "An agent that reads your mailbox: a morning summary of what matters and who waits for your answer, and your Google Alerts and newsletters boiled down by the words you watch. Gmail connector of your Claude subscription, or read-only IMAP with an app password kept in the system keychain. Drafts only - nothing is sent without your yes.",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -163,19 +163,19 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "6564e212c4faa35dc8720d0402803ee97b44b51e",
-        "tag": "v0.2.0"
+        "commit": "759581b7f41ed6930af2f94f398b4514a470f878",
+        "tag": "v0.2.1"
       }
     },
     {
       "name": "billcall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/billcall/releases/download/v0.1.2/billcall-0.1.2.zip",
-        "sha256": "be4203622366886389a2e52e806da3c60ee37dae42c7d857590447ba835bc5c0"
+        "url": "https://github.com/vadimchernets/billcall/releases/download/v0.1.3/billcall-0.1.3.zip",
+        "sha256": "8517eb84910b0da717e4063d80b74c8eec0d2375a986a1339334e93d5e05fad3"
       },
       "description": "What AI costs a company, counted from one dated price table: the monthly bill of a mix of seats, API work and own machines with the price of one accepted task; the week's spend from Claude Code's logs, the Team spend report and OpenTelemetry, with idle seats; budget alarms at 50, 80 and 100 per cent; Team against Enterprise; contract rates as a modelPricing block for managed settings; an own GPU machine against renting. It counts and compares - it buys nothing and never asks for a card.",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -192,19 +192,19 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "32d6298a4fdb023b7a17fc235dd645db4c719769",
-        "tag": "v0.1.2"
+        "commit": "95938514676734555391a4cfe6922cb4d2577db0",
+        "tag": "v0.1.3"
       }
     },
     {
       "name": "gatecall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/gatecall/releases/download/v0.1.2/gatecall-0.1.2.zip",
-        "sha256": "81df0c65f142a856405d08ecb45a0066166a0bd3661ea527199be4040941e3f1"
+        "url": "https://github.com/vadimchernets/gatecall/releases/download/v0.1.3/gatecall-0.1.3.zip",
+        "sha256": "8eda2970e7f00ae89df7e11da14f0c23449bf8eb472d33337fb3ae7e9820d6f2"
       },
       "description": "What may leave the company, and where it may go. Its hooks stop a message, a command, a web request or a tool call that carries a key, a card number (Luhn-checked), an IBAN (mod-97), a national ID number with its check digit, or a list of people's addresses or phone numbers - with the reason in the person's language. Red folders are read only by a model on this computer; profiles for any company, the EU and US defence contractors (no DeepSeek); kimi only in a training folder, grok only on a cleaned copy, agy never with a permission for everything; a permissions.deny block with absolute //paths; a journal that keeps kinds and fingerprints, never the values.",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -220,19 +220,19 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "386f0b70143c7342e5bdd26ba32ac50f32ae0f0e",
-        "tag": "v0.1.2"
+        "commit": "de58e283e7c2d1195c21d6f65920a256f47b2922",
+        "tag": "v0.1.3"
       }
     },
     {
       "name": "firmcall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/firmcall/releases/download/v0.1.2/firmcall-0.1.2.zip",
-        "sha256": "d451bd6840eb0e91e67446bc318d5da84c8fd1b709419bb21651690e2c44c881"
+        "url": "https://github.com/vadimchernets/firmcall/releases/download/v0.1.3/firmcall-0.1.3.zip",
+        "sha256": "f3b0a41ac6a2165e813d1803d2204e88f5911a89b49dc52539e00ced90506e3d"
       },
       "description": "The plugin that writes a company's own plugin, and the administrator's path: an interview turns the company's frequent tasks into skills with examples and tests, a private catalogue and a zip for the organisation's plugin library (Cowork and chat); the rules file for every computer (managed-settings.d, managed-mcp.json, the company policy file), the same rules for the claude.ai console, a Jamf configuration profile and an Intune script that put them on many laptops, row-level security for a database the agent reads; a lint for the settings that silently switch the phone remote off, and a check of where a plugin works. It writes and checks; it buys nothing.",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -249,19 +249,19 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "beafedc3f095e277867d74a4c1e3d1e685af209a",
-        "tag": "v0.1.2"
+        "commit": "42b4607ee93609a3515cc31f988c8fdcb1f80d6b",
+        "tag": "v0.1.3"
       }
     },
     {
       "name": "routecall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/routecall/releases/download/v0.1.2/routecall-0.1.2.zip",
-        "sha256": "53bc0a77b443d33e4ede4ad0309c9d9b80102532214c0bcacde1ae09109786aa"
+        "url": "https://github.com/vadimchernets/routecall/releases/download/v0.1.3/routecall-0.1.3.zip",
+        "sha256": "07aaf87cc85ca36a07d8206285739ec7cb97f8d519acb21515bfaacbc139eb16"
       },
       "description": "The strong model thinks, cheap and local models work - without losing the remote. The advisor, opusplan and Haiku subagents on the person's own seat; a separate cheap window per project for DeepSeek, Kimi, Qwen, GLM, MiniMax or MiMo (key from the system keychain, red folders denied or left out of a sparse worktree); a red window on a model on this computer; which local model fits the machine and how many people it holds; other vendors' agents for scripts only on API rows; a LiteLLM gateway for CI with a daily budget; a llama-swap server; and a doctor that says why Remote Control stopped. It buys nothing.",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -281,19 +281,19 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "68c3e40298faf0626cf93c1eadd547183db2a8ec",
-        "tag": "v0.1.2"
+        "commit": "e634349c40fcae81cf4bef4369b27cd0762a6e04",
+        "tag": "v0.1.3"
       }
     },
     {
       "name": "decidecall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/decidecall/releases/download/v0.1.2/decidecall-0.1.2.zip",
-        "sha256": "b70e94273a50aaf4a3b8e98131dd8d649971bfbe63c187117d2d5e6b5d9b9756"
+        "url": "https://github.com/vadimchernets/decidecall/releases/download/v0.1.3/decidecall-0.1.3.zip",
+        "sha256": "e588d9aea16d1add10f6d11f500848db3efa946961feeea2697532dece3b1cb8"
       },
       "description": "A decision layer for a company: a repeated small decision (which team gets this message, approve or send back, is it urgent) walks cache, rules, a local model, a cheap cloud model, a strong model and a person, and stops at the first link sure enough (confidence 0.95 by default; two links that agree settle a less sure answer). A person's answer goes into the cache, so it is never asked twice; promote turns decisions the models kept agreeing on into cache entries and suggests rules; bench measures accuracy, what each link decided, how honest the confidences were and the price of one decision against sending everything to one model. Model links are programs the company installs (strands-decider, OpenJev, ollama, claude -p), checked against an output schema; the company policy keeps red data local, admits only zero-retention vendors when asked and stops paid links at the daily budget. It decides and counts - it buys nothing.",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -310,19 +310,19 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "3031b7ec78491b131c76e5f5fe0ac0210485ae34",
-        "tag": "v0.1.2"
+        "commit": "718a26a83ff791c40f5cd986fd8c8d3601aa4f9a",
+        "tag": "v0.1.3"
       }
     },
     {
       "name": "teamcall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/teamcall/releases/download/v0.1.2/teamcall-0.1.2.zip",
-        "sha256": "e7d09fbdc6df01fbd48776b29b7ff7a858eaf01d8c0fdd54c16974a79de3607a"
+        "url": "https://github.com/vadimchernets/teamcall/releases/download/v0.1.3/teamcall-0.1.3.zip",
+        "sha256": "8d2381820cf135904581d13bd231ce5394a907e98defb90efc7fb1a570d123e6"
       },
       "description": "Move a company's people from the chat window to a terminal agent in 30 days, and measure it: a pilot charter from 5 people to 30-50 with a one-page set-up for IT, a 20-minute fast path per person, a 5-hour champion path, the same task turned into one command (termboost), a transition journal, a report on six measurements (time, quality, coverage, repeatability, new capability, what a person checks) with the minutes of human help per first working result, a scale-or-stop page, and which seat already pays for which terminal agent. It counts and plans; it buys nothing.",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -338,8 +338,8 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "a073c5faae4d1a614f947d2f2e777c8a8099a76b",
-        "tag": "v0.1.2"
+        "commit": "0b2faf7c8e18bb748a030a5cb0e1a1f9a75cb823",
+        "tag": "v0.1.3"
       }
     }
   ]

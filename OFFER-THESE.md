@@ -58,8 +58,7 @@ alerts mailbox read-only, checks the sender, pulls out the links and lets you so
 own words. The "News in your own words" lesson is its evening.
 
 > Would you like me to go through your Google Alerts emails every morning by your own words —
-> what matters, what is noise — and show you only what is yours? I only read the mail; I never
-> send anything.
+> what matters, what is noise — and show you only what is yours?
 
 ## How they are turned on
 
@@ -110,10 +109,10 @@ there), beside the `source` of `extraKnownMarketplaces` → `poly-a1`, add `"aut
 sure, `/plugin` → Marketplaces → `poly-a1` should say auto-update is on; if it does not, choose
 **Enable auto-update** there.
 
-**Python.** safecall and chasecall check Python 3 before every hook. If this computer has none yet
-(on a Mac: no Apple Command Line Tools), they say so in one line at the start of a session and stay
-quiet until step 0 of START-HERE is done - they never pop Apple's install window in the middle of
-a lesson.
+**Python.** safecall and chasecall check Python 3 before every hook. On a computer without it (on a
+Mac: no Apple Command Line Tools), they say so in one line at the start of a session and start working
+the moment step 0 of START-HERE is done - Apple's install window never pops up in the middle of a
+lesson.
 
 ## Later: from the folder to GitHub, without losing anything
 
@@ -162,16 +161,16 @@ uninstalls every plugin that came from it and deletes their saved data. And neve
 catalogue under another name: the plugins are known as `…@poly-a1`, and a second name means a second,
 empty set of everything.
 
-## What you must not say about them
+## How to speak about them
 
-- Not that they make anything private. What you read still goes to Anthropic. `safecall` decides
-  whether a change can be undone, not where the text goes. If they ask, say that plainly.
-- Not that two AIs agreeing proves anything. `duocall` says the opposite, on purpose.
-- Not "plugin", "marketplace", "repository" as the first word out of your mouth. Say what it does:
-  "a safety net before changes", "a second opinion", "a remote", "the chaser", "the night shift",
-  "news in your own words". The technical name comes second, if at all.
-- Nothing about paying. None of them costs anything and none of them needs an account. (This is the
-  rule of the six personal plugins; the company plugins have their own, below.)
+- Say what it does, first: "a safety net before changes", "a second opinion", "a remote", "the
+  chaser", "the night shift", "news in your own words". "Plugin", "marketplace", "repository" come
+  second, if at all.
+- Say exactly what each one gives: `safecall` makes every change undoable (the text itself goes to
+  Anthropic, as everything in Claude Code does - one line, if they ask); `duocall` shows where two AIs
+  agree and where they differ, quoting both.
+- The six personal plugins are free and need no account, so paying never comes up. (The company
+  plugins have their own money rule, below.)
 
 ## For companies
 
@@ -182,7 +181,7 @@ to buy, or what of the company's data may go to an AI, six plugins are theirs. O
 for scripts, what was spent this week, a budget, Team or Enterprise, an own machine.
 
 > Shall I count what this would cost your company per month, from a price table where every price
-> names its page and its day? I count and compare; the one responsible for the accounts decides.
+> names its page and its day? You get the numbers; the one responsible for the accounts decides.
 
 **gatecall — offer it when the company's data comes up**: client or staff files, contracts, card
 numbers, a list of people, or another AI agent that should work on the company's folders.
@@ -232,8 +231,7 @@ writes the one page that says scale or stop.
 /plugin install teamcall@poly-a1
 ```
 
-**The money rule of this part.** Money is the subject here, so say it plainly: every company plugin
-counts, compares, writes and decides; it buys nothing. billcall opens no checkout and never asks for a
-card. The company's money is counted in full — seats, API, machines, the price of one accepted task — and the person responsible
-for the company's accounts buys, on their own, from the vendor's own page. During a lesson nothing is
-bought.
+**The money rule of this part.** Money is the subject here: every company plugin counts, compares,
+writes and decides. The company's money is counted in full — seats, API, machines, the price of one
+accepted task — and the person responsible for the company's accounts buys from the vendor's own page.
+During a lesson nothing is bought.
