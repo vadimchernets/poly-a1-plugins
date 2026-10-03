@@ -65,11 +65,11 @@
       "name": "pocketcall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/pocketcall/releases/download/v0.3.1/pocketcall-0.3.1.zip",
-        "sha256": "2e726e0469ce2b321b458f8f07bf3ea475cbe766a3cea973900b21bc0dad33eb"
+        "url": "https://github.com/vadimchernets/pocketcall/releases/download/v0.3.2/pocketcall-0.3.2.zip",
+        "sha256": "1869a3acef9767b05970b13e202217e87f17aab4b72cc14eb47a3beb20e13669"
       },
       "description": "Leave the computer working and take the phone, without finding out in town that it never started: the seven silent reasons an evening away fails, checked before you leave.",
-      "version": "0.3.1",
+      "version": "0.3.2",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -83,8 +83,8 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "93ed891a427a4faf7c7a1c0e4ed7b09c8687b4ce",
-        "tag": "v0.3.1"
+        "commit": "086ce71a8b8b0582c29b881a9c0c8b6ac81c3bde",
+        "tag": "v0.3.2"
       }
     },
     {
@@ -171,11 +171,11 @@
       "name": "billcall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/billcall/releases/download/v0.1.3/billcall-0.1.3.zip",
-        "sha256": "8517eb84910b0da717e4063d80b74c8eec0d2375a986a1339334e93d5e05fad3"
+        "url": "https://github.com/vadimchernets/billcall/releases/download/v0.1.4/billcall-0.1.4.zip",
+        "sha256": "2ee85b1f3555d74edc904d6bcd71abe6a788de41b2fa9125534e47aa6d579018"
       },
       "description": "What AI costs a company, counted from one dated price table: the monthly bill of a mix of seats, API work and own machines with the price of one accepted task; the week's spend from Claude Code's logs, the Team spend report and OpenTelemetry, with idle seats; budget alarms at 50, 80 and 100 per cent; Team against Enterprise; contract rates as a modelPricing block for managed settings; an own GPU machine against renting. It counts and compares - it buys nothing and never asks for a card.",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -192,8 +192,8 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "95938514676734555391a4cfe6922cb4d2577db0",
-        "tag": "v0.1.3"
+        "commit": "7ec58afab1e580979e276628c7761d18f45cd32a",
+        "tag": "v0.1.4"
       }
     },
     {
@@ -289,11 +289,11 @@
       "name": "decidecall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/decidecall/releases/download/v0.1.3/decidecall-0.1.3.zip",
-        "sha256": "e588d9aea16d1add10f6d11f500848db3efa946961feeea2697532dece3b1cb8"
+        "url": "https://github.com/vadimchernets/decidecall/releases/download/v0.1.4/decidecall-0.1.4.zip",
+        "sha256": "b7ecd254592fc74fdfdc0698575fda23c16512eb41fbe448c506d0415e967023"
       },
       "description": "A decision layer for a company: a repeated small decision (which team gets this message, approve or send back, is it urgent) walks cache, rules, a local model, a cheap cloud model, a strong model and a person, and stops at the first link sure enough (confidence 0.95 by default; two links that agree settle a less sure answer). A person's answer goes into the cache, so it is never asked twice; promote turns decisions the models kept agreeing on into cache entries and suggests rules; bench measures accuracy, what each link decided, how honest the confidences were and the price of one decision against sending everything to one model. Model links are programs the company installs (strands-decider, OpenJev, ollama, claude -p), checked against an output schema; the company policy keeps red data local, admits only zero-retention vendors when asked and stops paid links at the daily budget. It decides and counts - it buys nothing.",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -310,8 +310,8 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "718a26a83ff791c40f5cd986fd8c8d3601aa4f9a",
-        "tag": "v0.1.3"
+        "commit": "22939aefa828cf8c7e1519aa91964345abb20941",
+        "tag": "v0.1.4"
       }
     },
     {
