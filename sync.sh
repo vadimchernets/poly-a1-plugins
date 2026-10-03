@@ -29,6 +29,18 @@
 #   ./sync.sh          - pin every entry to the release of its working repository's plugin.json version
 #   ./sync.sh --check  - change nothing, fail if any pin, version or sha256 is not what is published
 #
+#   ./sync.sh --add <plugin> [<plugin>...]
+#                      - write a catalogue entry for a new plugin from its own plugin.json
+#
+# A new plugin enters the catalogue through `--add`: the entry takes the name, description, version,
+# author, licence, homepage and keywords from the plugin's own `.claude-plugin/plugin.json` (one source
+# of those words), the source it will be released from, {"source": "github", "repo":
+# "vadimchernets/<plugin>"}, and an empty `metadata` (billcall, gatecall, firmcall, routecall, decidecall
+# and teamcall, 02.10.2026). `--add` changes nothing else and never pins. Until the plugin's repository is
+# pushed and its first `v<version>` release carries the zip, both other modes say BAD for it, and the
+# catalogue is not pushed; the first `./sync.sh` after the release turns the entry into the `archive`
+# source with the sha256 of the published zip, like every other entry.
+#
 # For every plugin both modes require: the working repository is clean and pushed, its HEAD is the
 # commit tagged v<version> (an unreleased commit would put into the kit something no zip holds), the
 # release zip is downloadable, has the one top folder <plugin>-<version>/, and its plugin.json says
@@ -39,6 +51,56 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 SRC_ROOT=${SRC_ROOT:-"$HOME/Developer"}
 mode=write
 [ "${1:-}" = "--check" ] && mode=check
+if [ "${1:-}" = "--add" ]; then
+  shift
+  [ "$#" -gt 0 ] || { echo "usage: ./sync.sh --add <plugin> [<plugin>...]"; exit 2; }
+  python3 - "$HERE/.claude-plugin/marketplace.json" "$SRC_ROOT" "$@" <<'PY'
+import json, os, re, sys
+
+path, src_root, names = sys.argv[1], sys.argv[2], sys.argv[3:]
+OWNER = "vadimchernets"
+with open(path, encoding="utf-8") as fh:
+    m = json.load(fh)
+known = {e["name"] for e in m["plugins"]}
+bad = 0
+for name in names:
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", name):
+        print("BAD: %r is not a plugin name" % name); bad += 1; continue
+    if name in known:
+        print("  %s - already in the catalogue, left as it is" % name); continue
+    manifest = os.path.join(src_root, name, ".claude-plugin", "plugin.json")
+    try:
+        with open(manifest, encoding="utf-8") as fh:
+            inner = json.load(fh)
+    except (OSError, ValueError) as err:
+        print("BAD: %s - %s cannot be read (%s)" % (name, manifest, err)); bad += 1; continue
+    if inner.get("name") != name or not inner.get("version") or not inner.get("description"):
+        print("BAD: %s - %s must say this name, a version and a description" % (name, manifest)); bad += 1; continue
+    entry = {
+        "name": name,
+        "source": {"source": "github", "repo": "%s/%s" % (OWNER, name)},
+        "description": inner["description"],
+        "version": inner["version"],
+        "author": inner.get("author") or {"name": "Vadym Chernets"},
+        "license": inner.get("license", "Apache-2.0"),
+        "homepage": inner.get("homepage") or "https://github.com/%s/%s" % (OWNER, name),
+        "keywords": inner.get("keywords", []),
+        "category": "productivity",
+        "metadata": {},
+    }
+    m["plugins"].append(entry)
+    known.add(name)
+    print("  %s %s - added; the first ./sync.sh after v%s is released pins it to the release zip"
+          % (name, inner["version"], inner["version"]))
+if not bad:
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(m, fh, ensure_ascii=False, indent=2)
+        fh.write("\n")
+print("  catalogue: %d plugin(s)" % len(m["plugins"]))
+sys.exit(1 if bad else 0)
+PY
+  exit $?
+fi
 
 python3 - "$HERE/.claude-plugin/marketplace.json" "$SRC_ROOT" "$mode" <<'PY'
 import hashlib, io, json, os, subprocess, sys, zipfile

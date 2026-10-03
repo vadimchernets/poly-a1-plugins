@@ -1,6 +1,6 @@
 # The plugins' hooks on Windows, macOS and Linux, run by a real Claude Code.
 #
-# Each job installs Claude Code the way a person does, adds the six plugins from a local folder
+# Each job installs Claude Code the way a person does, adds every plugin the catalogue lists from a local folder
 # (a catalogue next to their checkouts), installs them, and then:
 #   1. ci/hooks_like_claude.py runs every hook command exactly as Claude Code spawns it - on Windows
 #      in PowerShell 7, Windows PowerShell 5.1 and Git Bash - with a real Python and with none;
@@ -49,21 +49,25 @@ jobs:
         with:
           path: catalogue
 
-      - name: Check out the six plugins
+      # Every plugin the catalogue lists, read from the catalogue itself (since 02.10.2026, when the six
+      # company plugins joined the six personal ones): a plugin added to the catalogue is tested here the
+      # same day, with no list to keep in step by hand.
+      - name: Check out every plugin the catalogue lists
         shell: bash
         run: |
           mkdir -p local/.claude-plugin
-          for p in safecall duocall nightcall mailcall chasecall pocketcall; do
+          names=$(python3 -c 'import json,sys; print(" ".join(p["name"] for p in json.load(open(sys.argv[1]))["plugins"]))' catalogue/.claude-plugin/marketplace.json 2>/dev/null \
+            || python -c 'import json,sys; print(" ".join(p["name"] for p in json.load(open(sys.argv[1]))["plugins"]))' catalogue/.claude-plugin/marketplace.json)
+          echo "$names" > local/names.txt
+          for p in $names; do
             git clone --quiet --depth 1 --branch "$REF" "https://github.com/vadimchernets/$p" "local/$p"
             rm -rf "local/$p/.git"
             echo "$p $(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["version"])' "local/$p/.claude-plugin/plugin.json" 2>/dev/null || python -c 'import json,sys;print(json.load(open(sys.argv[1]))["version"])' "local/$p/.claude-plugin/plugin.json")"
           done
-          cat > local/.claude-plugin/marketplace.json <<'EOF'
-          {"name": "ci-local", "owner": {"name": "ci"}, "plugins": [
-            {"name": "safecall", "source": "./safecall"}, {"name": "duocall", "source": "./duocall"},
-            {"name": "nightcall", "source": "./nightcall"}, {"name": "mailcall", "source": "./mailcall"},
-            {"name": "chasecall", "source": "./chasecall"}, {"name": "pocketcall", "source": "./pocketcall"}]}
-          EOF
+          entries=""
+          for p in $names; do entries="$entries${entries:+, }{\"name\": \"$p\", \"source\": \"./$p\"}"; done
+          printf '{"name": "ci-local", "owner": {"name": "ci"}, "plugins": [%s]}\n' "$entries" > local/.claude-plugin/marketplace.json
+          cat local/.claude-plugin/marketplace.json
 
       - uses: actions/setup-python@v5
         with:
@@ -101,13 +105,13 @@ jobs:
           curl -fsSL https://claude.ai/install.sh | bash
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
-      - name: Add the catalogue and install the six plugins
+      - name: Add the catalogue and install every plugin it lists
         shell: bash
         run: |
           export CLAUDE_CONFIG_DIR="$RUNNER_TEMP/claude-config"
           claude --version
           claude plugin marketplace add "$GITHUB_WORKSPACE/local"
-          for p in safecall duocall nightcall mailcall chasecall pocketcall; do
+          for p in $(cat "$GITHUB_WORKSPACE/local/names.txt"); do
             claude plugin install "$p@ci-local"
           done
           claude plugin list

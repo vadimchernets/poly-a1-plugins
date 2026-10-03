@@ -4,8 +4,8 @@
     "name": "Vadym Chernets"
   },
   "metadata": {
-    "description": "The Poly A1 plugins: six small, plain-spoken additions to Claude Code for a person who is not a programmer - a copy before anything is changed, a second opinion from another company, a remote for the computer you left working, a task that chases itself, Claude working through the night, and an agent that reads your mailbox. Each plugin lives in its own repository; this catalogue installs the zip attached to each plugin's GitHub release, pinned by sha256, so nothing here needs git.",
-    "version": "0.3.3"
+    "description": "The Poly A1 plugins for Claude Code. Six for a person who is not a programmer - a copy before anything is changed, a second opinion from another company, a remote for the computer you left working, a task that chases itself, Claude working through the night, and an agent that reads your mailbox. Six for a company - what its AI costs (billcall), what of its data may leave and where (gatecall), its own plugin and the rules on every laptop (firmcall), cheaper and local models per window (routecall), repeated decisions made cheaply with a bench (decidecall), and its people moved onto the agent in 30 days (teamcall). Each plugin lives in its own repository; this catalogue installs the zip attached to each plugin's GitHub release, pinned by sha256, so nothing here needs git.",
+    "version": "0.4.0"
   },
   "plugins": [
     {
@@ -165,6 +165,181 @@
       "metadata": {
         "commit": "037dbb8533fdf4856a78c44459125b9915dfeffd",
         "tag": "v0.1.7"
+      }
+    },
+    {
+      "name": "billcall",
+      "source": {
+        "source": "archive",
+        "url": "https://github.com/vadimchernets/billcall/releases/download/v0.1.0/billcall-0.1.0.zip",
+        "sha256": "8b868591ed5b46090ae0c08d2e0b71630cb6ce6993687ac7820fb574d7813bbb"
+      },
+      "description": "What AI costs a company, counted from one dated price table: the monthly bill of a mix of seats, API work and own machines with the price of one accepted task; the week's spend from Claude Code's logs, the Team spend report and OpenTelemetry, with idle seats; budget alarms at 50, 80 and 100 per cent; Team against Enterprise; contract rates as a modelPricing block for managed settings; an own GPU machine against renting. It counts and compares - it buys nothing and never asks for a card.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Vadym Chernets"
+      },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/vadimchernets/billcall",
+      "keywords": [
+        "cost",
+        "pricing",
+        "budget",
+        "seats",
+        "team",
+        "enterprise",
+        "for-companies"
+      ],
+      "category": "productivity",
+      "metadata": {
+        "commit": "c204c57884b9fc4b505c9cc24ba6b4193cd5c471",
+        "tag": "v0.1.0"
+      }
+    },
+    {
+      "name": "gatecall",
+      "source": {
+        "source": "archive",
+        "url": "https://github.com/vadimchernets/gatecall/releases/download/v0.1.0/gatecall-0.1.0.zip",
+        "sha256": "037aec03efe2c915bf60a666997b71675096f8947ac7eedd72bc08f5a7530797"
+      },
+      "description": "What may leave the company, and where it may go. Its hooks stop a message, a command, a web request or a tool call that carries a key, a card number (Luhn-checked), an IBAN (mod-97), a national ID number with its check digit, or a list of people's addresses or phone numbers - with the reason in the person's language. Red folders are read only by a model on this computer; profiles for any company, the EU and US defence contractors (no DeepSeek); kimi only in a training folder, grok only on a cleaned copy, agy never with a permission for everything; a permissions.deny block with absolute //paths; a journal that keeps kinds and fingerprints, never the values.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Vadym Chernets"
+      },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/vadimchernets/gatecall",
+      "keywords": [
+        "privacy",
+        "dlp",
+        "pii",
+        "secrets",
+        "policy",
+        "for-companies"
+      ],
+      "category": "productivity",
+      "metadata": {
+        "commit": "32434cafbab714227e9e09b388d30c6e8080f61e",
+        "tag": "v0.1.0"
+      }
+    },
+    {
+      "name": "firmcall",
+      "source": {
+        "source": "archive",
+        "url": "https://github.com/vadimchernets/firmcall/releases/download/v0.1.0/firmcall-0.1.0.zip",
+        "sha256": "a118ba95d25e27ef6b4f2cb5198bb3d94013419fe9f38d2e87fa11d824b6956a"
+      },
+      "description": "The plugin that writes a company's own plugin, and the administrator's path: an interview turns the company's frequent tasks into skills with examples and tests, a private catalogue and a zip for the organisation's plugin library (Cowork and chat); the rules file for every computer (managed-settings.d, managed-mcp.json, the company policy file), the same rules for the claude.ai console, a Jamf configuration profile and an Intune script that put them on many laptops, row-level security for a database the agent reads; a lint for the settings that silently switch the phone remote off, and a check of where a plugin works. It writes and checks; it buys nothing.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Vadym Chernets"
+      },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/vadimchernets/firmcall",
+      "keywords": [
+        "plugin-builder",
+        "managed-settings",
+        "mdm",
+        "jamf",
+        "intune",
+        "cowork",
+        "for-companies"
+      ],
+      "category": "productivity",
+      "metadata": {
+        "commit": "61f846d596aa411919116c1a7b78c69707e832ad",
+        "tag": "v0.1.0"
+      }
+    },
+    {
+      "name": "routecall",
+      "source": {
+        "source": "archive",
+        "url": "https://github.com/vadimchernets/routecall/releases/download/v0.1.0/routecall-0.1.0.zip",
+        "sha256": "d79a175aa4eae6add9bfd86821a50009d5f07bd7ea31432b273b2d93dd5f1ba7"
+      },
+      "description": "The strong model thinks, cheap and local models work - without losing the remote. The advisor, opusplan and Haiku subagents on the person's own seat; a separate cheap window per project for DeepSeek, Kimi, Qwen, GLM, MiniMax or MiMo (key from the system keychain, red folders denied or left out of a sparse worktree); a red window on a model on this computer; which local model fits the machine and how many people it holds; other vendors' agents for scripts only on API rows; a LiteLLM gateway for CI with a daily budget; a llama-swap server; and a doctor that says why Remote Control stopped. It buys nothing.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Vadym Chernets"
+      },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/vadimchernets/routecall",
+      "keywords": [
+        "routing",
+        "cheap-models",
+        "local-models",
+        "ollama",
+        "deepseek",
+        "kimi",
+        "qwen",
+        "glm",
+        "litellm",
+        "for-companies"
+      ],
+      "category": "productivity",
+      "metadata": {
+        "commit": "61b053888e5d8de44b55fea614d4362c2de9804c",
+        "tag": "v0.1.0"
+      }
+    },
+    {
+      "name": "decidecall",
+      "source": {
+        "source": "archive",
+        "url": "https://github.com/vadimchernets/decidecall/releases/download/v0.1.0/decidecall-0.1.0.zip",
+        "sha256": "c7715501a26e17a3d89a11013ab74eaa75e426f763e0af897e74c938c133bf92"
+      },
+      "description": "A decision layer for a company: a repeated small decision (which team gets this message, approve or send back, is it urgent) walks cache, rules, a local model, a cheap cloud model, a strong model and a person, and stops at the first link sure enough (confidence 0.95 by default; two links that agree settle a less sure answer). A person's answer goes into the cache, so it is never asked twice; promote turns decisions the models kept agreeing on into cache entries and suggests rules; bench measures accuracy, what each link decided, how honest the confidences were and the price of one decision against sending everything to one model. Model links are programs the company installs (strands-decider, OpenJev, ollama, claude -p), checked against an output schema; the company policy keeps red data local, admits only zero-retention vendors when asked and stops paid links at the daily budget. It decides and counts - it buys nothing.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Vadym Chernets"
+      },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/vadimchernets/decidecall",
+      "keywords": [
+        "decision",
+        "router",
+        "cache",
+        "confidence",
+        "local-model",
+        "cost",
+        "for-companies"
+      ],
+      "category": "productivity",
+      "metadata": {
+        "commit": "af7c3de7309bacfa39b180cbe60e31ccc8c34aa7",
+        "tag": "v0.1.0"
+      }
+    },
+    {
+      "name": "teamcall",
+      "source": {
+        "source": "archive",
+        "url": "https://github.com/vadimchernets/teamcall/releases/download/v0.1.0/teamcall-0.1.0.zip",
+        "sha256": "313dc489f1ade94208be8c1e87a463b075d4b88fee0401a97f5018a98c6b5f48"
+      },
+      "description": "Move a company's people from the chat window to a terminal agent in 30 days, and measure it: a pilot charter from 5 people to 30-50 with a one-page set-up for IT, a 20-minute fast path per person, a 5-hour champion path, the same task turned into one command (termboost), a transition journal, a report on six measurements (time, quality, coverage, repeatability, new capability, what a person checks) with the minutes of human help per first working result, a scale-or-stop page, and which seat already pays for which terminal agent. It counts and plans; it buys nothing.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Vadym Chernets"
+      },
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/vadimchernets/teamcall",
+      "keywords": [
+        "adoption",
+        "onboarding",
+        "pilot",
+        "champions",
+        "terminal",
+        "for-companies"
+      ],
+      "category": "productivity",
+      "metadata": {
+        "commit": "dff5c0a7fec31e319df1e812e19f2f327fd9866c",
+        "tag": "v0.1.0"
       }
     }
   ]

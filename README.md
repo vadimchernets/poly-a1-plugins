@@ -15,8 +15,9 @@ The orchestration runs on the phone itself. iPhone: a Shortcut calls Ask ChatGPT
 
 The phone part is [Duo and Trio](https://github.com/vadimchernets/c1m-duo); this repository is the computer part of Poly A1.
 
-Six small additions to [Claude Code](https://claude.com/claude-code) for a person who is not a
-programmer.
+Twelve small additions to [Claude Code](https://claude.com/claude-code): six for a person who is not a
+programmer, and six for a company that wants the strongest AI at the lowest bill at the end of the month
+(see [For companies](#for-companies)).
 
 ## Installing
 
@@ -31,6 +32,17 @@ later reach you from the same place:
 /plugin install chasecall@poly-a1
 /plugin install nightcall@poly-a1
 /plugin install mailcall@poly-a1
+```
+
+For a company, the same catalogue:
+
+```
+/plugin install billcall@poly-a1
+/plugin install gatecall@poly-a1
+/plugin install firmcall@poly-a1
+/plugin install routecall@poly-a1
+/plugin install decidecall@poly-a1
+/plugin install teamcall@poly-a1
 ```
 
 Needs Claude Code 2.1.224 or later (`claude update`). With git installed, the short form
@@ -73,9 +85,26 @@ Without it, every correction made here after that day never reaches that machine
 | **[nightcall](https://github.com/vadimchernets/nightcall)** | Claude Code working through the night: the computer kept awake for 8 or 12 hours, a plan and a progress file, other AIs checked alive and replaced when they die, and a morning report. |
 | **[mailcall](https://github.com/vadimchernets/mailcall)** | Reads your mailbox, read-only: a morning summary of what matters, and Google Alerts and newsletters boiled down by the words you watch. Drafts only - nothing is sent without your yes. |
 
+## For companies
+
+| | |
+|---|---|
+| **[billcall](https://github.com/vadimchernets/billcall)** | What AI costs the company, from one dated price table: the month of a mix of seats, API work and own machines, the price of one accepted task, the week's spend, budget alarms, Team against Enterprise. |
+| **[gatecall](https://github.com/vadimchernets/gatecall)** | What may leave the company and where: hooks that stop keys, card numbers, IBANs, national IDs and lists of people, red folders read only by a model on this computer, profiles for the EU and US defence contractors, rules per agent program. |
+| **[firmcall](https://github.com/vadimchernets/firmcall)** | The plugin that writes the company's own plugin: an interview, skills with tests, a private catalogue, a zip for Cowork, the rules file for every computer (`managed-settings.d`, `managed-mcp.json`) and the Jamf or Intune package that puts it on many laptops. |
+| **[routecall](https://github.com/vadimchernets/routecall)** | A strong model plans, cheap ones work: a window per model (GLM, Kimi, DeepSeek, Qwen, MiniMax, MiMo, a local one, a local one for red data), a crew of vendors' own programs for scripts, a gateway for background work only, and a doctor that says where the rules and the remote stand. |
+| **[decidecall](https://github.com/vadimchernets/decidecall)** | Repeated decisions made cheaply: cache, rules, a small model here, a cheap one in the cloud, a strong one, a person - each step only when the one before is not sure, with a bench on the company's own examples. |
+| **[teamcall](https://github.com/vadimchernets/teamcall)** | The company's people moved onto the agent in 30 days: a pilot charter, a 20-minute fast path and a 5-hour champion, a journal, the six measurements and a one-page "scale or stop". |
+
+**Money, plainly.** Money is the subject of this part. The company plugins count, compare, write and
+decide; each of them buys nothing, opens no checkout and never asks for a card. The person responsible
+for the company's accounts buys, from the vendor's own page, on numbers that name their source and day.
+The same rules as the six: Python standard library only, no network module, Apache-2.0, five languages.
+
 ## What none of them do
 
-No account. No API key. No second subscription. Nothing bought, and nothing that suggests buying.
+No account. No API key. No second subscription. Nothing bought, and nothing that suggests buying (the
+company plugins speak of money because it is their subject, and buy nothing either).
 They drive only what is already installed and already signed in on the machine. Python 3.8+ and the
 standard library, no dependencies. Without Python, safecall's and chasecall's hooks say so in one line
 and stay quiet - on a Mac without Apple's Command Line Tools they never start the `/usr/bin/python3`
@@ -87,7 +116,7 @@ text goes.
 
 ## For the buyer of Poly A1
 
-All six also ride **inside** the Poly A1 folder for the computer, with a catalogue generated from
+All of them also ride **inside** the Poly A1 folder for the computer, with a catalogue generated from
 this one: the same name `poly-a1`, the same plugins, the same versions, only the sources point at the
 folders beside it - so they install with no network and no account. The setup in START-HERE adds
 `poly-a1` from the link above first and uses the folder only when that fails. Later, to get
@@ -109,13 +138,15 @@ attached; Zenodo archives the release and mints its DOI.
 `./sync.sh` then pins every entry of this catalogue to that release: it checks the working repository
 is clean, pushed and exactly at the tag, downloads the zip, checks its top folder and manifest, and
 writes the url, the `sha256` of the published bytes, the version and `metadata.commit`.
+A new plugin enters with `./sync.sh --add <plugin>`, which writes its entry from the plugin's own
+`plugin.json`; the first `./sync.sh` after its first release pins it like the others.
 `./sync.sh --check` changes nothing and fails if anything is behind or if `claude plugin validate`
 rejects the catalogue. Run the check before publishing. The Poly A1 kit build refuses to ship a
 catalogue that disagrees with the folders it ships.
 
 ## Licence
 
-Apache-2.0 for all six. Each plugin carries its own `LICENSE` and `NOTICE`.
+Apache-2.0 for all twelve. Each plugin carries its own `LICENSE` and `NOTICE`.
 
 ---
 

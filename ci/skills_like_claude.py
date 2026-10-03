@@ -73,7 +73,10 @@ def skill_scripts(root, plugin):
         path = os.path.join(root, "skills", d, "SKILL.md")
         if os.path.exists(path):
             text = open(path, encoding="utf-8").read()
-            found |= set(re.findall(r'hooks/python\.sh" %s say (scripts/[\w.-]+\.py)' % plugin, text))
+            # scripts/<name>.py (the personal plugins) or skills/<skill>/scripts/<name>.py (the company
+            # plugins: an organisation's plugin library refuses a plugin with a top-level bin/, and Cowork
+            # loads the scripts that sit inside a skill)
+            found |= set(re.findall(r'hooks/python\.sh" %s say ((?:skills/[\w.-]+/)?scripts/[\w.-]+\.py)' % plugin, text))
     return sorted(found)
 
 

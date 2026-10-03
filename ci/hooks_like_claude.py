@@ -176,6 +176,52 @@ def cases(plugin, home, project):
             return None
 
         return {("Stop", 0): (base("Stop", stop_hook_active=False), stop)}
+    if plugin == "billcall":
+        # The budget line: with no budget set anywhere (a fresh HOME, no company policy) it says nothing,
+        # with a Python and without one.
+        def budget(code, out, err, py):
+            if code != 0 or out.strip():
+                return "want exit 0 and silence with no budget, got exit %d out=%r err=%r" % (code, out[-300:], err[-300:])
+            return None
+
+        return {("SessionStart", 0): (base("SessionStart", source="startup"), budget)}
+    if plugin == "gatecall":
+        # A test card number (Luhn-valid, the processors' own sample) in a prompt and in a command.
+        card = "4111 1111 1111 1111"
+
+        def start(code, out, err, py):
+            if not py:
+                return paused(code, out, err, py, True)
+            return None if code == 0 and out.strip() else "exit %d out=%r err=%r" % (code, out[-300:], err[-300:])
+
+        def prompt(code, out, err, py):
+            if not py:
+                return paused(code, out, err, py, False)
+            try:
+                d = json.loads(out)
+            except ValueError:
+                d = {}
+            if code != 0 or d.get("decision") != "block" or not d.get("reason"):
+                return "want a JSON block with a reason for a card number, got exit %d err=%r out=%r" % (code, err[-300:], out[-300:])
+            return None
+
+        def tool(code, out, err, py):
+            if not py:
+                return paused(code, out, err, py, False)
+            try:
+                d = json.loads(out)["hookSpecificOutput"]
+            except (ValueError, KeyError, TypeError):
+                d = {}
+            if code != 0 or d.get("permissionDecision") != "deny" or not d.get("permissionDecisionReason"):
+                return "want a JSON deny with a reason for a card number, got exit %d err=%r out=%r" % (code, err[-300:], out[-300:])
+            return None
+
+        return {
+            ("SessionStart", 0): (base("SessionStart", source="startup"), start),
+            ("UserPromptSubmit", 0): (base("UserPromptSubmit", prompt="pay with card %s please" % card), prompt),
+            ("PreToolUse", 0): (base("PreToolUse", tool_name="Bash", tool_use_id="t3",
+                                     tool_input={"command": "echo %s > note.txt" % card}), tool),
+        }
     return {}
 
 

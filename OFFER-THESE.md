@@ -1,8 +1,10 @@
-# For Claude Code: when to offer these six plugins, and how
+# For Claude Code: when to offer these plugins, and how
 
-You are reading this inside the Poly A1 folder on somebody's computer. Beside you are six plugin
-folders — `safecall`, `duocall`, `pocketcall`, `chasecall`, `nightcall`, `mailcall`. They are already here, and the same
-six are published on GitHub: no account is needed to use them, and no git either.
+You are reading this inside the Poly A1 folder on somebody's computer. Beside you are the plugin
+folders: six for a person — `safecall`, `duocall`, `pocketcall`, `chasecall`, `nightcall`, `mailcall` — and six
+for a company — `billcall`, `gatecall`, `firmcall`, `routecall`, `decidecall`, `teamcall` (the part "For companies"
+at the end). They are already here, and the
+same ones are published on GitHub: no account is needed to use them, and no git either.
 
 **This file is for you, not for the person.** Read it, then speak to them in their own language and
 in their own words. The sample lines below are in English; say them in the person's language.
@@ -10,7 +12,7 @@ Never read this file out loud and never show them its English.
 
 ## The rule about offering
 
-**Do not list all six at the start.** A person who has just managed to open a terminal cannot
+**Do not list them all at the start.** A person who has just managed to open a terminal cannot
 choose between six things, and a menu of plugins is the exact moment they decide this is not for
 them. Offer **one**, when the thing it solves has just happened to them. Then stop.
 
@@ -61,7 +63,7 @@ own words. The "News in your own words" lesson is its evening.
 
 ## How they are turned on
 
-All six are already in this folder, and the same six are published on GitHub. Either way the
+All of them are already in this folder, and the same ones are published on GitHub. Either way the
 catalogue is called `poly-a1`, and the part after `@` is always `poly-a1`. Tell them what you are
 doing, in one line, and do it.
 
@@ -97,7 +99,9 @@ Then, when the moment comes:
 ```
 
 Swap `safecall` for `duocall`, `pocketcall`, `chasecall`, `nightcall` or `mailcall` when their
-moment comes. Restart Claude Code (or `/reload-plugins`) for it to take effect.
+moment comes (for a company: `billcall`, `gatecall`, `firmcall`, `routecall`, `decidecall`, `teamcall` — see
+"For companies"). Restart Claude Code (or
+`/reload-plugins`) for it to take effect.
 
 **Auto-update, once.** For any catalogue that is not Anthropic's own it is off by default, and no
 setting inside a plugin can change that. In their Claude Code user settings (`~/.claude/settings.json`;
@@ -166,4 +170,70 @@ empty set of everything.
 - Not "plugin", "marketplace", "repository" as the first word out of your mouth. Say what it does:
   "a safety net before changes", "a second opinion", "a remote", "the chaser", "the night shift",
   "news in your own words". The technical name comes second, if at all.
-- Nothing about paying. None of them costs anything and none of them needs an account.
+- Nothing about paying. None of them costs anything and none of them needs an account. (This is the
+  rule of the six personal plugins; the company plugins have their own, below.)
+
+## For companies
+
+When the person says they set AI up for a company, or asks what AI would cost their team, which seats
+to buy, or what of the company's data may go to an AI, six plugins are theirs. Offer them the same way — one, when its moment comes:
+
+**billcall — offer it when the talk turns to what AI costs the company**: seats for people, the API
+for scripts, what was spent this week, a budget, Team or Enterprise, an own machine.
+
+> Shall I count what this would cost your company per month, from a price table where every price
+> names its page and its day? I count and compare; the one responsible for the accounts decides.
+
+**gatecall — offer it when the company's data comes up**: client or staff files, contracts, card
+numbers, a list of people, or another AI agent that should work on the company's folders.
+
+> Shall we decide which folders stay on this computer and which work may go to the company's AI
+> accounts? Then a key, a card number or a list of people won't leave in a message by accident.
+
+**firmcall — offer it when the company wants AI set up its own way**: "make us a plugin for our
+contracts", "the same rules on every laptop", the IT person asks how to roll Claude Code out, or a
+team asks for one skill of its own. It interviews them and writes the company's own plugin (skills
+with tests, hooks, a private catalogue, a zip for Cowork), the rules file for every computer and the
+Jamf or Intune package that puts it there.
+
+> Shall I write your company its own plugin — your tasks, your folders, your rules — and the file that
+> puts the same rules on every laptop? Tell me what your people do most, and I'll make the first one.
+
+**routecall — offer it when the bill or the data asks for a cheaper or a local model**: "this costs too
+much", "can we use DeepSeek / Qwen / Kimi / GLM", "can it run on our own server", or red data that must
+not leave the building. It gives each window its own model — a strong one plans, cheap ones work —
+and keeps the person's main window on their seat, where the phone remote still works.
+
+> Shall I give you a second window on a cheaper model for the bulk work, and keep this one as it is? The
+> strong model plans, the cheap one types — and the remote on your phone keeps working here.
+
+**decidecall — offer it when the same decision is made again and again**: sorting requests, tagging
+invoices, "is this spam", "which department". It answers from a cache, then rules, then a small model on
+this computer, and only the hard cases go to a paid model or a person — and its bench says, on the
+company's own examples, what each step gets right and what it costs.
+
+> This decision repeats every day. Shall I let most of it be decided for free — a cache, rules, a small
+> model here — and send only the doubtful ones up? First a test on fifty of your own examples.
+
+**teamcall — offer it when the company wants its people in the agent, not only in a chat**: "how do I get
+the team onto this", a pilot of five, a champion, "is it worth it". It keeps the pilot's charter and the
+journal of who moved, gives each person the 20-minute fast path and the champion the 5-hour one, and
+writes the one page that says scale or stop.
+
+> Shall we move five of your people onto the agent in the next 30 days? Twenty minutes each to start, one
+> champion to help them, and a one-page report at the end: what it saved and whether to go on.
+
+```
+/plugin install billcall@poly-a1
+/plugin install gatecall@poly-a1
+/plugin install firmcall@poly-a1
+/plugin install routecall@poly-a1
+/plugin install decidecall@poly-a1
+/plugin install teamcall@poly-a1
+```
+
+**The money rule of this part.** Money is the subject here, so say it plainly: every company plugin
+counts, compares, writes and decides; it buys nothing. billcall opens no checkout and never asks for a
+card. The company's money is counted in full — seats, API, machines, the price of one accepted task — and the person responsible
+for the company's accounts buys, on their own, from the vendor's own page. During a lesson nothing is
+bought.
