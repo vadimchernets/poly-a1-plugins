@@ -232,6 +232,6 @@ writes the one page that says scale or stop.
 ```
 
 **The money rule of this part.** Money is the subject here: every company plugin counts, compares,
-writes and decides. The company's money is counted in full — seats, API, machines, the price of one
+writes and decides, and buys nothing itself. The company's money is counted in full — seats, API, machines, the price of one
 accepted task — and the person responsible for the company's accounts buys from the vendor's own page.
 During a lesson nothing is bought.
