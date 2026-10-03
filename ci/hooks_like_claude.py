@@ -185,6 +185,36 @@ def cases(plugin, home, project):
             return None
 
         return {("SessionStart", 0): (base("SessionStart", source="startup"), budget)}
+    if plugin == "pocketcall":
+        # The approval card. Not paired (a fresh HOME, no ~/.pocketcall/remote.json) it must not block and
+        # not wait: exit 0 at once and silence (or one line), so Claude Code shows its ordinary dialog.
+        # Anything it does print must be the documented PermissionRequest output and never a deny.
+        def card(code, out, err, py):
+            if code != 0:
+                return "exit %d (want 0) stderr=%r" % (code, err[-300:])
+            if err.strip():
+                return "want nothing on stderr (no stub, no traceback), got %r" % err[-300:]
+            lines = [l for l in out.splitlines() if l.strip()]
+            if len(lines) > 1:
+                return "want silence or one line when not paired, got %r" % out[-300:]
+            if lines and lines[0].lstrip().startswith("{"):
+                try:
+                    d = json.loads(lines[0])["hookSpecificOutput"]
+                    ok = d["hookEventName"] == "PermissionRequest" and \
+                        d["decision"]["behavior"] in ("allow", "deny")
+                except (ValueError, KeyError, TypeError):
+                    ok = False
+                if not ok:
+                    return "not a valid PermissionRequest output: %r" % out[-300:]
+                if d["decision"]["behavior"] == "deny":
+                    return "denied with no phone paired: %r" % out[-300:]
+            return None
+
+        return {("PermissionRequest", 0): (base(
+            "PermissionRequest", permission_mode="default", tool_name="Bash", tool_use_id="toolu_ci",
+            tool_input={"command": "rm -rf build", "description": "Clean the build folder"},
+            permission_suggestions=[{"type": "addRules", "rules": [{"toolName": "Bash", "ruleContent": "rm -rf build"}],
+                                     "behavior": "allow", "destination": "localSettings"}]), card)}
     if plugin == "gatecall":
         # A test card number (Luhn-valid, the processors' own sample) in a prompt and in a command.
         card = "4111 1111 1111 1111"
@@ -263,7 +293,7 @@ def main():
                 env.update({"HOME": home, "USERPROFILE": home, "CLAUDE_PLUGIN_ROOT": root,
                             "CLAUDE_PLUGIN_DATA": os.path.join(tmp, "data"), "CLAUDE_PROJECT_DIR": project,
                             "CHASECALL_DB": os.path.join(tmp, "chasecall.db")})
-                for k in ("PYTHONUTF8", "PYTHONIOENCODING"):
+                for k in ("PYTHONUTF8", "PYTHONIOENCODING", "POCKETCALL_HOME"):
                     env.pop(k, None)
                 if not python:
                     env["PATH"] = no_python_path(tmp)
