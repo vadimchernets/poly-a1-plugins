@@ -94,11 +94,11 @@ With it on, every correction made here reaches that machine by itself.
 | **[firmcall](https://github.com/vadimchernets/firmcall)** | The plugin that writes the company's own plugin: an interview, skills with tests, a private catalogue, a zip for Cowork, the rules file for every computer (`managed-settings.d`, `managed-mcp.json`) and the Jamf or Intune package that puts it on many laptops. |
 | **[routecall](https://github.com/vadimchernets/routecall)** | A strong model plans, cheap ones work: a window per model (GLM, Kimi, DeepSeek, Qwen, MiniMax, MiMo, a local one, a local one for red data), a crew of vendors' own programs for scripts, a gateway for background work only, and a doctor that says where the rules and the remote stand. |
 | **[decidecall](https://github.com/vadimchernets/decidecall)** | Repeated decisions made cheaply: cache, rules, a small model here, a cheap one in the cloud, a strong one, a person - each step only when the one before is not sure, with a bench on the company's own examples. |
-| **[teamcall](https://github.com/vadimchernets/teamcall)** | The company's people moved onto the agent in 30 days: a pilot charter, a 20-minute fast path and a 5-hour champion, a journal, the six measurements and a one-page "scale or stop". |
+| **[teamcall](https://github.com/vadimchernets/teamcall)** | The company's people moved onto the agent in 30 days: a pilot charter, a 20-minute fast path and a 5-hour champion, one short card a day in Telegram or WhatsApp from the company's own bot, a journal, the six measurements and a one-page "scale or stop". |
 
 **Money is the subject of this part.** The company plugins count, compare, write and decide, on
 numbers that name their source and day; the person responsible for the company's accounts buys from the
-vendor's own page. The same build as the six: Python standard library only, no network module, Apache-2.0, five languages.
+vendor's own page. The same build as the six: Python standard library only, Apache-2.0, five languages; no network module, except teamcall's daily cards, which go only to api.telegram.org and graph.facebook.com through the doors its network.json declares.
 
 ## What they run on
 

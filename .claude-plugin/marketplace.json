@@ -65,11 +65,11 @@
       "name": "pocketcall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/pocketcall/releases/download/v0.3.2/pocketcall-0.3.2.zip",
-        "sha256": "1869a3acef9767b05970b13e202217e87f17aab4b72cc14eb47a3beb20e13669"
+        "url": "https://github.com/vadimchernets/pocketcall/releases/download/v0.3.3/pocketcall-0.3.3.zip",
+        "sha256": "5870231bb1e8490dcc6aeb58e8a0bf1ababd70218183ed120014e44d48c7e560"
       },
       "description": "Leave the computer working and take the phone, without finding out in town that it never started: the seven silent reasons an evening away fails, checked before you leave.",
-      "version": "0.3.2",
+      "version": "0.3.3",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -83,8 +83,8 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "086ce71a8b8b0582c29b881a9c0c8b6ac81c3bde",
-        "tag": "v0.3.2"
+        "commit": "639e8f215a8d80c4bb33bb29f8afd9213f1d075c",
+        "tag": "v0.3.3"
       }
     },
     {
@@ -200,11 +200,11 @@
       "name": "gatecall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/gatecall/releases/download/v0.1.3/gatecall-0.1.3.zip",
-        "sha256": "8eda2970e7f00ae89df7e11da14f0c23449bf8eb472d33337fb3ae7e9820d6f2"
+        "url": "https://github.com/vadimchernets/gatecall/releases/download/v0.1.4/gatecall-0.1.4.zip",
+        "sha256": "17363d271d321dd5367eac6523281265a297e17a6f0bf998172d4b5f70fff474"
       },
       "description": "What may leave the company, and where it may go. Its hooks stop a message, a command, a web request or a tool call that carries a key, a card number (Luhn-checked), an IBAN (mod-97), a national ID number with its check digit, or a list of people's addresses or phone numbers - with the reason in the person's language. Red folders are read only by a model on this computer; profiles for any company, the EU and US defence contractors (no DeepSeek); kimi only in a training folder, grok only on a cleaned copy, agy never with a permission for everything; a permissions.deny block with absolute //paths; a journal that keeps kinds and fingerprints, never the values.",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -220,8 +220,8 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "de58e283e7c2d1195c21d6f65920a256f47b2922",
-        "tag": "v0.1.3"
+        "commit": "7a69d0ee013d681863954190a028fc695a6b432e",
+        "tag": "v0.1.4"
       }
     },
     {
@@ -318,11 +318,11 @@
       "name": "teamcall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/teamcall/releases/download/v0.1.3/teamcall-0.1.3.zip",
-        "sha256": "8d2381820cf135904581d13bd231ce5394a907e98defb90efc7fb1a570d123e6"
+        "url": "https://github.com/vadimchernets/teamcall/releases/download/v0.1.4/teamcall-0.1.4.zip",
+        "sha256": "142f2abba4589b34600050a75d3abe0322ddd05c62fadbf2b188c36811d34904"
       },
       "description": "Move a company's people from the chat window to a terminal agent in 30 days, and measure it: a pilot charter from 5 people to 30-50 with a one-page set-up for IT, a 20-minute fast path per person, a 5-hour champion path, the same task turned into one command (termboost), a transition journal, a report on six measurements (time, quality, coverage, repeatability, new capability, what a person checks) with the minutes of human help per first working result, a scale-or-stop page, and which seat already pays for which terminal agent. It counts and plans; it buys nothing.",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -338,8 +338,8 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "0b2faf7c8e18bb748a030a5cb0e1a1f9a75cb823",
-        "tag": "v0.1.3"
+        "commit": "a8e7785e0573f213f177866e688e7c14cdcbee6a",
+        "tag": "v0.1.4"
       }
     }
   ]
