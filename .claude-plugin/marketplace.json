@@ -65,11 +65,11 @@
       "name": "pocketcall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/pocketcall/releases/download/v0.3.3/pocketcall-0.3.3.zip",
-        "sha256": "5870231bb1e8490dcc6aeb58e8a0bf1ababd70218183ed120014e44d48c7e560"
+        "url": "https://github.com/vadimchernets/pocketcall/releases/download/v0.5.0/pocketcall-0.5.0.zip",
+        "sha256": "4ff8000a9d2c9b44a48b354eeadd9f22834948594d29fac84e24725be2743b62"
       },
       "description": "Leave the computer working and take the phone, without finding out in town that it never started: the seven silent reasons an evening away fails, checked before you leave.",
-      "version": "0.3.3",
+      "version": "0.5.0",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -83,8 +83,8 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "639e8f215a8d80c4bb33bb29f8afd9213f1d075c",
-        "tag": "v0.3.3"
+        "commit": "53456ef0699b42fad428d2a76023ea8600ba2e50",
+        "tag": "v0.5.0"
       }
     },
     {
@@ -117,11 +117,11 @@
       "name": "nightcall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/nightcall/releases/download/v0.3.10/nightcall-0.3.10.zip",
-        "sha256": "c3e8969d545373954aa6c3a5680186b3440ad885a70adb7b0ffe13d71a402028"
+        "url": "https://github.com/vadimchernets/nightcall/releases/download/v0.5.0/nightcall-0.5.0.zip",
+        "sha256": "c042041fcb42d9b61d13a980079ec5a3f4c8ff5959beae34bc364bb963b242b6"
       },
       "description": "Leave Claude Code working through the night: the computer kept awake for 8 or 12 hours on Mac, Linux or Windows, a plan and a progress file, self-critique, other AIs from your own subscriptions (or free web chats) checked alive and replaced when they die, and a morning report of what was done.",
-      "version": "0.3.10",
+      "version": "0.5.0",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -136,8 +136,8 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "65af1d2f23f3b6e653409fed0f851d429788106f",
-        "tag": "v0.3.10"
+        "commit": "4efb1eb853cda9b5d6c5fcd321ebd200c8596c2f",
+        "tag": "v0.5.0"
       }
     },
     {
