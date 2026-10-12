@@ -76,7 +76,7 @@ needed, and later fixes reach them from the same place:
 /plugin marketplace add https://raw.githubusercontent.com/vadimchernets/poly-a1-plugins/main/.claude-plugin/marketplace.json
 ```
 
-This needs Claude Code 2.1.224 or later (`claude --version`; if older, `claude update` first).
+This needs Claude Code 2.1.224 or later (`claude --version`; if older, `claude update` first). If the `claude` command isn't found, that's normal: the person works in Code of the Claude app (the </> button at the top left), which updates itself; the version is in About Claude or in the Claude Code line of `/status`.
 Each plugin then arrives as the zip attached to its GitHub release, checked against the `sha256`
 the catalogue states. Checked live on 02.10.2026 in a fresh Ubuntu 24.04 with no git, no unzip and
 no Python: the catalogue added and all six installed and came up enabled.
