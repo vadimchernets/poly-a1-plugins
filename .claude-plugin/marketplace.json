@@ -12,11 +12,11 @@
       "name": "safecall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/safecall/releases/download/v0.1.9/safecall-0.1.9.zip",
-        "sha256": "a0c62bd44d6b1502dcf16f1cabfad3d99a10b6706313df39e2c1a83c34c04e38"
+        "url": "https://github.com/vadimchernets/safecall/releases/download/v0.1.10/safecall-0.1.10.zip",
+        "sha256": "dfe51b781f16fe43909fbb7a12099018f43bd2c0dfe01e347a2406a1c9108027"
       },
       "description": "Nothing is written before a copy exists, nothing is read before you have seen the list, and no answer ends without saying what nobody checked. Plus three ready readings of a document: where the catch is, what the plan is missing, what here is fact.",
-      "version": "0.1.9",
+      "version": "0.1.10",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -31,8 +31,8 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "274d6c336b9e1aff9fa9842b576a44e6fc83c72e",
-        "tag": "v0.1.9"
+        "commit": "9e275ea188677189291213199c3dfaa589825c5d",
+        "tag": "v0.1.10"
       }
     },
     {
@@ -91,11 +91,11 @@
       "name": "chasecall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/chasecall/releases/download/v0.1.8/chasecall-0.1.8.zip",
-        "sha256": "3a01eb868dc88098203e14aefe778ca9ddb32a98d6bcb0a1ee98a7dd0dd50d3d"
+        "url": "https://github.com/vadimchernets/chasecall/releases/download/v0.1.9/chasecall-0.1.9.zip",
+        "sha256": "cbe25ce423c691c5f7d924c14e726241fdd4e2e483cdf907250e3544990cbd03"
       },
       "description": "Hand Claude Code something nobody is answering - a refund, a booking, an unanswered request. It keeps the task between sessions, writes the next letter, counts the attempts, and tells you when the call is yours to make.",
-      "version": "0.1.8",
+      "version": "0.1.9",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -109,8 +109,8 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "a3804ffae0fd61d0d24e9ed86374d98c0d43ff67",
-        "tag": "v0.1.8"
+        "commit": "6b101b5fafcf64f558e3de3827b98020b1fb700d",
+        "tag": "v0.1.9"
       }
     },
     {
