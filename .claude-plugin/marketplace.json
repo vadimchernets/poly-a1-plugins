@@ -12,11 +12,11 @@
       "name": "safecall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/safecall/releases/download/v0.1.10/safecall-0.1.10.zip",
-        "sha256": "dfe51b781f16fe43909fbb7a12099018f43bd2c0dfe01e347a2406a1c9108027"
+        "url": "https://github.com/vadimchernets/safecall/releases/download/v0.1.11/safecall-0.1.11.zip",
+        "sha256": "7923b116274fe791b23d5ea253927a571fc23fcd6495c1dc65b615e151bb81f0"
       },
       "description": "Nothing is written before a copy exists, nothing is read before you have seen the list, and no answer ends without saying what nobody checked. Plus three ready readings of a document: where the catch is, what the plan is missing, what here is fact.",
-      "version": "0.1.10",
+      "version": "0.1.11",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -31,8 +31,8 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "9e275ea188677189291213199c3dfaa589825c5d",
-        "tag": "v0.1.10"
+        "commit": "f52ae9ca93a02fdfa559e206781125d12615d560",
+        "tag": "v0.1.11"
       }
     },
     {
@@ -200,11 +200,11 @@
       "name": "gatecall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/gatecall/releases/download/v0.1.4/gatecall-0.1.4.zip",
-        "sha256": "17363d271d321dd5367eac6523281265a297e17a6f0bf998172d4b5f70fff474"
+        "url": "https://github.com/vadimchernets/gatecall/releases/download/v0.1.5/gatecall-0.1.5.zip",
+        "sha256": "2ccae257b821da0d3d7898db4008d9d69c3e3f7b24db047ecd5ba796d77ce8db"
       },
       "description": "What may leave the company, and where it may go. Its hooks stop a message, a command, a web request or a tool call that carries a key, a card number (Luhn-checked), an IBAN (mod-97), a national ID number with its check digit, or a list of people's addresses or phone numbers - with the reason in the person's language. Red folders are read only by a model on this computer; profiles for any company, the EU and US defence contractors (no DeepSeek); kimi only in a training folder, grok only on a cleaned copy, agy never with a permission for everything; a permissions.deny block with absolute //paths; a journal that keeps kinds and fingerprints, never the values.",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -220,8 +220,8 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "7a69d0ee013d681863954190a028fc695a6b432e",
-        "tag": "v0.1.4"
+        "commit": "556151e80201ae440d37ca5c92965ec03c1442e7",
+        "tag": "v0.1.5"
       }
     },
     {
