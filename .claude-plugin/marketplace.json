@@ -117,11 +117,11 @@
       "name": "nightcall",
       "source": {
         "source": "archive",
-        "url": "https://github.com/vadimchernets/nightcall/releases/download/v0.6.0/nightcall-0.6.0.zip",
-        "sha256": "6e08844d8792013b8d602ed39669e7069e5c149b0b4f06cb4e677ef839d83bc0"
+        "url": "https://github.com/vadimchernets/nightcall/releases/download/v0.6.1/nightcall-0.6.1.zip",
+        "sha256": "ff2f97202ce3799d481eb10ca66ac125f589449f5f18c75def39493dc67b19c4"
       },
       "description": "Leave Claude Code working through the night: the computer kept awake for 8 or 12 hours on Mac, Linux or Windows, a plan and a progress file, self-critique, other AIs from your own subscriptions (or free web chats) checked alive and replaced when they die, and a morning report of what was done.",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "author": {
         "name": "Vadym Chernets"
       },
@@ -136,8 +136,8 @@
       ],
       "category": "productivity",
       "metadata": {
-        "commit": "51078d0227365de87db0b37b4ee44b7b5e7afe5d",
-        "tag": "v0.6.0"
+        "commit": "0c49835059da7fd6755efbad6daa498d27caea6a",
+        "tag": "v0.6.1"
       }
     },
     {
