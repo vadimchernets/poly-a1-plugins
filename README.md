@@ -1,5 +1,7 @@
 # Poly A1 plugins
 
+> Poly helped? [Give it a star on GitHub](https://github.com/vadimchernets/poly-a1-plugins) - one click, and more people find it. The plugins are open to everyone either way.
+
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23107737.svg)](https://doi.org/10.5281/zenodo.23107737)
 
 **Free: two AIs from different companies work together right on your phone. ChatGPT answers, Claude checks. No paid keys, no servers, no computer, nothing to pay.**
@@ -25,7 +27,7 @@ Add the catalogue by its link - one file, no git and no GitHub account needed - 
 later reach you from the same place:
 
 ```
-/plugin marketplace add https://raw.githubusercontent.com/vadimchernets/poly-a1-plugins/main/.claude-plugin/marketplace.json
+/plugin marketplace add https://github.com/vadimchernets/poly-a1-plugins/releases/latest/download/marketplace.json
 /plugin install safecall@poly-a1
 /plugin install duocall@poly-a1
 /plugin install pocketcall@poly-a1
@@ -33,6 +35,8 @@ later reach you from the same place:
 /plugin install nightcall@poly-a1
 /plugin install mailcall@poly-a1
 ```
+
+If that address does not answer, the same file is at `https://raw.githubusercontent.com/vadimchernets/poly-a1-plugins/main/.claude-plugin/marketplace.json`.
 
 For a company, the same catalogue:
 
